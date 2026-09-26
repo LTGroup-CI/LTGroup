@@ -1,0 +1,1 @@
+ALTER TABLE public.company_info ADD COLUMN IF NOT EXISTS postal_box text;
