@@ -20,9 +20,9 @@ import { Route as ProjetsRouteImport } from './routes/projets'
 import { Route as ServicesRouteImport } from './routes/services'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as TemoignagesRouteImport } from './routes/temoignages'
-import { Route as ActivitesSlugRouteImport } from './routes/activites.$slug'
-import { Route as ActualitesSlugRouteImport } from './routes/actualites.$slug'
-import { Route as ProjetsSlugRouteImport } from './routes/projets.$slug'
+import { Route as ActivitesSlugRouteImport } from './routes/activites_.$slug'
+import { Route as ActualitesSlugRouteImport } from './routes/actualites_.$slug'
+import { Route as ProjetsSlugRouteImport } from './routes/projets_.$slug'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -80,30 +80,30 @@ const TemoignagesRoute = TemoignagesRouteImport.update({
   getParentRoute: () => rootRouteImport,
 } as any)
 const ActivitesSlugRoute = ActivitesSlugRouteImport.update({
-  id: '/$slug',
-  path: '/$slug',
-  getParentRoute: () => ActivitesRoute,
+  id: '/activites_/$slug',
+  path: '/activites/$slug',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const ActualitesSlugRoute = ActualitesSlugRouteImport.update({
-  id: '/$slug',
-  path: '/$slug',
-  getParentRoute: () => ActualitesRoute,
+  id: '/actualites_/$slug',
+  path: '/actualites/$slug',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const ProjetsSlugRoute = ProjetsSlugRouteImport.update({
-  id: '/$slug',
-  path: '/$slug',
-  getParentRoute: () => ProjetsRoute,
+  id: '/projets_/$slug',
+  path: '/projets/$slug',
+  getParentRoute: () => rootRouteImport,
 } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/a-propos': typeof AProposRoute
-  '/activites': typeof ActivitesRouteWithChildren
-  '/actualites': typeof ActualitesRouteWithChildren
+  '/activites': typeof ActivitesRoute
+  '/actualites': typeof ActualitesRoute
   '/admin': typeof AdminRoute
   '/contact': typeof ContactRoute
   '/me': typeof MeRoute
-  '/projets': typeof ProjetsRouteWithChildren
+  '/projets': typeof ProjetsRoute
   '/services': typeof ServicesRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/temoignages': typeof TemoignagesRoute
@@ -114,12 +114,12 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/a-propos': typeof AProposRoute
-  '/activites': typeof ActivitesRouteWithChildren
-  '/actualites': typeof ActualitesRouteWithChildren
+  '/activites': typeof ActivitesRoute
+  '/actualites': typeof ActualitesRoute
   '/admin': typeof AdminRoute
   '/contact': typeof ContactRoute
   '/me': typeof MeRoute
-  '/projets': typeof ProjetsRouteWithChildren
+  '/projets': typeof ProjetsRoute
   '/services': typeof ServicesRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/temoignages': typeof TemoignagesRoute
@@ -131,18 +131,18 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/a-propos': typeof AProposRoute
-  '/activites': typeof ActivitesRouteWithChildren
-  '/actualites': typeof ActualitesRouteWithChildren
+  '/activites': typeof ActivitesRoute
+  '/actualites': typeof ActualitesRoute
   '/admin': typeof AdminRoute
   '/contact': typeof ContactRoute
   '/me': typeof MeRoute
-  '/projets': typeof ProjetsRouteWithChildren
+  '/projets': typeof ProjetsRoute
   '/services': typeof ServicesRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/temoignages': typeof TemoignagesRoute
-  '/activites/$slug': typeof ActivitesSlugRoute
-  '/actualites/$slug': typeof ActualitesSlugRoute
-  '/projets/$slug': typeof ProjetsSlugRoute
+  '/activites_/$slug': typeof ActivitesSlugRoute
+  '/actualites_/$slug': typeof ActualitesSlugRoute
+  '/projets_/$slug': typeof ProjetsSlugRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -190,23 +190,26 @@ export interface FileRouteTypes {
     | '/services'
     | '/sitemap.xml'
     | '/temoignages'
-    | '/activites/$slug'
-    | '/actualites/$slug'
-    | '/projets/$slug'
+    | '/activites_/$slug'
+    | '/actualites_/$slug'
+    | '/projets_/$slug'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AProposRoute: typeof AProposRoute
-  ActivitesRoute: typeof ActivitesRouteWithChildren
-  ActualitesRoute: typeof ActualitesRouteWithChildren
+  ActivitesRoute: typeof ActivitesRoute
+  ActualitesRoute: typeof ActualitesRoute
   AdminRoute: typeof AdminRoute
   ContactRoute: typeof ContactRoute
   MeRoute: typeof MeRoute
-  ProjetsRoute: typeof ProjetsRouteWithChildren
+  ProjetsRoute: typeof ProjetsRoute
   ServicesRoute: typeof ServicesRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   TemoignagesRoute: typeof TemoignagesRoute
+  ActivitesSlugRoute: typeof ActivitesSlugRoute
+  ActualitesSlugRoute: typeof ActualitesSlugRoute
+  ProjetsSlugRoute: typeof ProjetsSlugRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -288,77 +291,45 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TemoignagesRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/activites/$slug': {
-      id: '/activites/$slug'
-      path: '/$slug'
+    '/activites_/$slug': {
+      id: '/activites_/$slug'
+      path: '/activites/$slug'
       fullPath: '/activites/$slug'
       preLoaderRoute: typeof ActivitesSlugRouteImport
-      parentRoute: typeof ActivitesRoute
+      parentRoute: typeof rootRouteImport
     }
-    '/actualites/$slug': {
-      id: '/actualites/$slug'
-      path: '/$slug'
+    '/actualites_/$slug': {
+      id: '/actualites_/$slug'
+      path: '/actualites/$slug'
       fullPath: '/actualites/$slug'
       preLoaderRoute: typeof ActualitesSlugRouteImport
-      parentRoute: typeof ActualitesRoute
+      parentRoute: typeof rootRouteImport
     }
-    '/projets/$slug': {
-      id: '/projets/$slug'
-      path: '/$slug'
+    '/projets_/$slug': {
+      id: '/projets_/$slug'
+      path: '/projets/$slug'
       fullPath: '/projets/$slug'
       preLoaderRoute: typeof ProjetsSlugRouteImport
-      parentRoute: typeof ProjetsRoute
+      parentRoute: typeof rootRouteImport
     }
   }
 }
 
-interface ActivitesRouteChildren {
-  ActivitesSlugRoute: typeof ActivitesSlugRoute
-}
-
-const ActivitesRouteChildren: ActivitesRouteChildren = {
-  ActivitesSlugRoute: ActivitesSlugRoute,
-}
-
-const ActivitesRouteWithChildren = ActivitesRoute._addFileChildren(
-  ActivitesRouteChildren,
-)
-
-interface ActualitesRouteChildren {
-  ActualitesSlugRoute: typeof ActualitesSlugRoute
-}
-
-const ActualitesRouteChildren: ActualitesRouteChildren = {
-  ActualitesSlugRoute: ActualitesSlugRoute,
-}
-
-const ActualitesRouteWithChildren = ActualitesRoute._addFileChildren(
-  ActualitesRouteChildren,
-)
-
-interface ProjetsRouteChildren {
-  ProjetsSlugRoute: typeof ProjetsSlugRoute
-}
-
-const ProjetsRouteChildren: ProjetsRouteChildren = {
-  ProjetsSlugRoute: ProjetsSlugRoute,
-}
-
-const ProjetsRouteWithChildren =
-  ProjetsRoute._addFileChildren(ProjetsRouteChildren)
-
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AProposRoute: AProposRoute,
-  ActivitesRoute: ActivitesRouteWithChildren,
-  ActualitesRoute: ActualitesRouteWithChildren,
+  ActivitesRoute: ActivitesRoute,
+  ActualitesRoute: ActualitesRoute,
   AdminRoute: AdminRoute,
   ContactRoute: ContactRoute,
   MeRoute: MeRoute,
-  ProjetsRoute: ProjetsRouteWithChildren,
+  ProjetsRoute: ProjetsRoute,
   ServicesRoute: ServicesRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   TemoignagesRoute: TemoignagesRoute,
+  ActivitesSlugRoute: ActivitesSlugRoute,
+  ActualitesSlugRoute: ActualitesSlugRoute,
+  ProjetsSlugRoute: ProjetsSlugRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
