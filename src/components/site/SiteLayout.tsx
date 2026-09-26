@@ -43,12 +43,12 @@ export function SiteHeader() {
           />
         </Link>
 
-        <nav className="hidden items-center gap-6 xl:flex">
+        <nav className="hidden items-center gap-5 xl:flex">
           {NAV.map((item) => (
             <Link
               key={item.to}
               to={item.to}
-              className="text-[0.82rem] font-semibold uppercase tracking-[0.12em] text-foreground/70 transition-colors hover:text-gold-deep"
+              className="whitespace-nowrap text-[0.74rem] font-semibold uppercase tracking-[0.1em] text-foreground/70 transition-colors hover:text-gold-deep"
               activeProps={{ className: "text-gold-deep" }}
               activeOptions={{ exact: item.to === "/" }}
             >
