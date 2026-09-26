@@ -118,7 +118,6 @@ function Page() {
             <ul className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {activities.map((activity) => (
                 <li key={activity.id} className="overflow-hidden rounded-lg border border-border bg-card">
-                  {activity.image_url ? <img src={activity.image_url} alt={activity.title} loading="lazy" className="aspect-[16/9] w-full object-cover" /> : null}
                   <div className="p-5">
                     <h3 className="text-base">{activity.title}</h3>
                     <p className="mt-2 text-sm text-muted-foreground">{activity.short_description}</p>

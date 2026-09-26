@@ -148,7 +148,7 @@ function Hero() {
 
   return (
     <section className="relative w-full overflow-hidden bg-ink">
-      {list.map((slide, i) => (
+      {list.slice(0,0).map((slide, i) => (
         <div key={slide.id} className="absolute inset-0 transition-opacity duration-1000" style={{ opacity: i === index ? 1 : 0 }} aria-hidden={i !== index}>
           <MediaPreview
             url={slide.image_url}
@@ -160,7 +160,7 @@ function Hero() {
           <div className="absolute inset-0 bg-veil" />
         </div>
       ))}
-      <div className="absolute inset-0 bg-ink/45" />
+      <div className="absolute inset-0 bg-ink-gradient" />
 
       <div className="relative z-10 mx-auto grid max-w-7xl items-center gap-10 px-5 pb-16 pt-28 lg:grid-cols-2 lg:gap-14 lg:px-8 lg:pb-24 lg:pt-40">
         <div className="order-1">
@@ -315,7 +315,6 @@ function Activities() {
             <Link key={activity.id} to="/activites/$slug" params={{ slug: activity.slug }} className="group rounded-lg border border-border bg-card p-7 transition hover:-translate-y-1 hover:shadow-elevated">
               <span className="inline-flex h-12 w-12 items-center justify-center rounded-sm bg-accent text-gold-deep"><Icon className="h-6 w-6" /></span>
               <h3 className="mt-5 text-xl">{activity.title}</h3>
-              {activity.image_url ? <MediaPreview url={activity.image_url} alt={activity.title} className="mt-5 aspect-[16/9] w-full rounded-md object-cover" /> : null}
               <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{activity.short_description}</p>
             </Link>
           );

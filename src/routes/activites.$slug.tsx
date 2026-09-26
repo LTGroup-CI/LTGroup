@@ -40,9 +40,6 @@ function Page() {
   return <SiteLayout>
     <PageHero eyebrow="Pôle d'activité" title={activity.title} description={activity.short_description} />
     <article className="mx-auto max-w-6xl px-5 py-14 lg:px-8 lg:py-20">
-      {activity.image_url ? (
-        <MediaPreview url={activity.image_url} alt={activity.title} className="max-h-[560px] w-full rounded-2xl object-cover shadow-elevated" />
-      ) : null}
       <div className="mt-10 grid gap-10 lg:grid-cols-[1fr_300px]">
         <div>
           <p className="eyebrow">Notre intervention</p>

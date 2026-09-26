@@ -3,7 +3,6 @@ import { useQuery } from "@tanstack/react-query";
 import { Building2, Compass, Hammer, Zap } from "lucide-react";
 
 import { PageHero, SiteLayout } from "@/components/site/SiteLayout";
-import { MediaPreview } from "@/components/site/MediaPreview";
 import { Button } from "@/components/ui/button";
 import { activitiesQuery } from "@/lib/site-data";
 
@@ -57,7 +56,6 @@ function Page() {
                   <p className="mt-3 leading-relaxed text-muted-foreground">
                     {activity.description ?? activity.short_description}
                   </p>
-                  {activity.image_url ? <MediaPreview url={activity.image_url} alt={activity.title} className="mt-5 h-40 w-full rounded-md object-cover" /> : null}
                 </div>
               </Link>
             );
