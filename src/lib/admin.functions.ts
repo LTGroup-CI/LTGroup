@@ -49,7 +49,7 @@ export const replyToMessage = createServerFn({ method: "POST" })
       };
     }
 
-    const from = process.env["RESEND_FROM_EMAIL"] ?? "LT GROUP <contact@ltgroup-ci.com>";
+    const from = process.env["RESEND_FROM_EMAIL"] ?? "LT GROUP <assistance@ltgroup-ci.com>";
     try {
       const res = await fetch("https://api.resend.com/emails", {
         method: "POST",

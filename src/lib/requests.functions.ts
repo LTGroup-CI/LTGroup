@@ -16,6 +16,7 @@ const schema = z.object({
 });
 
 const NOTIFY_TO = "contact@ltgroup-ci.com";
+const NOTIFY_LIST = ["lightterragroup@gmail.com", "raissaamon@ltgroup-ci.com", "contact@ltgroup-ci.com"];
 const DEFAULT_SUPABASE_URL = "https://ghkijyimotuivykvwlge.supabase.co";
 const DEFAULT_SUPABASE_PUBLISHABLE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imdoa2lqeWltb3R1aXZ5a3Z3bGdlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTAyNzAyMDYsImV4cCI6MjEwNTg0NjIwNn0.jR9CJTPUNM0GHWnB4i2GXaT5DHoWT6oXAmQL5UJ0q9Q";
 
@@ -67,7 +68,7 @@ export const submitRequest = createServerFn({ method: "POST" })
 
     const apiKey = process.env["RESEND_API_KEY"];
     if (apiKey) {
-      const from = process.env["RESEND_FROM_EMAIL"] ?? "LT GROUP <contact@ltgroup-ci.com>";
+      const from = process.env["RESEND_FROM_EMAIL"] ?? "LT GROUP <assistance@ltgroup-ci.com>";
       const subject =
         data.request_type === "devis"
           ? `Nouvelle demande de devis — ${data.full_name}`
@@ -92,7 +93,7 @@ export const submitRequest = createServerFn({ method: "POST" })
           },
           body: JSON.stringify({
             from,
-            to: [NOTIFY_TO],
+            to: NOTIFY_LIST,
             reply_to: data.email,
             subject,
             text: lines.join("\n"),
@@ -112,7 +113,7 @@ export const submitRequest = createServerFn({ method: "POST" })
             to: [data.email],
             reply_to: NOTIFY_TO,
             subject: "Confirmation de votre demande — LT GROUP",
-            text: `Bonjour ${data.full_name},\\n\\nNous confirmons la bonne réception de votre demande. L’équipe LT GROUP reviendra vers vous si nécessaire.\\n\\nLT GROUP — Light Terra Group\\nBâtir la terre, éclairer l'avenir\\n${NOTIFY_TO}`,
+            text: `Bonjour ${data.full_name},\n\nNous confirmons la bonne réception de votre demande. L’équipe LT GROUP reviendra vers vous si nécessaire.\n\nLT GROUP — Light Terra Group\nBâtir la terre, éclairer l'avenir\n${NOTIFY_TO}`,
           }),
         });
       } catch (e) {
