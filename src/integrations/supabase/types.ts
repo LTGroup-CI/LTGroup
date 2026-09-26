@@ -245,6 +245,7 @@ export type Database = {
           opening_hours: string | null
           phone_primary: string | null
           phone_secondary: string | null
+          postal_box: string | null
           slogan: string
           updated_at: string
           website: string | null
@@ -269,6 +270,7 @@ export type Database = {
           opening_hours?: string | null
           phone_primary?: string | null
           phone_secondary?: string | null
+          postal_box?: string | null
           slogan?: string
           updated_at?: string
           website?: string | null
@@ -293,6 +295,7 @@ export type Database = {
           opening_hours?: string | null
           phone_primary?: string | null
           phone_secondary?: string | null
+          postal_box?: string | null
           slogan?: string
           updated_at?: string
           website?: string | null
