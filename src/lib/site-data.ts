@@ -22,6 +22,7 @@ export type CompanyInfo = {
   instagram_url: string | null;
   logo_url: string | null;
   logo_png_url: string | null;
+  postal_box?: string | null;
   logo_jpg_url: string | null;
 };
 

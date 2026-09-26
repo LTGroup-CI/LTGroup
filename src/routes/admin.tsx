@@ -134,6 +134,7 @@ const TABLES: TableDef[] = [
       { name: "whatsapp", label: "WhatsApp", kind: "text" },
       { name: "email", label: "E-mail", kind: "text" },
       { name: "address", label: "Adresse", kind: "text" },
+      { name: "postal_box", label: "Boîte postale", kind: "text" },
       { name: "city", label: "Ville", kind: "text" },
       { name: "country", label: "Pays", kind: "text" },
       { name: "opening_hours", label: "Horaires", kind: "text" },
