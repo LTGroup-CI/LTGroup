@@ -1,16 +1,13 @@
-import { defineConfig } from "vite";
-import { tanstackStart } from "@tanstack/react-start/plugin/vite";
-import { nitro } from "nitro/vite";
-import tailwindcss from "@tailwindcss/vite";
-import tsconfigPaths from "vite-tsconfig-paths";
+// @lovable.dev/vite-tanstack-config already includes tanstackStart, viteReact, tailwindcss,
+// tsConfigPaths and nitro (build-only). Do NOT add them manually or plugins get duplicated.
+// Lovable publishing requires the default output (dist/). On Vercel, the vercel preset is used.
+import { defineConfig } from "@lovable.dev/vite-tanstack-config";
 
 const isVercel = Boolean(process.env["VERCEL"]);
 
 export default defineConfig({
-  plugins: [
-    tanstackStart(),
-    nitro(isVercel ? { preset: "vercel" } : {}),
-    tailwindcss(),
-    tsconfigPaths({ projects: ["./tsconfig.json"] }),
-  ],
+  tanstackStart: {
+    server: { entry: "server" },
+  },
+  ...(isVercel ? { nitro: { preset: "vercel" } } : {}),
 });
