@@ -6,7 +6,7 @@ import { PageHero, SiteLayout } from "@/components/site/SiteLayout";
 import { companyQuery, formatDateFr, newsItemQuery, newsListQuery } from "@/lib/site-data";
 import { MediaPreview } from "@/components/site/MediaPreview";
 
-export const Route = createFileRoute("/actualites/$slug")({
+export const Route = createFileRoute("/actualites_/$slug")({
   loader: async ({ context, params }) => {
     try {
       const [item, company] = await Promise.all([
