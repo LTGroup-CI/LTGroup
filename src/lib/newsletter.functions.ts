@@ -34,7 +34,7 @@ function logoUrl() {
 
 function fromAddress() {
   const value = env("RESEND_FROM_EMAIL");
-  return value || "LT GROUP <contact@ltgroup-ci.com>";
+  return value || "LT GROUP <assistance@ltgroup-ci.com>";
 }
 
 async function sendResend(to: string, subject: string, html: string) {

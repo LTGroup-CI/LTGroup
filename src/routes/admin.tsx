@@ -137,6 +137,8 @@ const TABLES: TableDef[] = [
       { name: "postal_box", label: "Boîte postale", kind: "text" },
       { name: "city", label: "Ville", kind: "text" },
       { name: "country", label: "Pays", kind: "text" },
+      { name: "latitude", label: "Latitude GPS du siège (carte)", kind: "number" },
+      { name: "longitude", label: "Longitude GPS du siège (carte)", kind: "number" },
       { name: "opening_hours", label: "Horaires", kind: "text" },
       { name: "website", label: "Site web", kind: "text" },
       { name: "facebook_url", label: "Facebook", kind: "text" },

@@ -4,6 +4,7 @@ import { Eye, Gem, Target, ShieldCheck, Workflow, MapPinned } from "lucide-react
 
 import { PageHero, SiteLayout } from "@/components/site/SiteLayout";
 import { activitiesQuery, companyQuery } from "@/lib/site-data";
+import { OfficeMap } from "@/components/site/OfficeMap";
 
 const title = "À propos — LT GROUP";
 const description =
@@ -129,6 +130,60 @@ function Page() {
           </div>
         </section>
       ) : null}
+
+      <section className="mx-auto max-w-7xl px-5 py-20 lg:px-8">
+        <p className="eyebrow">Notre démarche</p>
+        <h2 className="mt-3 text-3xl">Comment nous accompagnons chaque projet</h2>
+        <hr className="gold-rule mt-6 w-24" />
+        <ol className="mt-10 grid gap-5 md:grid-cols-4">
+          {[
+            ["Écoute", "Compréhension de votre besoin, de votre budget et de vos délais."],
+            ["Étude", "Analyse du terrain, vérification documentaire et faisabilité."],
+            ["Réalisation", "Coordination des équipes, des travaux et des partenaires."],
+            ["Suivi", "Livraison, accompagnement administratif et service après projet."],
+          ].map(([t, x], i) => (
+            <li key={t} className="rounded-lg border border-border bg-card p-6">
+              <span className="font-display text-3xl text-gold-deep">0{i + 1}</span>
+              <h3 className="mt-3 text-lg">{t}</h3>
+              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{x}</p>
+            </li>
+          ))}
+        </ol>
+      </section>
+
+      <section className="bg-muted/50 py-20">
+        <div className="mx-auto grid max-w-7xl gap-10 px-5 lg:grid-cols-2 lg:px-8">
+          <div className="rounded-lg border border-border bg-card p-8">
+            <p className="eyebrow">Fiche entreprise</p>
+            <h2 className="mt-3 text-2xl">{company?.name ?? "LT GROUP"}</h2>
+            <dl className="mt-6 space-y-3 text-sm">
+              {[
+                ["Activité", "Aménagement foncier, BTP, immobilier, énergie"],
+                ["Siège social", [company?.address, company?.city, company?.country].filter(Boolean).join(", ")],
+                ["Boîte postale", company?.postal_box],
+                ["Téléphone", [company?.phone_primary, company?.phone_secondary].filter(Boolean).join(" / ")],
+                ["WhatsApp", company?.whatsapp],
+                ["E-mail", company?.email],
+                ["Horaires", company?.opening_hours],
+                ["Site web", company?.website],
+              ]
+                .filter(([, v]) => v)
+                .map(([k, v]) => (
+                  <div key={k} className="grid grid-cols-[130px_1fr] gap-3 border-b border-border pb-3">
+                    <dt className="font-semibold">{k}</dt>
+                    <dd className="text-muted-foreground">{v}</dd>
+                  </div>
+                ))}
+            </dl>
+            <Link to="/contact" className="mt-6 inline-flex font-semibold underline">Nous contacter →</Link>
+          </div>
+          <div>
+            <p className="eyebrow">Nous trouver</p>
+            <h2 className="mt-3 mb-6 text-2xl">Notre siège à Abidjan</h2>
+            <OfficeMap className="h-96" />
+          </div>
+        </div>
+      </section>
     </SiteLayout>
   );
 }

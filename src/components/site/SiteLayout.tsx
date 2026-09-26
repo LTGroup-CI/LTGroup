@@ -32,7 +32,7 @@ export function SiteHeader() {
 
   return (
     <header className="fixed inset-x-0 top-0 z-50 border-b border-border bg-secondary shadow-sm">
-      <div className="mx-auto grid max-w-7xl grid-cols-[minmax(0,1fr)_auto] items-center gap-4 px-5 py-3 lg:px-8">
+      <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-5 py-3 lg:px-8">
         <Link to="/" className="flex min-w-0 items-center gap-3" aria-label="LT GROUP — accueil">
           <img
             src={company?.logo_png_url || company?.logo_url || LOGO_URL}
@@ -43,12 +43,12 @@ export function SiteHeader() {
           />
         </Link>
 
-        <nav className="hidden items-center gap-6 xl:flex">
+        <nav className="hidden items-center gap-5 xl:flex">
           {NAV.map((item) => (
             <Link
               key={item.to}
               to={item.to}
-              className="text-[0.82rem] font-semibold uppercase tracking-[0.12em] text-foreground/70 transition-colors hover:text-gold-deep"
+              className="whitespace-nowrap text-[0.74rem] font-semibold uppercase tracking-[0.1em] text-foreground/70 transition-colors hover:text-gold-deep"
               activeProps={{ className: "text-gold-deep" }}
               activeOptions={{ exact: item.to === "/" }}
             >

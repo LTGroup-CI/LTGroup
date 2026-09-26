@@ -7,7 +7,7 @@ import { MediaPreview } from "@/components/site/MediaPreview";
 import { companyQuery, projectItemQuery, projectsQuery } from "@/lib/site-data";
 
 const STATUS_LABEL: Record<string, string> = { en_cours: "En cours", termine: "Terminé", a_venir: "À venir" };
-export const Route = createFileRoute("/projets/$slug")({
+export const Route = createFileRoute("/projets_/$slug")({
   loader: async ({ context, params }) => {
     try {
       const [project, company] = await Promise.all([

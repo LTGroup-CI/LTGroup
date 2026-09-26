@@ -6,7 +6,7 @@ import { PageHero, SiteLayout } from "@/components/site/SiteLayout";
 import { MediaPreview } from "@/components/site/MediaPreview";
 import { activityItemQuery, activitiesQuery, projectsQuery } from "@/lib/site-data";
 
-export const Route = createFileRoute("/activites/$slug")({
+export const Route = createFileRoute("/activites_/$slug")({
   loader: async ({ context, params }) => {
     try {
       return await context.queryClient.ensureQueryData(activityItemQuery(params.slug));
