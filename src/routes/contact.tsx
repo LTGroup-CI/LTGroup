@@ -8,6 +8,7 @@ import { PageHero, SiteLayout } from "@/components/site/SiteLayout";
 import { Button } from "@/components/ui/button";
 import { WHATSAPP_NUMBERS } from "@/lib/media";
 import { submitRequest } from "@/lib/requests.functions";
+import { OfficeMap } from "@/components/site/OfficeMap";
 
 const title = "Contact — LT GROUP";
 const description =
@@ -111,13 +112,8 @@ function Page() {
             </li>
           </ul>
 
-          <div className="mt-8 overflow-hidden rounded-lg border border-border">
-            <iframe
-              title="Localisation LT GROUP"
-              src="https://www.google.com/maps?q=Cocody%20Akou%C3%A9do%20Abidjan&output=embed"
-              className="h-64 w-full"
-              loading="lazy"
-            />
+          <div className="mt-8">
+            <OfficeMap />
           </div>
         </div>
 
