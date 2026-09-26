@@ -65,8 +65,8 @@
 :root {
   --radius: 0.25rem;
 
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.14 0 0);
+  --background: oklch(0.985 0.006 85);
+  --foreground: oklch(0.2 0.01 70);
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.14 0 0);
   --popover: oklch(1 0 0);
@@ -83,15 +83,15 @@
 
   --primary: oklch(0.762 0.117 85.87);
   --primary-foreground: oklch(0.12 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.14 0 0);
-  --muted: oklch(0.968 0 0);
-  --muted-foreground: oklch(0.53 0 0);
-  --accent: oklch(0.962 0.02 88);
+  --secondary: oklch(0.955 0.018 82);
+  --secondary-foreground: oklch(0.2 0.01 70);
+  --muted: oklch(0.955 0.012 82);
+  --muted-foreground: oklch(0.45 0.01 70);
+  --accent: oklch(0.94 0.04 86);
   --accent-foreground: oklch(0.2 0.02 80);
   --destructive: oklch(0.577 0.245 27.325);
   --destructive-foreground: oklch(0.99 0 0);
-  --border: oklch(0.912 0 0);
+  --border: oklch(0.9 0.015 82);
   --input: oklch(0.9 0 0);
   --ring: oklch(0.762 0.117 85.87);
 
@@ -125,6 +125,9 @@
     oklch(0.06 0 0 / 18%) 100%
   );
   --shadow-gold: 0 10px 40px -12px oklch(0.762 0.117 85.87 / 45%);
+  --gradient-hero: linear-gradient(90deg, oklch(0.12 0.01 70 / 82%) 0%, oklch(0.12 0.01 70 / 55%) 50%, oklch(0.12 0.01 70 / 20%) 100%), linear-gradient(0deg, oklch(0.12 0.01 70 / 60%) 0%, transparent 40%);
+  --gradient-sand: linear-gradient(180deg, oklch(0.955 0.018 82) 0%, oklch(0.985 0.006 85) 100%);
+  --shadow-soft: 0 8px 30px -18px oklch(0.3 0.03 70 / 35%);
   --shadow-elevated: 0 24px 60px -30px oklch(0.09 0 0 / 45%);
   --transition-smooth: 700ms cubic-bezier(0.22, 1, 0.36, 1);
 }
@@ -173,6 +176,8 @@
     background-color: var(--color-background);
     color: var(--color-foreground);
     font-family: var(--font-sans);
+    font-size: 1.0625rem;
+    line-height: 1.7;
     -webkit-font-smoothing: antialiased;
   }
 
@@ -182,7 +187,16 @@
   h4,
   .font-display {
     font-family: var(--font-display);
-    letter-spacing: 0.01em;
+    font-weight: 600;
+    letter-spacing: 0;
+    line-height: 1.15;
+  }
+
+  h3,
+  h4 {
+    font-family: var(--font-sans);
+    font-weight: 700;
+    letter-spacing: -0.01em;
   }
 }
 
@@ -195,6 +209,18 @@
 
 @utility bg-gold-gradient {
   background: var(--gradient-gold);
+}
+
+@utility bg-hero-veil {
+  background: var(--gradient-hero);
+}
+
+@utility bg-sand-gradient {
+  background: var(--gradient-sand);
+}
+
+@utility shadow-soft {
+  box-shadow: var(--shadow-soft);
 }
 
 @utility bg-ink-gradient {

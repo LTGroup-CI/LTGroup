@@ -31,7 +31,7 @@ export function SiteHeader() {
   useEffect(() => setOpen(false), [pathname]);
 
   return (
-    <header className="fixed inset-x-0 top-0 z-50 border-b border-border bg-secondary shadow-sm">
+    <header className="fixed inset-x-0 top-0 z-50 border-b border-border/70 bg-background/90 shadow-sm backdrop-blur-md">
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-5 py-3 lg:px-8">
         <Link to="/" className="flex min-w-0 items-center gap-3" aria-label="LT GROUP — accueil">
           <img
@@ -48,7 +48,7 @@ export function SiteHeader() {
             <Link
               key={item.to}
               to={item.to}
-              className="whitespace-nowrap text-[0.74rem] font-semibold uppercase tracking-[0.1em] text-foreground/70 transition-colors hover:text-gold-deep"
+              className="whitespace-nowrap text-[0.9rem] font-semibold text-foreground/75 transition-colors hover:text-gold-deep"
               activeProps={{ className: "text-gold-deep" }}
               activeOptions={{ exact: item.to === "/" }}
             >
@@ -74,13 +74,13 @@ export function SiteHeader() {
       </div>
 
       {open ? (
-        <div className="max-h-[70vh] overflow-y-auto border-t border-border bg-secondary xl:hidden">
+        <div className="max-h-[70vh] overflow-y-auto border-t border-border bg-background xl:hidden">
           <nav className="mx-auto flex max-w-7xl flex-col px-5 py-3">
             {NAV.map((item) => (
               <Link
                 key={item.to}
                 to={item.to}
-                className="border-b border-border py-3 text-sm uppercase tracking-[0.14em] text-foreground/80"
+                className="border-b border-border py-3 text-base font-medium text-foreground/85"
                 activeProps={{ className: "text-gold-deep" }}
                 activeOptions={{ exact: item.to === "/" }}
               >
@@ -258,13 +258,19 @@ export function PageHero({
   description?: string;
 }) {
   return (
-    <section className="bg-ink-gradient pb-16 pt-32 text-ink-foreground lg:pb-20 lg:pt-40">
-      <div className="mx-auto max-w-7xl px-5 lg:px-8">
-        <p className="eyebrow text-gold">{eyebrow}</p>
+    <section className="relative overflow-hidden border-b border-border bg-sand-gradient pb-14 pt-32 lg:pb-20 lg:pt-44">
+      <svg aria-hidden className="pointer-events-none absolute -right-20 top-10 h-[420px] w-[420px] text-gold/15" viewBox="0 0 100 100" fill="none" stroke="currentColor" strokeWidth="0.6">
+        <path d="M50 6 L94 88 H6 Z" />
+        <path d="M50 26 L78 78 H22 Z" />
+        <ellipse cx="50" cy="60" rx="12" ry="7" />
+        <circle cx="50" cy="60" r="3" />
+      </svg>
+      <div className="relative mx-auto max-w-7xl px-5 lg:px-8">
+        <p className="eyebrow">{eyebrow}</p>
         <h1 className="mt-3 max-w-3xl text-4xl leading-tight lg:text-6xl">{title}</h1>
         <hr className="gold-rule mt-6 w-24" />
         {description ? (
-          <p className="mt-6 max-w-2xl text-base leading-relaxed text-ink-foreground/70">{description}</p>
+          <p className="mt-6 max-w-2xl text-lg leading-relaxed text-muted-foreground">{description}</p>
         ) : null}
       </div>
     </section>
