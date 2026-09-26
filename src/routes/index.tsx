@@ -1,21 +1,21 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import {
-  ArrowRight,
-  Building2,
-  Cctv,
-  Compass,
-  HardHat,
-  KeyRound,
-  Truck,
-  Zap,
-} from "lucide-react";
+import { ArrowRight } from "lucide-react";
+import { activityIcon } from "@/lib/activity-icons";
+import { OfficeMap } from "@/components/site/OfficeMap";
+import heroTerrain from "@/assets/hero-terrain.jpg";
+import heroFoncier from "@/assets/hero-foncier.jpg";
+import heroBtp from "@/assets/hero-btp.jpg";
+import heroImmobilier from "@/assets/hero-immobilier.jpg";
+import heroInfra from "@/assets/hero-infra.jpg";
+import heroEnergie from "@/assets/hero-energie.jpg";
+import heroConseil from "@/assets/hero-conseil.jpg";
 
 import { PartnersStrip, SiteFooter, SiteHeader } from "@/components/site/SiteLayout";
 import { AiAssistant } from "@/components/site/AiAssistant";
 import { MediaGallery } from "@/components/site/MediaGallery";
-import { MediaPreview, isVideoMedia } from "@/components/site/MediaPreview";
+import { MediaPreview } from "@/components/site/MediaPreview";
 import { NewsletterSignup } from "@/components/site/NewsletterSignup";
 import { Button } from "@/components/ui/button";
 import { SITE_URL, getBrandDerivativeUrl } from "@/lib/media";
@@ -23,7 +23,6 @@ import {
   activitiesQuery,
   companyQuery,
   formatDateFr,
-  heroSlidesQuery,
   introVideosQuery,
   showcaseVideosQuery,
   newsListQuery,
@@ -134,86 +133,152 @@ function IntroVideoLoop() {
     </div>
   );
 }
+const HERO_SLIDES = [
+  { src: heroTerrain, label: "Vente de terrains" },
+  { src: heroFoncier, label: "Aménagement foncier & lotissement" },
+  { src: heroBtp, label: "BTP & VRD" },
+  { src: heroImmobilier, label: "Construction immobilière" },
+  { src: heroInfra, label: "Hydraulique & infrastructures" },
+  { src: heroEnergie, label: "Électrification" },
+  { src: heroConseil, label: "Topographie & études" },
+];
+
 function Hero() {
-  const { data: slides } = useQuery(heroSlidesQuery);
+  const { data: company } = useQuery(companyQuery);
   const [index, setIndex] = useState(0);
-  const list = slides ?? [];
 
   useEffect(() => {
-    if (list.length < 2) return;
-    const duration = list[index]?.duration_ms ?? 5000;
-    const timer = setTimeout(() => setIndex((i) => (i + 1) % list.length), duration);
-    return () => clearTimeout(timer);
-  }, [index, list]);
+    const timer = window.setInterval(() => setIndex((i) => (i + 1) % HERO_SLIDES.length), 6000);
+    return () => window.clearInterval(timer);
+  }, []);
 
   return (
-    <section className="relative w-full overflow-hidden bg-ink">
-      {list.slice(0,0).map((slide, i) => (
-        <div key={slide.id} className="absolute inset-0 transition-opacity duration-1000" style={{ opacity: i === index ? 1 : 0 }} aria-hidden={i !== index}>
-          <MediaPreview
-            url={slide.image_url}
-            alt={slide.title ?? "LT GROUP"}
-            className={i === index ? "h-full w-full object-cover animate-slow-zoom" : "h-full w-full object-cover"}
-            autoPlay={isVideoMedia(slide.image_url) && i === index}
-            loop
-          />
-          <div className="absolute inset-0 bg-veil" />
-        </div>
+    <section className="relative isolate flex min-h-[88vh] w-full items-end overflow-hidden bg-ink">
+      {HERO_SLIDES.map((slide, i) => (
+        <img
+          key={slide.src}
+          src={slide.src}
+          alt={slide.label}
+          width={1920}
+          height={1088}
+          loading={i === 0 ? "eager" : "lazy"}
+          className={
+            "absolute inset-0 h-full w-full object-cover transition-opacity duration-[1500ms] " +
+            (i === index ? "opacity-100 animate-slow-zoom" : "opacity-0")
+          }
+          aria-hidden={i !== index}
+        />
       ))}
-      <div className="absolute inset-0 bg-ink-gradient" />
+      <div className="absolute inset-0 bg-hero-veil" />
 
-      <div className="relative z-10 mx-auto grid max-w-7xl items-center gap-10 px-5 pb-16 pt-28 lg:grid-cols-2 lg:gap-14 lg:px-8 lg:pb-24 lg:pt-40">
-        <div className="order-1">
-          <p className="eyebrow text-gold">En images</p>
-          <h2 className="mt-2 text-2xl text-ink-foreground lg:text-3xl">Notre savoir-faire en mouvement</h2>
-          <div className="mt-5">
-            <IntroVideoLoop />
-          </div>
+      <div className="relative z-10 mx-auto w-full max-w-7xl px-5 pb-16 pt-36 lg:px-8 lg:pb-24">
+        <p className="inline-flex items-center gap-3 rounded-full border border-white/25 bg-white/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.2em] text-white backdrop-blur">
+          <span className="h-1.5 w-1.5 rounded-full bg-gold" />
+          {HERO_SLIDES[index]!.label}
+        </p>
+        <h1 className="mt-6 max-w-4xl text-4xl leading-[1.08] text-white sm:text-5xl lg:text-7xl">
+          Bâtir la terre, <span className="text-gold-gradient">éclairer l'avenir</span>
+        </h1>
+        <p className="mt-6 max-w-2xl text-lg leading-relaxed text-white/85">
+          {company?.description ??
+            "LT GROUP accompagne particuliers, entreprises et institutions en Côte d'Ivoire : vente de terrains, aménagement foncier, BTP, immobilier, hydraulique et électrification."}
+        </p>
+        <div className="mt-9 flex flex-wrap gap-3">
+          <Button asChild variant="gold" size="lg"><Link to="/services">Demander un devis</Link></Button>
+          <Button asChild size="lg" variant="outline" className="border-white/60 bg-white/10 text-white backdrop-blur hover:bg-white hover:text-foreground">
+            <Link to="/projets">Voir nos réalisations</Link>
+          </Button>
         </div>
-
-        <div className="order-2">
-          <p className="eyebrow text-gold">Bâtir la terre, éclairer l'avenir</p>
-          <h1 key={index} className="animate-rise-in mt-4 text-4xl leading-tight text-ink-foreground lg:text-5xl">
-            {list[index]?.title ?? "LT GROUP"}
-          </h1>
-          {list[index]?.subtitle ? <p className="mt-5 max-w-xl text-base leading-relaxed text-ink-foreground/80">{list[index]?.subtitle}</p> : null}
-          <div className="mt-8 flex flex-wrap gap-3">
-            <Button asChild variant="gold" size="lg"><Link to="/services">Demander un devis</Link></Button>
-            <Button asChild size="lg" variant="outline" className="border-gold/50 bg-transparent text-ink-foreground hover:bg-gold hover:text-ink">
-              <Link to="/projets">Voir nos réalisations</Link>
-            </Button>
-          </div>
-
-          {list.length > 1 ? (
-            <div className="mt-8 flex gap-2">
-              {list.map((slide, i) => (
-                <button
-                  key={slide.id}
-                  type="button"
-                  aria-label={`Afficher la diapositive ${i + 1}`}
-                  onClick={() => setIndex(i)}
-                  className={i === index ? "h-1 w-12 rounded-full bg-gold-gradient" : "h-1 w-6 rounded-full bg-ink-foreground/30 transition hover:bg-ink-foreground/60"}
-                />
-              ))}
-            </div>
-          ) : null}
+        <div className="mt-12 flex gap-2">
+          {HERO_SLIDES.map((slide, i) => (
+            <button
+              key={slide.src}
+              type="button"
+              aria-label={`Afficher : ${slide.label}`}
+              onClick={() => setIndex(i)}
+              className={i === index ? "h-1 w-12 rounded-full bg-gold" : "h-1 w-6 rounded-full bg-white/40 transition hover:bg-white/70"}
+            />
+          ))}
         </div>
       </div>
-      <div className="relative z-10 mx-auto mt-2 w-full max-w-7xl px-5 lg:px-8"><MediaGallery /></div>
     </section>
   );
 }
 
-export const ACTIVITY_ICONS: Record<string, typeof Building2> = {
-  compass: Compass,
-  hammer: HardHat,
-  "hard-hat": HardHat,
-  building: Building2,
-  zap: Zap,
-  cctv: Cctv,
-  truck: Truck,
-  "key-round": KeyRound,
-};
+function KeyFigures() {
+  const items = [
+    { value: "7", label: "pôles d'expertise" },
+    { value: "100 %", label: "documents fonciers vérifiés" },
+    { value: "Étude → livraison", label: "un seul interlocuteur" },
+    { value: "Abidjan", label: "et tout le territoire ivoirien" },
+  ];
+  return (
+    <section className="relative z-20 mx-auto -mt-12 max-w-7xl px-5 lg:px-8">
+      <div className="grid gap-px overflow-hidden rounded-2xl border border-border bg-border shadow-elevated sm:grid-cols-2 lg:grid-cols-4">
+        {items.map((it) => (
+          <div key={it.label} className="bg-card p-6 lg:p-8">
+            <p className="font-display text-2xl text-gold-deep lg:text-3xl">{it.value}</p>
+            <p className="mt-2 text-sm text-muted-foreground">{it.label}</p>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function IntroSection() {
+  return (
+    <section className="mx-auto grid max-w-7xl items-center gap-12 px-5 py-20 lg:grid-cols-2 lg:px-8 lg:py-28">
+      <div>
+        <p className="eyebrow">Qui sommes-nous</p>
+        <h2 className="mt-3 text-3xl lg:text-4xl">Un partenaire solide pour vos projets fonciers et immobiliers</h2>
+        <hr className="gold-rule mt-6 w-24" />
+        <p className="mt-6 text-lg leading-relaxed text-muted-foreground">
+          De la recherche du terrain à la remise des clés, LT GROUP réunit topographes, ingénieurs et
+          bâtisseurs pour sécuriser chaque étape de votre investissement.
+        </p>
+        <div className="mt-8 flex flex-wrap gap-3">
+          <Button asChild variant="gold"><Link to="/a-propos">Découvrir le groupe</Link></Button>
+          <Button asChild variant="outline"><Link to="/contact">Nous rencontrer</Link></Button>
+        </div>
+      </div>
+      <IntroVideoLoop />
+    </section>
+  );
+}
+
+function Visuals() {
+  return (
+    <section className="bg-secondary py-20 lg:py-24">
+      <div className="mx-auto max-w-7xl px-5 lg:px-8">
+        <p className="eyebrow">Opportunités du moment</p>
+        <h2 className="mt-3 text-3xl lg:text-4xl">Nos terrains disponibles</h2>
+        <hr className="gold-rule mt-6 w-24" />
+        <div className="mt-10"><MediaGallery /></div>
+      </div>
+    </section>
+  );
+}
+
+function HomeMap() {
+  return (
+    <section className="mx-auto grid max-w-7xl gap-10 px-5 py-20 lg:grid-cols-[1fr_1.4fr] lg:px-8 lg:py-24">
+      <div>
+        <p className="eyebrow">Nous trouver</p>
+        <h2 className="mt-3 text-3xl lg:text-4xl">Notre siège à Abidjan</h2>
+        <hr className="gold-rule mt-6 w-24" />
+        <p className="mt-6 leading-relaxed text-muted-foreground">
+          Cocody Akouédo extension sud-est, Lot 637, îlot 60 ; 01 BP 2259 Abidjan 01.
+        </p>
+        <p className="mt-4 leading-relaxed text-muted-foreground">
+          (+225) 07 49 22 47 22 / 07 07 74 14 84<br />contact@ltgroup-ci.com
+        </p>
+        <Button asChild variant="gold" className="mt-8"><Link to="/contact">Prendre rendez-vous</Link></Button>
+      </div>
+      <OfficeMap className="h-80 lg:h-96" />
+    </section>
+  );
+}
 
 function VideoShowcase() {
   const { data: videos } = useQuery(showcaseVideosQuery);
@@ -310,12 +375,13 @@ function Activities() {
       <hr className="gold-rule mt-6 w-24" />
       <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {activities.map((activity) => {
-          const Icon = ACTIVITY_ICONS[activity.icon ?? ""] ?? Building2;
+          const Icon = activityIcon(activity.icon);
           return (
-            <Link key={activity.id} to="/activites/$slug" params={{ slug: activity.slug }} className="group rounded-lg border border-border bg-card p-7 transition hover:-translate-y-1 hover:shadow-elevated">
-              <span className="inline-flex h-12 w-12 items-center justify-center rounded-sm bg-accent text-gold-deep"><Icon className="h-6 w-6" /></span>
+            <Link key={activity.id} to="/activites/$slug" params={{ slug: activity.slug }} className="group relative overflow-hidden rounded-2xl border border-border bg-card p-8 shadow-soft transition duration-300 hover:-translate-y-1 hover:border-gold/60 hover:shadow-elevated">
+              <span className="inline-flex h-14 w-14 items-center justify-center rounded-xl bg-accent text-gold-deep transition group-hover:bg-gold group-hover:text-ink"><Icon className="h-7 w-7" /></span>
               <h3 className="mt-5 text-xl">{activity.title}</h3>
-              <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{activity.short_description}</p>
+              <p className="mt-3 leading-relaxed text-muted-foreground">{activity.short_description}</p>
+              <span className="mt-6 inline-flex items-center text-sm font-semibold text-gold-deep">En savoir plus <ArrowRight className="ml-1 h-4 w-4 transition group-hover:translate-x-1" /></span>
             </Link>
           );
         })}
@@ -410,10 +476,14 @@ function Index() {
       <SiteHeader />
       <main className="flex-1">
         <Hero />
+        <KeyFigures />
+        <IntroSection />
         <Activities />
+        <Visuals />
         <VideoShowcase />
         <FeaturedProjects />
         <LatestNews />
+        <HomeMap />
         <NewsletterSignup />
         <CallToAction />
       </main>
