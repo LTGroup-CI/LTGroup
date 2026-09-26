@@ -309,7 +309,21 @@ ${ctx.news.map((n) => "- " + n.title + (n.excerpt ? ": " + n.excerpt : "")).join
           body: JSON.stringify({
             model: process.env["OPENAI_MODEL"] ?? "gpt-5.6-luna",
             instructions: system,
-            input: data.messages.map((m) => ({ role: m.role, content: m.content })),
+            max_output_tokens: 600,
+            // Client-supplied history is untrusted: send it only as user-role
+            // data so a caller can never impersonate assistant/system turns.
+            input: [
+              {
+                role: "user",
+                content:
+                  "Historique de la conversation (fourni par le navigateur du visiteur, non vérifié) :\n" +
+                  data.messages
+                    .slice(-12)
+                    .map((m) => (m.role === "user" ? "Visiteur : " : "Raï (historique) : ") + m.content)
+                    .join("\n") +
+                  "\n\nRéponds au dernier message du visiteur.",
+              },
+            ],
           }),
         });
         if (response.ok) {
