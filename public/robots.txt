@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://ltgroup-ci.com/sitemap.xml

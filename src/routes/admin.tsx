@@ -1,0 +1,859 @@
+/* Production build verified: keep admin route UTF-8 safe. */
+import { useEffect, useMemo, useState } from "react";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useServerFn } from "@tanstack/react-start";
+import { toast } from "sonner";
+import { Menu, X } from "lucide-react";
+
+import { supabase } from "@/integrations/supabase/client";
+import { Button } from "@/components/ui/button";
+import { LOGO_URL, getBrandDerivativeUrl } from "@/lib/media";
+import { activitiesQuery, companyQuery, formatDateFr } from "@/lib/site-data";
+import { replyToMessage } from "@/lib/admin.functions";
+import { notifyNewsSubscribers } from "@/lib/newsletter.functions";
+
+export const Route = createFileRoute("/admin")({
+  ssr: false,
+  head: () => ({
+    meta: [
+      { title: "Tableau de bord — LT GROUP" },
+      { name: "description", content: "Administration du site LT GROUP." },
+      { name: "robots", content: "noindex, nofollow" },
+      { property: "og:title", content: "Tableau de bord — LT GROUP" },
+      { property: "og:description", content: "Administration du site LT GROUP." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
+    ],
+    links: [
+      { rel: "icon", href: "/favicon.png", type: "image/png" },
+      { rel: "shortcut icon", href: "/favicon.png", type: "image/png" },
+      { rel: "apple-touch-icon", href: "/favicon.png" },
+    ],
+  }),
+  component: AdminPage,
+});
+
+type Row = Record<string, unknown>;
+
+type FieldKind = "text" | "textarea" | "number" | "boolean" | "select" | "file";
+type FieldDef = {
+  name: string;
+  label: string;
+  kind: FieldKind;
+  options?: string[];
+  required?: boolean;
+  accept?: string;
+};
+
+type TableDef = {
+  key: string;
+  label: string;
+  table: "hero_slides" | "activities" | "news" | "projects" | "testimonials" | "partners" | "media_items" | "intro_videos" | "company_info" | "ai_knowledge" | "ai_visitors" | "ai_conversations" | "ai_conversation_messages" | "newsletter_subscribers" | "newsletter_deliveries";
+  order: { column: string; ascending: boolean };
+  columns: string[];
+  fields: FieldDef[];
+  create: boolean;
+};
+
+const AI_ADMIN_DEFS: TableDef[] = [
+  {
+    key: "ai_visitors", label: "Assistant — visiteurs", table: "ai_visitors",
+    order: { column: "last_seen_at", ascending: false },
+    columns: ["full_name", "email", "phone", "company", "city", "project_type", "request_type", "budget_range", "desired_date", "consent_contact", "status", "first_seen_at", "last_seen_at"], create: false,
+    fields: [],
+  },
+  {
+    key: "ai_conversations", label: "Assistant — conversations", table: "ai_conversations",
+    order: { column: "last_message_at", ascending: false },
+    columns: ["visitor_id", "session_key", "intent", "status", "started_at", "last_message_at", "summary"], create: false,
+    fields: [],
+  },
+  {
+    key: "ai_conversation_messages", label: "Assistant — messages", table: "ai_conversation_messages",
+    order: { column: "created_at", ascending: false },
+    columns: ["conversation_id", "role", "content", "created_at"], create: false,
+    fields: [],
+  },
+  {
+    key: "newsletter_subscribers", label: "Newsletter — abonnés", table: "newsletter_subscribers",
+    order: { column: "created_at", ascending: false },
+    columns: ["full_name", "email", "phone", "status", "welcome_sent_at", "created_at"], create: false,
+    fields: [],
+  },
+  {
+    key: "newsletter_deliveries", label: "Newsletter — envois", table: "newsletter_deliveries",
+    order: { column: "created_at", ascending: false },
+    columns: ["subscriber_id", "news_id", "status", "sent_at", "error_message"], create: false,
+    fields: [],
+  },
+];
+
+const TABLES: TableDef[] = [
+  {
+    key: "hero_slides", label: "Accueil — visuels", table: "hero_slides",
+    order: { column: "position", ascending: true },
+    columns: ["title", "position", "is_active"], create: true,
+    fields: [
+      { name: "title", label: "Titre", kind: "text" },
+      { name: "subtitle", label: "Sous-titre", kind: "textarea" },
+      { name: "image_url", label: "Média (photo ou vidéo)", kind: "file", required: true, accept: "image/*,video/*" },
+      { name: "cta_label", label: "Bouton", kind: "text" },
+      { name: "cta_url", label: "Lien du bouton", kind: "text" },
+      { name: "duration_ms", label: "Durée (ms)", kind: "number" },
+      { name: "position", label: "Ordre", kind: "number" },
+      { name: "is_active", label: "Actif", kind: "boolean" },
+    ],
+  },
+  {
+    key: "activities", label: "Pôles d'activité", table: "activities",
+    order: { column: "position", ascending: true },
+    columns: ["title", "slug", "position", "is_active"], create: true,
+    fields: [
+      { name: "title", label: "Titre", kind: "text", required: true },
+      { name: "slug", label: "Identifiant", kind: "text", required: true },
+      { name: "short_description", label: "Résumé", kind: "textarea", required: true },
+      { name: "description", label: "Description", kind: "textarea" },
+      { name: "icon", label: "Icône", kind: "text" },
+      { name: "image_url", label: "Média (photo ou vidéo)", kind: "file", accept: "image/*,video/*" },
+      { name: "position", label: "Ordre", kind: "number" },
+      { name: "is_active", label: "Actif", kind: "boolean" },
+    ],
+  },
+
+  {
+    key: "company_info", label: "Paramètres — identité & logo", table: "company_info",
+    order: { column: "updated_at", ascending: false },
+    columns: ["name", "logo_png_url", "logo_jpg_url", "email", "phone_primary", "city"], create: false,
+    fields: [
+      { name: "name", label: "Nom", kind: "text", required: true },
+      { name: "slogan", label: "Slogan", kind: "text", required: true },
+      { name: "description", label: "Description", kind: "textarea" },
+      { name: "phone_primary", label: "Téléphone principal", kind: "text" },
+      { name: "phone_secondary", label: "Téléphone secondaire", kind: "text" },
+      { name: "whatsapp", label: "WhatsApp", kind: "text" },
+      { name: "email", label: "E-mail", kind: "text" },
+      { name: "address", label: "Adresse", kind: "text" },
+      { name: "city", label: "Ville", kind: "text" },
+      { name: "country", label: "Pays", kind: "text" },
+      { name: "opening_hours", label: "Horaires", kind: "text" },
+      { name: "website", label: "Site web", kind: "text" },
+      { name: "facebook_url", label: "Facebook", kind: "text" },
+      { name: "linkedin_url", label: "LinkedIn", kind: "text" },
+      { name: "instagram_url", label: "Instagram", kind: "text" },
+      { name: "logo_png_url", label: "Logo maître PNG — source de toute l’identité", kind: "file", accept: "image/png" },
+    ],
+  },
+  {
+    key: "ai_knowledge", label: "Raï — base de connaissances", table: "ai_knowledge",
+    order: { column: "position", ascending: true },
+    columns: ["question", "answer", "is_active"], create: true,
+    fields: [
+      { name: "question", label: "Question", kind: "text", required: true },
+      { name: "answer", label: "Réponse", kind: "textarea", required: true },
+      { name: "position", label: "Ordre", kind: "number" },
+      { name: "is_active", label: "Actif", kind: "boolean" },
+    ],
+  },
+  {
+    key: "intro_videos", label: "Vidéos accueil", table: "intro_videos",
+    order: { column: "position", ascending: true },
+    columns: ["label", "placement", "title", "position", "is_active"], create: true,
+    fields: [
+      { name: "label", label: "Nom interne", kind: "text", required: true },
+      { name: "title", label: "Titre affiché", kind: "text" },
+      { name: "description", label: "Description", kind: "textarea" },
+      { name: "placement", label: "Emplacement", kind: "select", options: ["hero_intro", "home_showcase"] },
+      { name: "video_url", label: "Média (photo ou vidéo)", kind: "file", required: true, accept: "image/*,video/*" },
+      { name: "cta_label", label: "Bouton", kind: "text" },
+      { name: "cta_url", label: "Lien", kind: "text" },
+      { name: "position", label: "Ordre dans la section", kind: "number" },
+      { name: "is_active", label: "Active", kind: "boolean" },
+    ],
+  },
+
+  {
+    key: "news", label: "Actualités", table: "news",
+    order: { column: "created_at", ascending: false },
+    columns: ["title", "cover_image_url", "author", "published_at", "is_published"], create: true,
+    fields: [
+      { name: "title", label: "Titre", kind: "text", required: true },
+      { name: "slug", label: "Identifiant", kind: "text", required: true },
+      { name: "excerpt", label: "Résumé", kind: "textarea" },
+      { name: "content", label: "Contenu", kind: "textarea" },
+      { name: "image_url", label: "Média principal (photo ou vidéo)", kind: "file", accept: "image/*,video/*" },
+      { name: "cover_image_url", label: "Photo de couverture", kind: "file", accept: "image/*" },
+      { name: "author", label: "Auteur", kind: "text" },
+      { name: "published_at", label: "Date de publication", kind: "text" },
+      { name: "is_published", label: "Publiée", kind: "boolean" },
+      { name: "video_url", label: "Média secondaire (photo ou vidéo)", kind: "file", accept: "image/*,video/*" },
+      { name: "video_poster_url", label: "Affiche de la vidéo", kind: "file", accept: "image/*" },
+    ],
+  },
+  {
+    key: "projects", label: "Projets", table: "projects",
+    order: { column: "position", ascending: true },
+    columns: ["title", "cover_image_url", "category", "status", "is_published"], create: true,
+    fields: [
+      { name: "title", label: "Titre", kind: "text", required: true },
+      { name: "slug", label: "Identifiant", kind: "text", required: true },
+      { name: "summary", label: "Résumé", kind: "textarea" },
+      { name: "content", label: "Description", kind: "textarea" },
+      { name: "image_url", label: "Média principal (photo ou vidéo)", kind: "file", accept: "image/*,video/*" },
+      { name: "cover_image_url", label: "Photo de couverture", kind: "file", accept: "image/*" },
+      { name: "category", label: "Pôle d'activité", kind: "select" },
+      { name: "location", label: "Localisation", kind: "text" },
+      { name: "status", label: "État", kind: "select", options: ["en_cours", "termine", "a_venir"] },
+      { name: "position", label: "Ordre", kind: "number" },
+      { name: "is_featured", label: "Mise en avant", kind: "boolean" },
+      { name: "is_published", label: "Publié", kind: "boolean" },
+    ],
+  },
+  {
+    key: "testimonials", label: "Témoignages", table: "testimonials",
+    order: { column: "created_at", ascending: false },
+    columns: ["author_name", "company", "status", "is_published"], create: false,
+    fields: [
+      { name: "status", label: "Modération", kind: "select", options: ["en_attente", "valide", "refuse"] },
+      { name: "is_published", label: "Publier", kind: "boolean" },
+    ],
+  },
+  {
+    key: "partners", label: "Partenaires", table: "partners",
+    order: { column: "position", ascending: true },
+    columns: ["name", "is_active"], create: true,
+    fields: [
+      { name: "name", label: "Nom", kind: "text", required: true },
+      { name: "logo_url", label: "Logo / média (photo ou vidéo)", kind: "file", accept: "image/*,video/*" },
+      { name: "website_url", label: "Site web", kind: "text" },
+      { name: "position", label: "Ordre", kind: "number" },
+      { name: "is_active", label: "Actif", kind: "boolean" },
+    ],
+  },
+  {
+    key: "media", label: "Médiathèque — photos & vidéos", table: "media_items",
+    order: { column: "position", ascending: true },
+    columns: ["title", "kind", "is_active"], create: true,
+    fields: [
+      { name: "kind", label: "Type", kind: "select", options: ["photo", "video"], required: true },
+      { name: "title", label: "Titre", kind: "text" },
+      { name: "description", label: "Description", kind: "textarea" },
+      { name: "url", label: "Fichier (photo ou vidéo)", kind: "file", required: true, accept: "image/*,video/*" },
+      { name: "poster_url", label: "Image de couverture (vidéo)", kind: "file", accept: "image/*" },
+      { name: "position", label: "Ordre", kind: "number" },
+      { name: "is_active", label: "Actif", kind: "boolean" },
+    ],
+  },
+];
+
+const field =
+  "mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm outline-none focus:ring-1 focus:ring-ring";
+
+function slugify(value: string) {
+  return value.normalize("NFD").replace(/\p{Diacritic}/gu, "").toLowerCase().trim().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
+}
+
+function todayIsoDate() { return new Date().toISOString().slice(0, 10); }
+
+function safeFileName(name: string) {
+  const ext = name.includes(".") ? "." + name.split(".").pop()!.toLowerCase().replace(/[^a-z0-9]/g, "") : "";
+  const base = name.replace(/\.[^/.]+$/, "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-zA-Z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 80);
+  return (base || "fichier") + "-" + crypto.randomUUID() + ext;
+}
+
+async function canvasToFile(bitmap: ImageBitmap, width: number, height: number, type: "image/png" | "image/jpeg", background: string | null, fit = 0.82) {
+  const canvas = document.createElement("canvas");
+  canvas.width = width;
+  canvas.height = height;
+  const ctx = canvas.getContext("2d");
+  if (!ctx) throw new Error("Impossible de préparer une déclinaison du logo.");
+  if (background) {
+    ctx.fillStyle = background;
+    ctx.fillRect(0, 0, width, height);
+  }
+  const scale = Math.min((width * fit) / bitmap.width, (height * fit) / bitmap.height);
+  const drawWidth = Math.max(1, Math.round(bitmap.width * scale));
+  const drawHeight = Math.max(1, Math.round(bitmap.height * scale));
+  const x = Math.round((width - drawWidth) / 2);
+  const y = Math.round((height - drawHeight) / 2);
+  ctx.drawImage(bitmap, x, y, drawWidth, drawHeight);
+  const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, type, 0.92));
+  if (!blob) throw new Error("Impossible de générer une déclinaison du logo.");
+  return new File([blob], type === "image/png" ? "logo.png" : "logo.jpg", { type });
+}
+
+async function generateBrandAssets(file: File) {
+  if (file.size > 10 * 1024 * 1024) throw new Error("Logo trop volumineux (10 Mo maximum).");
+  if (file.type !== "image/png") throw new Error("Le logo maître doit être un PNG avec transparence.");
+
+  const bitmap = await createImageBitmap(file);
+  try {
+    const jpg = await canvasToFile(bitmap, Math.max(bitmap.width, 1200), Math.max(bitmap.height, 800), "image/jpeg", "#ffffff", 0.92);
+    const favicon = await canvasToFile(bitmap, 512, 512, "image/png", null, 0.82);
+    const og = await canvasToFile(bitmap, 1200, 630, "image/png", "#ffffff", 0.68);
+
+    const uploads = [
+      ["brand/logo.png", file, "image/png"],
+      ["brand/logo.jpg", jpg, "image/jpeg"],
+      ["brand/favicon.png", favicon, "image/png"],
+      ["brand/og.png", og, "image/png"],
+    ] as const;
+
+    const version = String(Date.now());
+    const urls: Record<string, string> = {};
+    for (const [path, body, contentType] of uploads) {
+      const { error } = await supabase.storage.from("site-media").upload(path, body, {
+        cacheControl: "3600",
+        upsert: true,
+        contentType,
+      });
+      if (error) throw new Error(error.message);
+      urls[path] = supabase.storage.from("site-media").getPublicUrl(path).data.publicUrl + "?v=" + version;
+    }
+    return urls;
+  } finally {
+    bitmap.close();
+  }
+}
+
+async function uploadSiteFile(file: File, folder: string) {
+  if (file.size > 50 * 1024 * 1024) throw new Error("Fichier trop volumineux (50 Mo maximum).");
+  const allowed = /^(image\/(jpeg|png|webp|gif|svg\+xml)|video\/(mp4|webm|quicktime))$/i;
+  if (!allowed.test(file.type)) throw new Error("Format non pris en charge. Utilisez une image ou une vidéo web.");
+  const path = folder + "/" + safeFileName(file.name);
+  const { error } = await supabase.storage.from("site-media").upload(path, file, { cacheControl: "31536000", upsert: false, contentType: file.type });
+  if (error) throw new Error(error.message);
+  return supabase.storage.from("site-media").getPublicUrl(path).data.publicUrl;
+}
+
+function newRowFor(def: TableDef, rows: Row[]) {
+  const row: Row = {};
+  const first = rows.length ? Math.min(...rows.map((r) => Number(r["position"] ?? 0))) - 1 : 0;
+  if (def.table === "news") Object.assign(row, { author: "LT Group", published_at: todayIsoDate(), is_published: false });
+  if (def.table === "projects") Object.assign(row, { position: first, status: "en_cours", is_published: false, is_featured: false });
+  if (def.table === "partners") Object.assign(row, { position: first, is_active: true });
+  if (def.table === "media_items") Object.assign(row, { kind: "photo", position: first, is_active: true });
+  if (def.table === "intro_videos") Object.assign(row, { position: first, placement: "home_showcase", is_active: true });
+  if (def.table === "hero_slides") Object.assign(row, { position: first, duration_ms: 6000, is_active: true });
+  if (def.table === "activities") Object.assign(row, { position: first, is_active: true });
+  if (def.table === "ai_knowledge") Object.assign(row, { position: first, is_active: true });
+  if (def.table === "company_info") Object.assign(row, { name: "LT GROUP", slogan: "Bâtir la terre, éclairer l’avenir" });
+  return row;
+}
+
+function AdminPage() {
+  const navigate = useNavigate();
+  const [ready, setReady] = useState(false);
+  const [email, setEmail] = useState<string | null>(null);
+  const [tab, setTab] = useState("dashboard");
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const { data: company } = useQuery(companyQuery);
+  const queryClient = useQueryClient();
+
+  useEffect(() => {
+    const logoUrl = company?.logo_png_url;
+    if (!company?.id || typeof logoUrl !== "string" || !logoUrl) return;
+    const canonicalLogoUrl = logoUrl;
+    let active = true;
+    void (async () => {
+      try {
+        const favicon = getBrandDerivativeUrl(canonicalLogoUrl, "favicon");
+        const og = getBrandDerivativeUrl(canonicalLogoUrl, "og");
+        const [faviconCheck, ogCheck] = await Promise.all([
+          fetch(favicon, { method: "HEAD", cache: "no-store" }),
+          fetch(og, { method: "HEAD", cache: "no-store" }),
+        ]);
+        if (faviconCheck.ok && ogCheck.ok) return;
+        const response = await fetch(canonicalLogoUrl, { cache: "no-store" });
+        if (!response.ok) throw new Error("Logo PNG inaccessible.");
+        const source = await response.blob();
+        const file = new File([source], "logo.png", { type: "image/png" });
+        const brand = await generateBrandAssets(file);
+        const logoPngUrl = brand["brand/logo.png"];
+        const logoJpgUrl = brand["brand/logo.jpg"];
+        if (!logoPngUrl || !logoJpgUrl) throw new Error("Déclinaisons du logo incomplètes.");
+        if (!active) return;
+        const { error } = await supabase.from("company_info").update({
+          logo_png_url: logoPngUrl,
+          logo_jpg_url: logoJpgUrl,
+          logo_url: logoPngUrl,
+        }).eq("id", company.id);
+        if (error) throw new Error(error.message);
+        await queryClient.invalidateQueries({ queryKey: ["company_info"] });
+        toast.success("Déclinaisons du logo synchronisées.");
+      } catch {
+        // Une erreur de génération ne bloque pas l'administration.
+      }
+    })();
+    return () => { active = false; };
+  }, [company?.id, company?.logo_png_url, queryClient]);
+
+  useEffect(() => {
+    let active = true;
+    void (async () => {
+      const { data } = await supabase.auth.getUser();
+      if (!active) return;
+      if (!data.user) {
+        void navigate({ to: "/me" });
+        return;
+      }
+      const { data: role } = await supabase.from("user_roles").select("role").eq("user_id", data.user.id).eq("role", "admin").maybeSingle();
+      if (!role) {
+        toast.error("Accès réservé aux administrateurs.");
+        await supabase.auth.signOut();
+        void navigate({ to: "/me" });
+        return;
+      }
+      setEmail(data.user.email ?? null);
+      setReady(true);
+    })();
+    return () => { active = false; };
+  }, [navigate]);
+
+  if (!ready) return <div className="flex min-h-screen items-center justify-center bg-background text-sm text-muted-foreground">Chargement…</div>;
+
+  const selectTab = (value: string) => {
+    setTab(value);
+    setMobileOpen(false);
+  };
+
+  return (
+    <div className="min-h-screen bg-slate-50/70">
+      <aside className={"fixed inset-y-0 left-0 z-50 w-[280px] border-r border-white/10 bg-[#0b1f18] text-ink-foreground transition-transform lg:translate-x-0 " + (mobileOpen ? "translate-x-0" : "-translate-x-full")}>
+        <div className="flex h-full flex-col shadow-2xl">
+          <div className="flex items-center justify-between border-b border-white/10 px-5 py-5">
+            <div className="flex min-h-16 items-center rounded-lg bg-white px-3 py-2 shadow-sm ring-1 ring-white/10">
+              <img src={company?.logo_jpg_url || LOGO_URL} alt="LT GROUP" className="h-12 w-auto max-w-[230px] object-contain" />
+            </div>
+            <button type="button" className="rounded-md p-2 hover:bg-white/10 lg:hidden" onClick={() => setMobileOpen(false)} aria-label="Fermer le menu">
+              <X className="h-5 w-5" />
+            </button>
+          </div>
+          <div className="px-5 py-4">
+            <p className="text-xs uppercase tracking-[0.16em] text-gold">Administration</p>
+            <p className="mt-1 truncate text-xs text-ink-foreground/60">{email}</p>
+          </div>
+          <nav className="flex-1 space-y-1 overflow-y-auto px-3 pb-5">
+            <SidebarItem active={tab === "dashboard"} onClick={() => selectTab("dashboard")}>Tableau de bord</SidebarItem>
+            <SidebarItem active={tab === "messages"} onClick={() => selectTab("messages")}>Demandes</SidebarItem>
+            <SidebarItem active={tab === "company_info"} onClick={() => selectTab("company_info")}>Paramètres — identité & logo</SidebarItem>
+            {[...TABLES, ...AI_ADMIN_DEFS].filter((t) => t.key !== "company_info").map((t) => <SidebarItem key={t.key} active={tab === t.key} onClick={() => selectTab(t.key)}>{t.label}</SidebarItem>)}
+          </nav>
+          <div className="border-t border-white/10 p-4">
+            <Button variant="outline" className="w-full border-white/20 bg-transparent text-ink-foreground hover:bg-white/10" onClick={async () => { await supabase.auth.signOut(); void navigate({ to: "/me" }); }}>
+              Déconnexion
+            </Button>
+          </div>
+        </div>
+      </aside>
+
+      {mobileOpen ? <button type="button" className="fixed inset-0 z-40 bg-black/50 lg:hidden" aria-label="Fermer le menu" onClick={() => setMobileOpen(false)} /> : null}
+
+      <div className="lg:pl-72">
+        <header className="sticky top-0 z-30 border-b border-slate-200/80 bg-white/90 backdrop-blur-xl">
+          <div className="flex items-center justify-between gap-4 px-5 py-3 lg:px-8">
+            <div className="flex items-center gap-3">
+              <button type="button" className="rounded-md border border-border p-2 lg:hidden" onClick={() => setMobileOpen(true)} aria-label="Ouvrir le menu">
+                <Menu className="h-5 w-5" />
+              </button>
+              <div>
+                <p className="text-xs uppercase tracking-[0.14em] text-muted-foreground">LT GROUP</p>
+                <h1 className="text-lg">{tab === "dashboard" ? "Tableau de bord" : tab === "messages" ? "Demandes" : [...TABLES, ...AI_ADMIN_DEFS].find((t) => t.key === tab)?.label ?? "Administration"}</h1>
+              </div>
+            </div>
+          </div>
+        </header>
+
+        <main className="mx-auto max-w-[1500px] px-4 py-6 sm:px-6 lg:px-10">
+          {tab === "dashboard" ? <DashboardOverview onSelect={selectTab} /> : tab === "messages" ? <MessagesPanel /> : <CrudPanel def={[...TABLES, ...AI_ADMIN_DEFS].find((t) => t.key === tab)!} />}
+        </main>
+      </div>
+    </div>
+  );
+}
+
+function SidebarItem({ active, onClick, children }: { active: boolean; onClick: () => void; children: React.ReactNode }) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={"group flex w-full items-center rounded-xl px-3 py-2.5 text-left text-sm transition-all " + (active ? "bg-gold text-ink font-semibold shadow-lg shadow-gold/10" : "text-ink-foreground/70 hover:bg-white/8 hover:text-white")}
+    >
+      {children}
+    </button>
+  );
+}
+
+function TabButton({
+  active,
+  onClick,
+  children,
+}: {
+  active: boolean;
+  onClick: () => void;
+  children: React.ReactNode;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={
+        active
+          ? "rounded-full bg-gold px-4 py-2 text-xs font-semibold uppercase tracking-[0.12em] text-ink"
+          : "rounded-full border border-border px-4 py-2 text-xs font-semibold uppercase tracking-[0.12em] text-muted-foreground hover:text-foreground"
+      }
+    >
+      {children}
+    </button>
+  );
+}
+
+type Message = {
+  id: string;
+  full_name: string;
+  email: string;
+  phone: string | null;
+  company: string | null;
+  request_type: string;
+  subject: string | null;
+  project_type: string | null;
+  budget_range: string | null;
+  desired_date: string | null;
+  message: string;
+  status: string;
+  admin_reply: string | null;
+  replied_at: string | null;
+  created_at: string;
+};
+
+function DashboardOverview({ onSelect }: { onSelect: (key: string) => void }) {
+  const queries = [
+    ["Demandes", "messages"],
+    ["Accueil — visuels", "hero_slides"],
+    ["Pôles d'activité", "activities"],
+    ["Vidéos accueil", "intro_videos"],
+    ["Actualités", "news"],
+    ["Projets", "projects"],
+    ["Photos & vidéos", "media_items"],
+    ["Témoignages", "testimonials"],
+    ["Partenaires", "partners"],
+    ["Informations du groupe", "company_info"],
+    ["Visiteurs de Raï", "ai_visitors"],
+    ["Conversations de Raï", "ai_conversations"],
+    ["Messages de Raï", "ai_conversation_messages"],
+  ] as const;
+  return (
+    <div className="space-y-8">
+      <div>
+        <p className="eyebrow">Vue d'ensemble</p>
+        <h2 className="mt-2 text-3xl font-semibold tracking-tight">Bienvenue dans votre espace d'administration</h2>
+        <p className="mt-2 max-w-2xl text-sm text-slate-500">Publiez, organisez et modérez le contenu du site depuis un seul espace. Les visuels de l’accueil, des pôles, projets, actualités, partenaires et de la médiathèque restent remplaçables depuis l’administration.</p>
+      </div>
+      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+        {queries.map(([label, key]) => <DashboardCard key={key} label={label} table={key} onClick={() => onSelect(key)} />)}
+      </div>
+      <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+        <p className="text-sm font-semibold">Flux de publication</p>
+        <p className="mt-1 text-sm text-slate-500">Les éléments publiés apparaissent automatiquement sur les sections publiques correspondantes.</p>
+        <div className="mt-5 grid gap-3 sm:grid-cols-3">
+          <div className="rounded-xl bg-slate-50 p-4"><p className="text-xs uppercase tracking-wider text-slate-400">1</p><p className="mt-1 text-sm font-medium">Téléverser</p></div>
+          <div className="rounded-xl bg-slate-50 p-4"><p className="text-xs uppercase tracking-wider text-slate-400">2</p><p className="mt-1 text-sm font-medium">Activer / publier</p></div>
+          <div className="rounded-xl bg-slate-50 p-4"><p className="text-xs uppercase tracking-wider text-slate-400">3</p><p className="mt-1 text-sm font-medium">Visible sur le site</p></div>
+        </div>
+      </div>
+    </div>
+  );
+}
+function DashboardCard({ label, table, onClick }: { label: string; table: TableDef["table"] | "messages"; onClick?: () => void }) {
+  const { data, isLoading, isError, error } = useQuery({
+    queryKey: ["admin", "count", table],
+    queryFn: async () => {
+      const { count, error } = await supabase.from(table).select("id", { count: "exact", head: true });
+      if (error) throw new Error(error.message);
+      return count ?? 0;
+    },
+  });
+  const value = isLoading ? "…" : isError ? "!" : String(data ?? 0);
+  const detail = isError ? (error instanceof Error ? error.message : "Erreur de connexion") : "élément(s) — ouvrir";
+  return (
+    <button type="button" onClick={onClick} className="w-full rounded-2xl border border-slate-200 bg-white p-5 text-left shadow-sm transition hover:-translate-y-0.5 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-gold">
+      <p className="text-sm text-slate-500">{label}</p>
+      <p className={"mt-2 text-3xl font-semibold tracking-tight " + (isError ? "text-red-600" : "")}>{value}</p>
+      <p className="mt-1 truncate text-xs text-slate-400">{detail}</p>
+    </button>
+  );
+}
+
+function MessagesPanel() {
+  const qc = useQueryClient();
+  const reply = useServerFn(replyToMessage);
+  const [openId, setOpenId] = useState<string | null>(null);
+  const [text, setText] = useState("");
+
+  const { data, isLoading } = useQuery({
+    queryKey: ["admin", "messages"],
+    queryFn: async (): Promise<Message[]> => {
+      const { data, error } = await supabase
+        .from("messages")
+        .select("*")
+        .order("created_at", { ascending: false });
+      if (error) throw new Error(error.message);
+      return (data ?? []) as Message[];
+    },
+  });
+
+  const send = useMutation({
+    mutationFn: async (vars: { messageId: string; reply: string }) => reply({ data: vars }),
+    onSuccess: (res) => {
+      toast.success(res.message);
+      setOpenId(null);
+      setText("");
+      void qc.invalidateQueries({ queryKey: ["admin", "messages"] });
+    },
+    onError: () => toast.error("La réponse n'a pas pu être envoyée."),
+  });
+
+  if (isLoading) return <p className="text-sm text-muted-foreground">Chargement…</p>;
+  const list = data ?? [];
+  if (list.length === 0)
+    return <p className="text-sm text-muted-foreground">Aucune demande pour le moment.</p>;
+
+  return (
+    <div className="space-y-4">
+      {list.map((m) => (
+        <article key={m.id} className="rounded-lg border border-border bg-card p-5">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <div>
+              <h3 className="text-lg">
+                {m.full_name}{" "}
+                <span className="text-xs uppercase tracking-[0.14em] text-gold-deep">
+                  {m.request_type}
+                </span>
+              </h3>
+              <p className="text-xs text-muted-foreground">{formatDateFr(m.created_at)}</p>
+            </div>
+            <span className="rounded-full border border-border px-3 py-1 text-xs">{m.status}</span>
+          </div>
+
+          <dl className="mt-4 grid gap-2 text-sm sm:grid-cols-2">
+            <Info label="E-mail" value={m.email} href={`mailto:${m.email}`} />
+            {m.phone ? (
+              <Info label="Téléphone" value={m.phone} href={`tel:${m.phone.replace(/\s/g, "")}`} />
+            ) : null}
+            {m.company ? <Info label="Structure" value={m.company} /> : null}
+            {m.project_type ? <Info label="Type de projet" value={m.project_type} /> : null}
+            {m.budget_range ? <Info label="Budget" value={m.budget_range} /> : null}
+            {m.desired_date ? <Info label="Date souhaitée" value={m.desired_date} /> : null}
+          </dl>
+
+          <p className="mt-4 whitespace-pre-line text-sm leading-relaxed text-muted-foreground">
+            {m.message}
+          </p>
+
+          {m.admin_reply ? (
+            <div className="mt-4 rounded-md border border-gold/40 bg-muted p-4 text-sm">
+              <p className="text-xs uppercase tracking-[0.14em] text-gold-deep">
+                Réponse envoyée {m.replied_at ? `le ${formatDateFr(m.replied_at)}` : ""}
+              </p>
+              <p className="mt-2 whitespace-pre-line">{m.admin_reply}</p>
+            </div>
+          ) : null}
+
+          {openId === m.id ? (
+            <div className="mt-4">
+              <textarea
+                rows={5}
+                value={text}
+                onChange={(e) => setText(e.target.value)}
+                placeholder="Votre réponse…"
+                className={field}
+              />
+              <div className="mt-3 flex gap-2">
+                <Button
+                  variant="gold"
+                  disabled={send.isPending || text.trim().length < 2}
+                  onClick={() => send.mutate({ messageId: m.id, reply: text.trim() })}
+                >
+                  {send.isPending ? "Envoi…" : "Envoyer la réponse"}
+                </Button>
+                <Button variant="outline" onClick={() => setOpenId(null)}>
+                  Annuler
+                </Button>
+              </div>
+            </div>
+          ) : (
+            <Button
+              className="mt-4"
+              variant="gold"
+              size="sm"
+              onClick={() => {
+                setOpenId(m.id);
+                setText(m.admin_reply ?? "");
+              }}
+            >
+              Répondre
+            </Button>
+          )}
+        </article>
+      ))}
+    </div>
+  );
+}
+
+function Info({ label, value, href }: { label: string; value: string; href?: string }) {
+  return (
+    <div>
+      <dt className="text-xs uppercase tracking-[0.14em] text-muted-foreground">{label}</dt>
+      <dd className="mt-0.5">
+        {href ? (
+          <a href={href} className="text-gold-deep hover:underline">
+            {value}
+          </a>
+        ) : (
+          value
+        )}
+      </dd>
+    </div>
+  );
+}
+
+function CrudPanel({ def }: { def: TableDef }) {
+  const qc = useQueryClient();
+  const [editing, setEditing] = useState<Row | null>(null);
+  const [uploading, setUploading] = useState<string | null>(null);
+  const queryKey = useMemo(() => ["admin", def.table], [def.table]);
+  const { data, isLoading, isError, error } = useQuery({
+    queryKey,
+    queryFn: async (): Promise<Row[]> => {
+      const { data, error } = await supabase.from(def.table).select("*").order(def.order.column, { ascending: def.order.ascending });
+      if (error) throw new Error(error.message);
+      return (data ?? []) as Row[];
+    },
+  });
+  const { data: activities } = useQuery(activitiesQuery);
+  const rows = data ?? [];
+  const categoryOptions = (activities ?? []).map((a) => a.title);
+
+  const save = useMutation({
+    mutationFn: async (row: Row) => {
+      const id = row["id"] as string | undefined;
+      const payload: Row = {};
+      for (const f of def.fields) payload[f.name] = row[f.name] ?? null;
+      for (const f of def.fields) if (f.required && (payload[f.name] === null || payload[f.name] === undefined || payload[f.name] === "")) throw new Error("Le champ « " + f.label + " » est obligatoire.");
+      if ((def.table === "news" || def.table === "projects" || def.table === "activities") && !payload["slug"]) payload["slug"] = slugify(String(payload["title"] ?? ""));
+      if (def.table === "activities" && payload["slug"]) payload["slug"] = slugify(String(payload["slug"]));
+      if (def.table === "news") { payload["author"] = "LT Group"; if (!payload["published_at"]) payload["published_at"] = todayIsoDate(); }
+      if (!id && (def.table === "projects" || def.table === "partners" || def.table === "media_items" || def.table === "intro_videos")) {
+        const { data: firstRow } = await supabase.from(def.table).select("position").order("position", { ascending: true }).limit(1).maybeSingle();
+        payload["position"] = firstRow?.position == null ? 0 : Number(firstRow["position"]) - 1;
+      }
+      const result = id
+        ? await supabase.from(def.table).update(payload as never).eq("id", id).select("*").single()
+        : await supabase.from(def.table).insert(payload as never).select("*").single();
+      if (result.error) throw new Error(result.error.message);
+      if (def.table === "news" && payload["is_published"] === true) {
+        const { data: session } = await supabase.auth.getSession();
+        const accessToken = session.session?.access_token;
+        const publishedNewsId = String((result.data as Row | null)?.["id"] ?? id ?? "");
+        if (accessToken && publishedNewsId) {
+          try {
+            await notifyNewsSubscribers({ data: { accessToken, newsId: publishedNewsId } });
+          } catch (error) {
+            console.error("Newsletter publication error", error);
+            toast.error("Actualité enregistrée, mais l’envoi newsletter a échoué.");
+          }
+        }
+      }
+    },
+    onSuccess: () => { toast.success("Enregistré."); setEditing(null); void qc.invalidateQueries({ queryKey }); void qc.invalidateQueries({ queryKey: companyQuery.queryKey }); },
+    onError: (e: Error) => toast.error(e.message),
+  });
+  const remove = useMutation({
+    mutationFn: async (id: string) => { const { error } = await supabase.from(def.table).delete().eq("id", id); if (error) throw new Error(error.message); },
+    onSuccess: () => { toast.success("Supprimé."); void qc.invalidateQueries({ queryKey }); },
+    onError: (e: Error) => toast.error(e.message),
+  });
+
+  if (isLoading) return <p className="text-sm text-muted-foreground">Chargement…</p>;
+  if (isError) return <div className="rounded-2xl border border-red-200 bg-red-50 p-5"><p className="font-medium text-red-800">Impossible de charger « {def.label} ».</p><p className="mt-2 text-sm text-red-700">{error instanceof Error ? error.message : "Erreur Supabase."}</p></div>;
+
+  const labelFor = (f: FieldDef, value: unknown) => {
+    if (f.kind === "boolean") return value ? "Oui" : "Non";
+    if (f.name === "placement") return value === "hero_intro" ? "Hero — introduction / identité" : value === "home_showcase" ? "Accueil — carousel projets" : String(value ?? "—");
+    return String(value ?? "—");
+  };
+
+  return (
+    <div className="min-w-0">
+      <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+        <div><p className="eyebrow">{def.table === "testimonials" ? "Modération" : "Gestion de contenu"}</p><h2 className="mt-1 text-xl font-semibold sm:text-2xl">{def.label}</h2><p className="mt-1 text-sm text-muted-foreground">{rows.length} élément{rows.length > 1 ? "s" : ""}</p></div>
+        {def.create ? <Button variant="gold" size="sm" onClick={() => setEditing(newRowFor(def, rows))}>+ Ajouter</Button> : null}
+      </div>
+
+      <div className="hidden overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm md:block">
+        <div className="overflow-x-auto">
+          <table className="w-full min-w-[680px] text-left text-sm">
+            <thead className="bg-slate-50"><tr>{def.columns.map((column) => <th key={column} className="whitespace-nowrap px-4 py-3 text-[11px] font-semibold uppercase tracking-[0.12em] text-muted-foreground">{column.replaceAll("_", " ")}</th>)}<th className="px-4 py-3" /></tr></thead>
+            <tbody>
+              {rows.map((row) => <tr key={String(row["id"])} className="border-t border-slate-100 hover:bg-slate-50/70">{def.columns.map((column) => <td key={column} className="max-w-[280px] truncate px-4 py-3">{typeof row[column] === "boolean" ? (row[column] ? "Oui" : "Non") : String(row[column] ?? "—")}</td>)}<td className="px-4 py-3"><div className="flex justify-end gap-2"><Button size="sm" variant="outline" onClick={() => setEditing(row)}>{def.table === "testimonials" ? "Modérer" : "Modifier"}</Button>{def.table !== "testimonials" && def.table !== "company_info" ? <Button size="sm" variant="outline" onClick={() => { if (confirm("Supprimer cet élément ?")) remove.mutate(String(row["id"])); }}>Supprimer</Button> : null}</div></td></tr>)}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div className="grid gap-3 md:hidden">
+        {rows.map((row) => <div key={String(row["id"])} className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+          <div className="space-y-2">{def.columns.slice(0, 4).map((column) => <div key={column} className="flex min-w-0 justify-between gap-4 text-sm"><span className="shrink-0 text-xs uppercase tracking-wide text-muted-foreground">{column.replaceAll("_", " ")}</span><span className="min-w-0 truncate text-right font-medium">{typeof row[column] === "boolean" ? (row[column] ? "Oui" : "Non") : String(row[column] ?? "—")}</span></div>)}</div>
+          <div className="mt-4 flex gap-2"><Button size="sm" variant="outline" className="flex-1" onClick={() => setEditing(row)}>Modifier</Button>{def.table !== "testimonials" && def.table !== "company_info" ? <Button size="sm" variant="outline" className="flex-1" onClick={() => { if (confirm("Supprimer cet élément ?")) remove.mutate(String(row["id"])); }}>Supprimer</Button> : null}</div>
+        </div>)}
+        {!rows.length ? <div className="rounded-2xl border border-dashed p-8 text-center text-sm text-muted-foreground">Aucun élément.</div> : null}
+      </div>
+
+      {editing ? (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 p-3 sm:p-6" role="dialog" aria-modal="true" aria-label={def.create && !editing["id"] ? "Ajouter" : "Modifier"}>
+          <div className="flex max-h-[94vh] w-full max-w-4xl flex-col overflow-hidden rounded-2xl bg-white shadow-2xl">
+            <div className="flex items-center justify-between border-b px-5 py-4 sm:px-6"><div><p className="text-xs uppercase tracking-[0.14em] text-muted-foreground">{def.create && !editing["id"] ? "Nouvel élément" : "Modification"}</p><h3 className="text-lg font-semibold">{def.label}</h3></div><button type="button" onClick={() => setEditing(null)} className="rounded-lg p-2 hover:bg-slate-100" aria-label="Fermer"><X className="h-5 w-5" /></button></div>
+            <form className="grid min-h-0 gap-4 overflow-y-auto p-5 sm:grid-cols-2 sm:p-6" onSubmit={(e) => { e.preventDefault(); save.mutate(editing); }}>
+              {def.table === "testimonials" ? <div className="rounded-xl bg-slate-50 p-4 text-sm sm:col-span-2"><p className="font-medium">{String(editing["author_name"] ?? "")}</p><p className="mt-1 text-muted-foreground">{String(editing["message"] ?? "")}</p></div> : null}
+              {def.fields.map((f) => (
+                <label key={f.name} className={f.kind === "textarea" || f.kind === "file" ? "text-sm sm:col-span-2" : "text-sm"}>
+                  <span className="font-medium">{f.label}{f.required ? " *" : ""}</span>
+                  {f.kind === "textarea" ? <textarea rows={f.name === "content" || f.name === "description" ? 7 : 4} className={field} value={String(editing[f.name] ?? "")} onChange={(e) => setEditing({ ...editing, [f.name]: e.target.value })} />
+                  : f.kind === "boolean" ? <div className="mt-2 flex items-center gap-2"><input type="checkbox" checked={Boolean(editing[f.name])} onChange={(e) => setEditing({ ...editing, [f.name]: e.target.checked })} /><span className="text-xs text-muted-foreground">{editing[f.name] ? "Activé" : "Désactivé"}</span></div>
+                  : f.kind === "select" ? <select className={field} value={String(editing[f.name] ?? "")} onChange={(e) => setEditing({ ...editing, [f.name]: e.target.value })}><option value="">—</option>{(f.name === "category" ? categoryOptions : f.options ?? []).map((o) => <option key={o} value={o}>{f.name === "placement" ? (o === "hero_intro" ? "Hero — introduction / identité" : "Accueil — carousel projets") : o}</option>)}</select>
+                  : f.kind === "file" ? <div className="mt-2 rounded-xl border border-dashed border-slate-300 p-4"><input type="file" accept={f.accept ?? "image/*,video/*"} className="block w-full max-w-full text-sm" onChange={async (e) => {
+                    const file = e.target.files?.[0]; if (!file) return; setUploading(f.name);
+                    try {
+                      if (def.table === "company_info" && f.name === "logo_png_url") {
+                        const brand = await generateBrandAssets(file);
+                        setEditing((current) => current ? {
+                          ...current,
+                          logo_png_url: brand["brand/logo.png"],
+                          logo_jpg_url: brand["brand/logo.jpg"],
+                          logo_url: brand["brand/logo.png"],
+                        } : current);
+                        toast.success("Logo maître enregistré : PNG, JPG, favicon et image OG générés automatiquement.");
+                      } else {
+                        const url = await uploadSiteFile(file, def.table === "news" ? "news" : def.table === "projects" ? "projects" : def.table === "partners" ? "partners" : def.table === "intro_videos" ? "intro-videos" : "media");
+                        setEditing((current) => current ? {
+                          ...current,
+                          [f.name]: url,
+                          ...(def.table === "media_items" && f.name === "url" ? { kind: file.type.startsWith("video/") ? "video" : "photo" } : {}),
+                          ...(def.table === "news" && f.name === "image_url" ? { video_url: null } : {}),
+                          ...(def.table === "news" && f.name === "video_url" ? { image_url: null } : {}),
+                        } : current);
+                        toast.success("Fichier téléversé.");
+                      }
+                    } catch (err) { toast.error(err instanceof Error ? err.message : "Téléversement impossible."); } finally { setUploading(null); e.currentTarget.value = ""; }
+                  }} />{uploading === f.name ? <p className="mt-2 text-xs text-muted-foreground">Téléversement…</p> : null}{editing[f.name] ? <p className="mt-2 truncate rounded-lg bg-slate-50 p-2 text-xs">{String(editing[f.name])}</p> : <p className="mt-2 text-xs text-muted-foreground">Aucun fichier.</p>}</div>
+                  : <input type={f.kind === "number" ? "number" : "text"} className={field} value={String(editing[f.name] ?? "")} onChange={(e) => { const value = f.kind === "number" ? (e.target.value === "" ? null : Number(e.target.value)) : e.target.value; const next = { ...editing, [f.name]: value }; if ((def.table === "news" || def.table === "projects" || def.table === "activities") && f.name === "title" && !editing["id"]) next["slug"] = slugify(String(value ?? "")); setEditing(next); }} disabled={def.table === "news" && f.name === "author"} />}
+                </label>
+              ))}
+              <div className="flex gap-2 border-t pt-4 sm:col-span-2"><Button type="submit" variant="gold" disabled={save.isPending || uploading !== null}>{save.isPending ? "Enregistrement…" : "Enregistrer"}</Button><Button type="button" variant="outline" onClick={() => setEditing(null)}>Annuler</Button></div>
+            </form>
+          </div>
+        </div>
+      ) : null}
+    </div>
+  );
+}
