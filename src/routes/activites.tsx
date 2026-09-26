@@ -46,9 +46,9 @@ function Page() {
                 </span>
                 <div>
                   <p className="eyebrow">{String(i + 1).padStart(2, "0")}</p>
-                  <h2 className="mt-2 text-2xl">{activity.title}</h2>
+                  <h3 className="mt-2 text-xl">{activity.title}</h3>
                   <p className="mt-3 leading-relaxed text-muted-foreground">
-                    {activity.description ?? activity.short_description}
+                    {activity.short_description ?? activity.description}
                   </p>
                 </div>
               </Link>
