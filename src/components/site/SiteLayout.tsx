@@ -172,7 +172,7 @@ export function SiteFooter() {
           <ul className="mt-4 space-y-3 text-sm text-ink-foreground/70">
             <li className="flex items-start gap-2">
               <Phone className="mt-0.5 h-4 w-4 shrink-0 text-gold" />
-              <a href="tel:+2250749224722">+225 07 49 22 47 22</a>
+              <span><a href="tel:+2250749224722">(+225) 07 49 22 47 22</a> / <a href="tel:+2250707741484">07 07 74 14 84</a></span>
             </li>
             {WHATSAPP_NUMBERS.map((w) => (
               <li key={w.link} className="flex items-start gap-2">
