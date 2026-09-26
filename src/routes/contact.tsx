@@ -81,8 +81,10 @@ function Page() {
             <li className="flex gap-3">
               <Phone className="mt-0.5 h-5 w-5 shrink-0 text-gold-deep" />
               <a href="tel:+2250749224722" className="hover:text-foreground">
-                +225 07 49 22 47 22
+                (+225) 07 49 22 47 22
               </a>
+              <span className="mx-1">/</span>
+              <a href="tel:+2250707741484" className="hover:text-foreground">07 07 74 14 84</a>
             </li>
             {WHATSAPP_NUMBERS.map((w) => (
               <li key={w.link} className="flex gap-3">
