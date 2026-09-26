@@ -184,12 +184,12 @@ export function SiteFooter() {
             ))}
             <li className="flex items-start gap-2">
               <Mail className="mt-0.5 h-4 w-4 shrink-0 text-gold" />
-              <a href="mailto:contact@ltgroup-ci.com">contact@ltgroup-ci.com</a>
+              <a href={`mailto:${company?.email || "contact@ltgroup-ci.com"}`}>{company?.email || "contact@ltgroup-ci.com"}</a>
             </li>
             <li className="flex items-start gap-2">
               <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-gold" />
               <span>
-                Siège social : Abidjan Cocody Akouédo extension sud-est, Lot 637, îlot 60 ; 01 BP 2259 Abidjan 01
+                Siège social : {[company?.city, company?.address].filter(Boolean).join(" ") || "Abidjan Cocody Akouédo extension sud-est, Lot 637, îlot 60"}{company?.postal_box ? ` ; ${company.postal_box}` : ""}
               </span>
             </li>
           </ul>
