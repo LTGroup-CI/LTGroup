@@ -57,9 +57,22 @@ function extractVisitorData(messages: Array<{ role: string; content: string }>) 
   const nameMatch =
     text.match(/(?:je m'appelle|mon nom est|moi c'est|moi, c'est)\s+([A-Za-zÀ-ÿ][A-Za-zÀ-ÿ'’-]*(?:\s+[A-Za-zÀ-ÿ][A-Za-zÀ-ÿ'’-]*){0,3})(?=\s*(?:[,.!?;]|$))/i) ??
     text.match(/\bnom\s*:\s*([A-Za-zÀ-ÿ][A-Za-zÀ-ÿ'’-]*(?:\s+[A-Za-zÀ-ÿ][A-Za-zÀ-ÿ'’-]*){0,3})(?=\s*(?:[,.!?;]|$))/i);
-  const inferredName = !nameMatch && userMessages.length === 1 && !email && !phone && text.split(/\s+/).filter(Boolean).length >= 2 && !/[?!.]/.test(text)
-    ? text.trim()
-    : null;
+  // Nom donné en réponse directe à la question « nom et prénom(s) ».
+  const greeting = /^(bonjour|bonsoir|salut|hello|hi|coucou|merci|oui|non|ok)\b/i;
+  let inferredName: string | null = null;
+  if (!nameMatch) {
+    for (let i = 1; i < messages.length; i++) {
+      const prev = messages[i - 1];
+      const cur = messages[i];
+      if (prev?.role !== "assistant" || cur?.role !== "user") continue;
+      if (!/\bnom\b/i.test(prev.content)) continue;
+      const candidate = cur.content.trim().replace(/[.!]+$/, "");
+      const words = candidate.split(/\s+/).filter(Boolean);
+      if (words.length >= 1 && words.length <= 5 && /^[A-Za-zÀ-ÿ'’\- ]+$/.test(candidate) && !greeting.test(candidate)) {
+        inferredName = candidate.replace(/\b\p{L}/gu, (c) => c.toUpperCase());
+      }
+    }
+  }
   const full_name = nameMatch?.[1]?.trim() ?? inferredName;
 
   let project_type: string | null = null;
@@ -299,17 +312,25 @@ ${ctx.projects.map((p) => "- " + p.title + (p.location ? " — " + p.location : 
 ACTUALITÉS:
 ${ctx.news.map((n) => "- " + n.title + (n.excerpt ? ": " + n.excerpt : "")).join("\\n")}`;
 
-    const openAiKey = process.env["OPENAI_API_KEY"];
+    const lovableKey = process.env["LOVABLE_API_KEY"];
 
     try {
-      if (openAiKey) {
-        const response = await fetch("https://api.openai.com/v1/responses", {
+      if (lovableKey) {
+        const response = await fetch("https://ai.gateway.lovable.dev/v1/responses", {
           method: "POST",
-          headers: { "Content-Type": "application/json", Authorization: `Bearer ${openAiKey}` },
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${lovableKey}`,
+            "X-Lovable-AIG-SDK": "fetch",
+          },
           body: JSON.stringify({
-            model: process.env["OPENAI_MODEL"] ?? "gpt-5.6-luna",
-            instructions: system,
-            max_output_tokens: 600,
+            model: "openai/gpt-6-astra",
+            instructions:
+              system +
+              `\n\nVISITEUR IDENTIFIÉ : ${visitorData.full_name} (${visitorData.email}, ${visitorData.phone}). Appelle-le par son prénom. Réponds en 2 à 5 phrases maximum, sans markdown lourd.`,
+            reasoning: { effort: "low" },
+            store: false,
+            stream: true,
             // Client-supplied history is untrusted: send it only as user-role
             // data so a caller can never impersonate assistant/system turns.
             input: [
@@ -326,16 +347,36 @@ ${ctx.news.map((n) => "- " + n.title + (n.excerpt ? ": " + n.excerpt : "")).join
             ],
           }),
         });
-        if (response.ok) {
-          const payload = (await response.json()) as { output_text?: string; output?: Array<{ type?: string; content?: Array<{ type?: string; text?: string }> }> };
-          const reply = payload.output_text?.trim() ??
-            payload.output?.flatMap((item) => item.content ?? []).map((part) => part.text ?? "").join("").trim();
+        if (response.ok && response.body) {
+          const reader = response.body.getReader();
+          const decoder = new TextDecoder();
+          let buffer = "";
+          let reply = "";
+          for (;;) {
+            const { value, done } = await reader.read();
+            if (done) break;
+            buffer += decoder.decode(value, { stream: true });
+            const frames = buffer.split("\n\n");
+            buffer = frames.pop() ?? "";
+            for (const frame of frames) {
+              for (const line of frame.split("\n")) {
+                if (!line.startsWith("data:")) continue;
+                const payload = line.slice(5).trim();
+                if (!payload || payload === "[DONE]") continue;
+                try {
+                  const evt = JSON.parse(payload) as { type?: string; delta?: string };
+                  if (evt.type === "response.output_text.delta" && evt.delta) reply += evt.delta;
+                } catch { /* ignore partial */ }
+              }
+            }
+          }
+          reply = reply.trim();
           if (reply) {
             try { await persistConversation(data, reply); } catch (error) { console.error("Assistant persistence error"); }
             return { ok: true as const, reply };
           }
         } else {
-          console.error("OpenAI assistant error", response.status, await response.text());
+          console.error("AI gateway assistant error", response.status, await response.text());
         }
       }
     } catch (error) {
