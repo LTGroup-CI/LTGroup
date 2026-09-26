@@ -19,19 +19,19 @@ export const Route = createFileRoute("/sitemap.xml")({
         if (SUPABASE_URL && SUPABASE_KEY) {
           const db = createClient(SUPABASE_URL, SUPABASE_KEY, { auth: { persistSession: false, autoRefreshToken: false } });
           const [activities, projects, news] = await Promise.all([
-            db.from("activities").select("slug,updated_at").eq("is_active", true),
-            db.from("projects").select("slug,updated_at").eq("is_published", true),
-            db.from("news").select("slug,updated_at").eq("is_published", true),
+            db.from("activities").select("slug").eq("is_active", true),
+            db.from("projects").select("slug").eq("is_published", true),
+            db.from("news").select("slug,published_at").eq("is_published", true),
           ]);
 
           for (const item of activities.data ?? []) {
-            urls.push(`<url><loc>${SITE_URL}/activites/${encodeURIComponent(item.slug)}</loc>${item.updated_at ? `<lastmod>${xml(item.updated_at)}</lastmod>` : ""}</url>`);
+            urls.push(`<url><loc>${SITE_URL}/activites/${encodeURIComponent(item.slug)}</loc></url>`);
           }
           for (const item of projects.data ?? []) {
-            urls.push(`<url><loc>${SITE_URL}/projets/${encodeURIComponent(item.slug)}</loc>${item.updated_at ? `<lastmod>${xml(item.updated_at)}</lastmod>` : ""}</url>`);
+            urls.push(`<url><loc>${SITE_URL}/projets/${encodeURIComponent(item.slug)}</loc></url>`);
           }
           for (const item of news.data ?? []) {
-            urls.push(`<url><loc>${SITE_URL}/actualites/${encodeURIComponent(item.slug)}</loc>${item.updated_at ? `<lastmod>${xml(item.updated_at)}</lastmod>` : ""}</url>`);
+            urls.push(`<url><loc>${SITE_URL}/actualites/${encodeURIComponent(item.slug)}</loc>${item.published_at ? `<lastmod>${xml(item.published_at)}</lastmod>` : ""}</url>`);
           }
         }
 
