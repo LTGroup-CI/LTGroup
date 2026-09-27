@@ -492,6 +492,7 @@ export type Database = {
           title: string
           video_poster_url: string | null
           video_url: string | null
+          media_urls: Json
           view_count: number
         }
         Insert: {
@@ -508,6 +509,7 @@ export type Database = {
           title: string
           video_poster_url?: string | null
           video_url?: string | null
+          media_urls?: Json
           view_count?: number
         }
         Update: {
