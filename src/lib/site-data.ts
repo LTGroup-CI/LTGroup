@@ -100,6 +100,30 @@ export type NewsItem = {
   media_urls: Array<{ url: string; kind?: "photo" | "video"; poster?: string | null }>;
 };
 
+export type FaqItem = {
+  id: string;
+  question: string;
+  answer: string;
+  category: string;
+  position: number;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
+};
+
+export const faqItemsQuery = queryOptions({
+  queryKey: ["faq_items", "public"],
+  queryFn: async (): Promise<FaqItem[]> =>
+    unwrap(
+      await supabase
+        .from("faq_items")
+        .select("*")
+        .eq("is_active", true)
+        .order("position", { ascending: true }),
+    ),
+  staleTime: 60_000,
+});
+
 export type Partner = {
   id: string;
   name: string;
