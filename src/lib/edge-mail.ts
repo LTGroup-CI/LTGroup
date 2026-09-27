@@ -1,5 +1,5 @@
 const DEFAULT_SUPABASE_URL = "https://ghkijyimotuivykvwlge.supabase.co";
-const DEFAULT_SUPABASE_PUBLISHABLE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imdoa2lqeWltb3R1aXZ5a3Z3bGdlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTAyNzAyMDYsImV4cCI6MjEwNTg0NjIwNn0.jR9CJTPUNM0GHWnB4i2GXaT5DHoWT6oXAmQL5UJ0q9Q";
+const DEFAULT_SUPABASE_PUBLISHABLE_KEY = "sb_publishable_DOe49CSUFAbrDJZ4P2TawA_JlECROwj";
 
 export async function invokeLtgroupMail(
   action: string,
