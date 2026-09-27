@@ -1,1 +1,4 @@
-project_id = "ubyutfrvashpbipzyzqq"
+project_id = "ghkijyimotuivykvwlge"
+
+[functions.ltgroup-mail]
+verify_jwt = false
