@@ -1,21 +1,16 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 
-const schema = z.object({
-  title: z.string().trim().min(3).max(220),
-  excerpt: z.string().trim().max(700).nullable().optional(),
-  content: z.string().trim().min(3).max(30000),
-  slug: z.string().trim().max(220),
-});
+const schema = z.object({ title: z.string().trim().min(3).max(220), excerpt: z.string().trim().max(700).nullable().optional(), content: z.string().trim().min(3).max(30000), slug: z.string().trim().max(220) });
 
 function slugify(value: string) {
-  return value.normalize("NFD").replace(/\\p{Diacritic}/gu, "").toLowerCase().trim().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "").slice(0, 180);
+  return value.normalize("NFD").replace(/[\\u0300-\\u036f]/g, "").toLowerCase().trim().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "").slice(0, 180);
 }
 
 function fallback(input: z.infer<typeof schema>) {
-  const title = input.title.replace(/^[\\s📍🏠📌📰✨🔔]+/u, "").trim();
-  const text = input.content.replace(/\\r\\n?/g, "\\n").replace(/[ \\t]+/g, " ").replace(/\\n{3,}/g, "\\n\\n").trim();
-  const body = text.replace(/^(?:LIGHT TERRA GROUP|LT GROUP)[\\s\\-–—:]*$/gim, "").replace(/^\\s*[📍🏠📌📰✨🔔☎️📞📐📜💰🪙]+\\s*/gmu, "").trim();
+  const title = input.title.replace(/^[\\s]+/, "").trim();
+  const text = input.content.replaceAll("\\r\\n", "\\n").replaceAll("\\r", "\\n").replace(/ {2,}/g, " ").replace(/\\n{3,}/g, "\\n\\n").trim();
+  const body = text.replace(/^(?:LIGHT TERRA GROUP|LT GROUP)[\\s\\-–—:]*$/gim, "").trim();
   const paragraphs = body.split(/\\n\\s*\\n/).map((p) => p.trim()).filter(Boolean);
   return { title, excerpt: (input.excerpt?.trim() || paragraphs[0] || title).replace(/\\s+/g, " ").slice(0, 320), content: paragraphs.join("\\n\\n"), slug: slugify(input.slug || title) };
 }
@@ -37,11 +32,12 @@ export const optimizeNewsForPublication = createServerFn({ method: "POST" })
       "Mets en valeur l’opportunité uniquement à partir des faits fournis. Pas de publicité agressive.",
       "Texte simple sans HTML. Une ligne vide entre paragraphes. Utilise « • » pour quelques faits clés si pertinent.",
       "Si pertinent, termine par un appel à l’action factuel utilisant uniquement les coordonnées présentes.",
-      "Réponds UNIQUEMENT avec un JSON valide : {"title":"...","excerpt":"...","content":"...","slug":"..."}.",
+      "Réponds uniquement avec un JSON valide contenant les champs title, excerpt, content et slug.",
       "",
       "TITRE : " + data.title,
       "RÉSUMÉ : " + (data.excerpt ?? ""),
-      "BROUILLON :\\n" + data.content,
+      "BROUILLON :",
+      data.content,
     ].join("\\n");
     try {
       const response = await fetch("https://ai.gateway.lovable.dev/v1/responses", {
