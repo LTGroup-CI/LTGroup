@@ -81,10 +81,6 @@ async function sendResend(input: {
   return await response.json();
 }
 
-function adminClient(ctx: any) {
-  return ctx.supabaseAdmin;
-}
-
 export default {
   fetch: withSupabase({ auth: ["user", "publishable"] }, async (req, ctx) => {
     if (req.method !== "POST") {
@@ -111,7 +107,7 @@ export default {
           return Response.json({ ok: false, message: "Données de demande invalides." }, { status: 400 });
         }
 
-        const db = adminClient(ctx);
+        const db = ctx.supabaseAdmin;
         const { error: insertError } = await db.from("messages").insert({
           request_type: requestType,
           full_name: fullName,
