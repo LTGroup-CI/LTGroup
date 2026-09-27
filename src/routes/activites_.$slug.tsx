@@ -48,20 +48,18 @@ function Page() {
           />
         ) : null}
 
-        <div className="mt-10 grid gap-10 lg:grid-cols-[minmax(0,1fr)_280px]">
-          <div className="min-w-0">
-            <p className="eyebrow">Notre intervention</p>
-            <h2 className="mt-3 text-3xl">Un accompagnement adapté à chaque projet</h2>
-            <div className="mt-6 whitespace-pre-line text-[1.02rem] leading-8 text-foreground/80 [text-align:justify]">
-              {activity.description ?? activity.short_description}
-            </div>
+        <div className="mt-10 w-full">
+          <p className="eyebrow">Notre intervention</p>
+          <h2 className="mt-3 text-3xl">Un accompagnement adapté à chaque projet</h2>
+          <div className="mt-6 w-full whitespace-pre-line text-[1.02rem] leading-8 text-foreground/80 [text-align:justify]">
+            {activity.description ?? activity.short_description}
           </div>
-
-          <aside className="h-fit rounded-2xl border border-border bg-card p-6">
-            <p className="eyebrow">Parlons de votre projet</p>
-            <p className="mt-3 text-sm leading-relaxed text-muted-foreground">Présentez-nous votre besoin et notre équipe vous orientera vers les interlocuteurs concernés.</p>
-            <Link to="/services" className="mt-6 inline-flex items-center gap-2 font-semibold underline underline-offset-4">Demander un devis <ArrowRight className="h-4 w-4" /></Link>
-          </aside>
+          <p className="mt-8 text-base leading-7 text-muted-foreground">
+            Présentez-nous votre besoin et notre équipe vous orientera vers les interlocuteurs concernés.
+          </p>
+          <Link to="/services" className="mt-6 inline-flex items-center gap-2 font-semibold underline underline-offset-4">
+            Demander un devis <ArrowRight className="h-4 w-4" />
+          </Link>
         </div>
 
         {relatedProjects.length ? (
