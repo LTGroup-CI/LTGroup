@@ -20,7 +20,7 @@ function env(name: string) {
 function supabaseAdmin() {
   const url = env("SUPABASE_URL") || env("VITE_SUPABASE_URL");
   const key = env("SUPABASE_SERVICE_ROLE_KEY") || env("SUPABASE_SECRET_KEY");
-  if (!url || !key) throw new Error("Configuration serveur Supabase manquante.");
+  if (!url || !key) throw new Error("Service momentanément indisponible. Merci de réessayer plus tard.");
   return createClient(url, key, { auth: { persistSession: false, autoRefreshToken: false } });
 }
 
@@ -29,7 +29,7 @@ function escapeHtml(value: string) {
 }
 
 function logoUrl() {
-  return env("LT_GROUP_LOGO_URL") || "https://ghkijyimotuivykvwlge.supabase.co/storage/v1/object/public/site-media/brand/logo.png";
+  return "https://ghkijyimotuivykvwlge.supabase.co/storage/v1/object/public/site-media/brand/logo-email-fond-blanc.jpg";
 }
 
 function fromAddress() {
@@ -37,13 +37,19 @@ function fromAddress() {
   return value || "LT GROUP <assistance@ltgroup-ci.com>";
 }
 
-async function sendResend(to: string, subject: string, html: string) {
+function unsubscribeBlock(id: string) {
+  const link = `https://ltgroup-ci.com/desabonnement?id=${encodeURIComponent(id)}`;
+  return `<div style="max-width:640px;margin:18px auto 0;text-align:center;font-size:12px;color:#8a938e;font-family:Arial,sans-serif">Vous recevez cet e-mail car vous êtes abonné à la newsletter LIGHT TERRA GROUP.<br><a href="${link}" style="color:#a47a28">Se désabonner</a></div>`;
+}
+
+async function sendResend(to: string, subject: string, html: string, unsubscribeId?: string) {
+  if (unsubscribeId) html = html.replace(/<\/div>$/, `${unsubscribeBlock(unsubscribeId)}</div>`);
   const key = env("RESEND_API_KEY");
   if (!key) throw new Error("RESEND_API_KEY n'est pas configurée.");
   const response = await fetch("https://api.resend.com/emails", {
     method: "POST",
     headers: { "Content-Type": "application/json", Authorization: `Bearer ${key}` },
-    body: JSON.stringify({ from: fromAddress(), to: [to], subject, html }),
+    body: JSON.stringify({ from: fromAddress(), to: [to], subject, html, ...(unsubscribeId ? { headers: { "List-Unsubscribe": `<https://ltgroup-ci.com/desabonnement?id=${unsubscribeId}>` } } : {}) }),
   });
   if (!response.ok) throw new Error(`Resend ${response.status}: ${await response.text()}`);
 }
@@ -75,7 +81,8 @@ export const subscribeNewsletter = createServerFn({ method: "POST" })
       await sendResend(
         email,
         "Bienvenue dans la newsletter LT GROUP",
-        `<div style="margin:0;background:#f5f7f5;padding:32px;font-family:Arial,sans-serif;color:#17211d"><div style="max-width:640px;margin:auto;background:#fff;border-radius:18px;overflow:hidden;border:1px solid #e4e9e6"><div style="padding:26px 30px;background:#0b1f18;text-align:center"><img src="${logoUrl()}" alt="LT GROUP" style="max-width:210px;max-height:70px;object-fit:contain"></div><div style="padding:34px"><p style="color:#a47a28;text-transform:uppercase;letter-spacing:2px;font-size:11px;font-weight:700">Bienvenue</p><h1 style="font-size:28px;margin:10px 0 16px">Bonjour ${name},</h1><p style="font-size:16px;line-height:1.7;color:#59635e">Votre inscription à la newsletter LT GROUP est confirmée.</p><p style="font-size:16px;line-height:1.7;color:#59635e">Vous recevrez nos principales actualités, opportunités et informations sur nos projets directement par e-mail.</p><div style="margin-top:28px;padding:18px;background:#f5f7f5;border-radius:12px"><strong>LT GROUP</strong><br><span style="color:#59635e">Bâtir la terre, éclairer l'avenir</span></div></div></div></div>`,
+        `<div style="margin:0;background:#f5f7f5;padding:32px;font-family:Arial,sans-serif;color:#17211d"><div style="max-width:640px;margin:auto;background:#fff;border-radius:18px;overflow:hidden;border:1px solid #e4e9e6"><div style="padding:26px 30px;background:#0b1f18;text-align:center"><img src="${logoUrl()}" alt="LIGHT TERRA GROUP" width="200" style="display:inline-block;width:200px;max-width:70%;height:auto;background:#fff;border-radius:12px;padding:8px"></div><div style="padding:34px"><p style="color:#a47a28;text-transform:uppercase;letter-spacing:2px;font-size:11px;font-weight:700">Bienvenue</p><h1 style="font-size:28px;margin:10px 0 16px">Bonjour ${name},</h1><p style="font-size:16px;line-height:1.7;color:#59635e">Votre inscription à la newsletter LT GROUP est confirmée.</p><p style="font-size:16px;line-height:1.7;color:#59635e">Vous recevrez nos principales actualités, opportunités et informations sur nos projets directement par e-mail.</p><div style="margin-top:28px;padding:18px;background:#f5f7f5;border-radius:12px"><strong>LT GROUP</strong><br><span style="color:#59635e">Bâtir la terre, éclairer l'avenir</span></div></div></div></div>`,
+        subscriber.id,
       );
       welcomeSent = true;
       await db.from("newsletter_subscribers").update({ welcome_sent_at: new Date().toISOString() }).eq("id", subscriber.id);
@@ -120,7 +127,8 @@ export const notifyNewsSubscribers = createServerFn({ method: "POST" })
         await sendResend(
           subscriber.email,
           `LT GROUP — ${news.title}`,
-          `<div style="margin:0;background:#f5f7f5;padding:32px;font-family:Arial,sans-serif;color:#17211d"><div style="max-width:680px;margin:auto;background:#fff;border-radius:18px;overflow:hidden;border:1px solid #e4e9e6"><div style="padding:24px 30px;background:#0b1f18;text-align:center"><img src="${logoUrl()}" alt="LT GROUP" style="max-width:210px;max-height:70px;object-fit:contain"></div>${news.cover_image_url || news.image_url ? `<img src="${escapeHtml(news.cover_image_url || news.image_url || "")}" alt="" style="display:block;width:100%;height:280px;object-fit:cover">` : ""}<div style="padding:34px"><p style="color:#a47a28;text-transform:uppercase;letter-spacing:2px;font-size:11px;font-weight:700">Actualité LT GROUP</p><h1 style="font-size:27px;line-height:1.25;margin:10px 0 16px">${title}</h1><p style="font-size:16px;line-height:1.7;color:#59635e">Bonjour ${name},</p><p style="font-size:16px;line-height:1.7;color:#59635e">${excerpt}</p><a href="${link}" style="display:inline-block;margin-top:18px;background:#b58a3a;color:#fff;text-decoration:none;padding:13px 20px;border-radius:8px;font-weight:700">Lire l'actualité</a></div></div></div>`,
+          `<div style="margin:0;background:#f5f7f5;padding:32px;font-family:Arial,sans-serif;color:#17211d"><div style="max-width:680px;margin:auto;background:#fff;border-radius:18px;overflow:hidden;border:1px solid #e4e9e6"><div style="padding:24px 30px;background:#0b1f18;text-align:center"><img src="${logoUrl()}" alt="LIGHT TERRA GROUP" width="200" style="display:inline-block;width:200px;max-width:70%;height:auto;background:#fff;border-radius:12px;padding:8px"></div>${news.cover_image_url || news.image_url ? `<img src="${escapeHtml(news.cover_image_url || news.image_url || "")}" alt="" style="display:block;width:100%;height:280px;object-fit:cover">` : ""}<div style="padding:34px"><p style="color:#a47a28;text-transform:uppercase;letter-spacing:2px;font-size:11px;font-weight:700">Actualité LT GROUP</p><h1 style="font-size:27px;line-height:1.25;margin:10px 0 16px">${title}</h1><p style="font-size:16px;line-height:1.7;color:#59635e">Bonjour ${name},</p><p style="font-size:16px;line-height:1.7;color:#59635e">${excerpt}</p><a href="${link}" style="display:inline-block;margin-top:18px;background:#b58a3a;color:#fff;text-decoration:none;padding:13px 20px;border-radius:8px;font-weight:700">Lire l'actualité</a></div></div></div>`,
+          subscriber.id,
         );
         await db.from("newsletter_deliveries").update({ status: "sent", sent_at: new Date().toISOString(), error_message: null }).eq("id", delivery.id);
         sent++;
@@ -130,4 +138,13 @@ export const notifyNewsSubscribers = createServerFn({ method: "POST" })
     }
 
     return { ok: true as const, sent };
+  });
+
+export const unsubscribeNewsletter = createServerFn({ method: "POST" })
+  .inputValidator((data: unknown) => z.object({ id: z.string().uuid() }).parse(data))
+  .handler(async ({ data }) => {
+    const db = supabaseAdmin();
+    const { error } = await db.from("newsletter_subscribers").update({ status: "unsubscribed" }).eq("id", data.id);
+    if (error) throw new Error("Désabonnement impossible.");
+    return { ok: true as const };
   });
