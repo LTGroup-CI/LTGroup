@@ -6,14 +6,17 @@ export async function invokeLtgroupMail(
   payload: Record<string, unknown> = {},
   accessToken?: string,
 ) {
-  const url =
+  const configuredUrl =
     process.env["SUPABASE_URL"] ??
     process.env["VITE_SUPABASE_URL"] ??
-    DEFAULT_SUPABASE_URL;
-  const key =
+    "";
+  const url = configuredUrl.trim() || DEFAULT_SUPABASE_URL;
+
+  const configuredKey =
     process.env["SUPABASE_PUBLISHABLE_KEY"] ??
     process.env["VITE_SUPABASE_PUBLISHABLE_KEY"] ??
-    DEFAULT_SUPABASE_PUBLISHABLE_KEY;
+    "";
+  const key = configuredKey.trim() || DEFAULT_SUPABASE_PUBLISHABLE_KEY;
 
   const headers: Record<string, string> = {
     "Content-Type": "application/json",
@@ -21,7 +24,8 @@ export async function invokeLtgroupMail(
   };
   if (accessToken) headers["Authorization"] = `Bearer ${accessToken}`;
 
-  const response = await fetch(`${url}/functions/v1/ltgroup-mail`, {
+  const endpoint = new URL("/functions/v1/ltgroup-mail", url).toString();
+  const response = await fetch(endpoint, {
     method: "POST",
     headers,
     body: JSON.stringify({ action, ...payload }),
