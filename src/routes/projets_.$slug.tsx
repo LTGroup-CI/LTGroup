@@ -1,7 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { MapPin } from "lucide-react";
-
 import { PageHero, SiteLayout } from "@/components/site/SiteLayout";
 import { DetailMedia } from "@/components/site/DetailMedia";
 import { companyQuery, projectItemQuery, projectsQuery } from "@/lib/site-data";
@@ -50,38 +48,30 @@ function Page() {
       <PageHero eyebrow={project.category ?? "Projet"} title={project.title} description={project.summary ?? ""} />
 
       <article className="mx-auto max-w-7xl px-5 py-12 lg:px-8 lg:py-16">
-        <div className="grid gap-12 lg:grid-cols-[minmax(0,1fr)_280px]">
-          <div className="min-w-0">
-            <DetailMedia
-              cover={project.cover_image_url}
-              items={project.media_urls?.length ? project.media_urls : legacyMedia}
-              alt={project.title}
-            />
+        <div className="min-w-0">
+          <DetailMedia
+            cover={project.cover_image_url}
+            items={project.media_urls?.length ? project.media_urls : legacyMedia}
+            alt={project.title}
+          />
 
-            <div className="mt-10 flex flex-wrap items-center gap-3 text-xs uppercase tracking-[0.16em] text-muted-foreground">
-              {project.category ? <span>{project.category}</span> : null}
-              <span className="rounded-full bg-accent px-3 py-1 text-gold-deep">
-                {STATUS_LABEL[project.status] ?? project.status}
-              </span>
-            </div>
-
-            {project.content ? (
-              <div className="mt-8 max-w-none whitespace-pre-line text-[1.02rem] leading-8 text-foreground/80 [text-align:justify]">
-                {project.content}
-              </div>
-            ) : null}
+          <div className="mt-10 flex flex-wrap items-center gap-3 text-xs uppercase tracking-[0.16em] text-muted-foreground">
+            {project.category ? <span>{project.category}</span> : null}
+            <span className="rounded-full bg-accent px-3 py-1 text-gold-deep">
+              {STATUS_LABEL[project.status] ?? project.status}
+            </span>
+            {project.location ? <span>— {project.location}</span> : null}
           </div>
 
-          <aside className="h-fit rounded-2xl border border-border bg-card p-6 lg:sticky lg:top-28">
-            <p className="eyebrow">Informations</p>
-            {project.location ? (
-              <p className="mt-4 flex items-start gap-2 text-sm leading-relaxed text-muted-foreground">
-                <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-gold" />
-                {project.location}
-              </p>
-            ) : null}
-            <Link to="/contact" className="mt-6 inline-flex font-semibold underline underline-offset-4">Parler de ce projet →</Link>
-          </aside>
+          {project.content ? (
+            <div className="mt-8 w-full whitespace-pre-line text-[1.02rem] leading-8 text-foreground/80 [text-align:justify]">
+              {project.content}
+            </div>
+          ) : null}
+
+          <Link to="/contact" className="mt-8 inline-flex font-semibold underline underline-offset-4">
+            Parler de ce projet →
+          </Link>
         </div>
 
         {related.length ? (
