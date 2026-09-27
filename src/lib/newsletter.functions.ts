@@ -25,9 +25,9 @@ export const subscribeNewsletter = createServerFn({ method: "POST" })
 
       return {
         ok: true as const,
-        alreadySubscribed: Boolean(result.alreadySubscribed),
-        welcomeSent: Boolean(result.welcomeSent),
-        message: String(result.message || "Inscription confirmée."),
+        alreadySubscribed: Boolean(result["alreadySubscribed"]),
+        welcomeSent: Boolean(result["welcomeSent"]),
+        message: String(result["message"] || "Inscription confirmée."),
       };
     } catch (error) {
       console.error("Newsletter subscription error", error);
@@ -54,8 +54,8 @@ export const notifyNewsSubscribers = createServerFn({ method: "POST" })
       );
       return {
         ok: true as const,
-        sent: Number(result.sent || 0),
-        skipped: Boolean(result.skipped),
+        sent: Number(result["sent"] || 0),
+        skipped: Boolean(result["skipped"]),
       };
     } catch (error) {
       console.error("Newsletter broadcast error", error);
