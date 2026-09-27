@@ -19,7 +19,7 @@ export async function invokeLtgroupMail(
     "Content-Type": "application/json",
     apikey: key,
   };
-  if (accessToken) headers.Authorization = `Bearer ${accessToken}`;
+  if (accessToken) headers["Authorization"] = `Bearer ${accessToken}`;
 
   const response = await fetch(`${url}/functions/v1/ltgroup-mail`, {
     method: "POST",
@@ -34,8 +34,8 @@ export async function invokeLtgroupMail(
     data = {};
   }
 
-  if (!response.ok || data.ok === false) {
-    throw new Error(String(data.message || `Service e-mail indisponible (HTTP ${response.status}).`));
+  if (!response.ok || data["ok"] === false) {
+    throw new Error(String(data["message"] || `Service e-mail indisponible (HTTP ${response.status}).`));
   }
 
   return data;
