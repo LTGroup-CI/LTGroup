@@ -47,7 +47,7 @@ async function sendResend(input: {
   const key = Deno.env.get("RESEND_API_KEY");
   if (!key) throw new Error("RESEND_API_KEY n'est pas configurée dans Supabase Edge Functions.");
 
-  const from = Deno.env.get("RESEND_FROM_EMAIL") || "LT GROUP <assistance@ltgroup-ci.com>";
+  const from = Deno.env.get("RESEND_FROM_EMAIL") || "LT GROUP <contact@ltgroup-ci.com>";
   const response = await fetch("https://api.resend.com/emails", {
     method: "POST",
     headers: {
@@ -67,6 +67,7 @@ async function sendResend(input: {
         ? {
             headers: {
               "List-Unsubscribe": `<${SITE_URL}/desabonnement?id=${input.unsubscribeId}>`,
+              "List-Unsubscribe-Post": "List-Unsubscribe=One-Click",
             },
           }
         : {}),
@@ -200,8 +201,10 @@ export default {
         const name = escapeHtml(fullName);
         await sendResend({
           to: email,
+          replyTo: "contact@ltgroup-ci.com",
           subject: "Bienvenue dans la newsletter LT GROUP",
           unsubscribeId: subscriber.id,
+          text: `Bonjour ${fullName},\n\nVotre inscription à la newsletter LT GROUP est confirmée. Vous recevrez nos principales actualités, opportunités et informations sur nos projets.\n\nLT GROUP — Light Terra Group\nAbidjan, Côte d’Ivoire\ncontact@ltgroup-ci.com\n\nSe désabonner : ${SITE_URL}/desabonnement?id=${subscriber.id}`,
           html: emailLayout(
             `<div style="padding:34px"><p style="color:#a47a28;text-transform:uppercase;letter-spacing:2px;font-size:11px;font-weight:700">Bienvenue</p>
             <h1 style="font-size:28px;margin:10px 0 16px">Bonjour ${name},</h1>
@@ -248,8 +251,10 @@ export default {
             const visual = news.cover_image_url || news.image_url;
             await sendResend({
               to: subscriber.email,
+              replyTo: "contact@ltgroup-ci.com",
               subject: `LT GROUP — ${news.title}`,
               unsubscribeId: subscriber.id,
+              text: `Bonjour ${subscriber.full_name},\n\n${news.title}\n\n${news.excerpt || news.content?.slice(0, 260) || ""}\n\nLire l’actualité : ${link}\n\nLT GROUP — Light Terra Group\nAbidjan, Côte d’Ivoire\ncontact@ltgroup-ci.com\n\nSe désabonner : ${SITE_URL}/desabonnement?id=${subscriber.id}`,
               html: emailLayout(
                 ` ${visual ? `<img src="${escapeHtml(visual)}" alt="" style="display:block;width:100%;height:280px;object-fit:cover">` : ""}
                 <div style="padding:34px"><p style="color:#a47a28;text-transform:uppercase;letter-spacing:2px;font-size:11px;font-weight:700">Actualité LT GROUP</p>
