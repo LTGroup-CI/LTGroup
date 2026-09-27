@@ -152,53 +152,34 @@ function Hero() {
     return () => window.clearInterval(timer);
   }, []);
 
-  return (
-    <section className="relative isolate flex min-h-[88vh] w-full items-end overflow-hidden bg-ink">
-      {HERO_SLIDES.map((slide, i) => (
-        <img
-          key={slide.src}
-          src={slide.src}
-          alt={slide.label}
-          width={1920}
-          height={1088}
-          loading={i === 0 ? "eager" : "lazy"}
-          className={
-            "absolute inset-0 h-full w-full object-cover transition-opacity duration-[1500ms] " +
-            (i === index ? "opacity-100 animate-slow-zoom" : "opacity-0")
-          }
-          aria-hidden={i !== index}
-        />
-      ))}
-      <div className="absolute inset-0 bg-hero-veil" />
+  const current = HERO_SLIDES[index]!;
 
-      <div className="relative z-10 mx-auto w-full max-w-7xl px-5 pb-16 pt-36 lg:px-8 lg:pb-24">
-        <p className="inline-flex items-center gap-3 rounded-full border border-white/25 bg-white/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.2em] text-white backdrop-blur">
-          <span className="h-1.5 w-1.5 rounded-full bg-gold" />
-          {HERO_SLIDES[index]!.label}
-        </p>
-        <h1 className="mt-6 max-w-4xl text-4xl leading-[1.08] text-white sm:text-5xl lg:text-7xl">
-          Bâtir la terre, <span className="text-gold-gradient">éclairer l'avenir</span>
-        </h1>
-        <p className="mt-6 max-w-2xl text-lg leading-relaxed text-white/85">
-          {company?.description ??
-            "LT GROUP accompagne particuliers, entreprises et institutions en Côte d'Ivoire : vente de terrains, aménagement foncier, BTP, immobilier, hydraulique et électrification."}
-        </p>
-        <div className="mt-9 flex flex-wrap gap-3">
-          <Button asChild variant="gold" size="lg"><Link to="/services">Demander un devis</Link></Button>
-          <Button asChild size="lg" variant="outline" className="border-white/60 bg-white/10 text-white backdrop-blur hover:bg-white hover:text-foreground">
-            <Link to="/projets">Voir nos réalisations</Link>
-          </Button>
+  return (
+    <section className="border-b border-border bg-ink">
+      <div className="mx-auto grid min-h-[78vh] max-w-7xl lg:grid-cols-2">
+        <div className="relative min-h-[46vh] overflow-hidden lg:min-h-[78vh]">
+          <div className="absolute inset-0"><IntroVideoLoop /></div>
+          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+          <div className="absolute bottom-6 left-5 right-5 z-10 lg:left-8">
+            <p className="inline-flex items-center gap-3 rounded-full border border-white/25 bg-black/35 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.16em] text-white backdrop-blur">
+              <span className="h-1.5 w-1.5 rounded-full bg-gold" />
+              {current.label}
+            </p>
+          </div>
         </div>
-        <div className="mt-12 flex gap-2">
-          {HERO_SLIDES.map((slide, i) => (
-            <button
-              key={slide.src}
-              type="button"
-              aria-label={`Afficher : ${slide.label}`}
-              onClick={() => setIndex(i)}
-              className={i === index ? "h-1 w-12 rounded-full bg-gold" : "h-1 w-6 rounded-full bg-white/40 transition hover:bg-white/70"}
-            />
-          ))}
+        <div className="flex items-center bg-ink px-5 py-14 text-ink-foreground sm:px-8 lg:px-12 lg:py-20 xl:px-16">
+          <div className="w-full max-w-2xl">
+            <p className="eyebrow text-gold">LT GROUP · Côte d’Ivoire</p>
+            <h1 className="mt-4 text-4xl leading-[1.08] text-white sm:text-5xl lg:text-6xl">Bâtir la terre, <span className="text-gold-gradient">éclairer l’avenir</span></h1>
+            <p className="mt-6 text-base leading-7 text-white/75 sm:text-lg">{company?.description ?? "LT GROUP accompagne particuliers, entreprises et institutions en Côte d’Ivoire : vente de terrains, aménagement foncier, BTP, immobilier, hydraulique et électrification."}</p>
+            <div className="mt-8 flex flex-wrap gap-3">
+              <Button asChild variant="gold" size="lg"><Link to="/services">Demander un devis</Link></Button>
+              <Button asChild size="lg" variant="outline" className="border-white/40 bg-transparent text-white hover:bg-white hover:text-foreground"><Link to="/projets">Voir nos réalisations</Link></Button>
+            </div>
+            <div className="mt-9 flex flex-wrap gap-2">
+              {HERO_SLIDES.map((slide, i) => <button key={slide.src} type="button" aria-label={"Afficher : " + slide.label} onClick={() => setIndex(i)} className={i === index ? "h-1 w-12 rounded-full bg-gold" : "h-1 w-6 rounded-full bg-white/35 transition hover:bg-white/70"} />)}
+            </div>
+          </div>
         </div>
       </div>
     </section>
@@ -207,7 +188,7 @@ function Hero() {
 
 function KeyFigures() {
   const items = [
-    { value: "7", label: "pôles d'expertise" },
+    { value: "6", label: "pôles d'expertise" },
     { value: "100 %", label: "documents fonciers vérifiés" },
     { value: "Étude → livraison", label: "un seul interlocuteur" },
     { value: "Abidjan", label: "et tout le territoire ivoirien" },
