@@ -267,10 +267,10 @@ export function PageHero({
       </svg>
       <div className="relative mx-auto max-w-7xl px-5 lg:px-8">
         <p className="eyebrow">{eyebrow}</p>
-        <h1 className="mt-3 max-w-3xl text-4xl leading-tight lg:text-6xl">{title}</h1>
+        <h1 className="mt-3 w-full text-4xl leading-tight lg:text-6xl">{title}</h1>
         <hr className="gold-rule mt-6 w-24" />
         {description ? (
-          <p className="mt-6 max-w-2xl text-lg leading-relaxed text-muted-foreground">{description}</p>
+          <p className="mt-6 w-full text-lg leading-relaxed text-muted-foreground">{description}</p>
         ) : null}
       </div>
     </section>
