@@ -20,6 +20,8 @@ export type Database = {
           icon: string | null
           id: string
           image_url: string | null
+          cover_image_url: string | null
+          media_urls: Json
           is_active: boolean
           position: number
           short_description: string
@@ -31,6 +33,8 @@ export type Database = {
           icon?: string | null
           id?: string
           image_url?: string | null
+          cover_image_url?: string | null
+          media_urls?: Json
           is_active?: boolean
           position?: number
           short_description: string
@@ -42,6 +46,8 @@ export type Database = {
           icon?: string | null
           id?: string
           image_url?: string | null
+          cover_image_url?: string | null
+          media_urls?: Json
           is_active?: boolean
           position?: number
           short_description?: string
@@ -638,6 +644,7 @@ export type Database = {
           created_at: string
           id: string
           image_url: string | null
+          media_urls: Json
           is_featured: boolean
           is_published: boolean
           location: string | null
@@ -654,6 +661,7 @@ export type Database = {
           created_at?: string
           id?: string
           image_url?: string | null
+          media_urls?: Json
           is_featured?: boolean
           is_published?: boolean
           location?: string | null
@@ -670,6 +678,7 @@ export type Database = {
           created_at?: string
           id?: string
           image_url?: string | null
+          media_urls?: Json
           is_featured?: boolean
           is_published?: boolean
           location?: string | null
