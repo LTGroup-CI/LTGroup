@@ -13,7 +13,7 @@ export const Route = createFileRoute("/sitemap.xml")({
   server: {
     handlers: {
       GET: async () => {
-        const staticPaths = ["/", "/a-propos", "/activites", "/projets", "/services", "/actualites", "/temoignages", "/contact"];
+        const staticPaths = ["/", "/a-propos", "/activites", "/projets", "/services", "/actualites", "/temoignages", "/faq", "/contact"];
         const urls = staticPaths.map((path) => `<url><loc>${SITE_URL}${path}</loc></url>`);
 
         if (SUPABASE_URL && SUPABASE_KEY) {
