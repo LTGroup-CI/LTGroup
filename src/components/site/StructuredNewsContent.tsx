@@ -1,30 +1,78 @@
 import React from "react";
 
-function isHeading(text: string) {
-  return text.length <= 80 && !/[.!?]$/.test(text) && !text.startsWith("•") && !text.includes(":");
+const emojiPattern = /[\p{Extended_Pictographic}\p{Emoji_Presentation}\uFE0F\u20E3]/gu;
+
+function cleanText(value: string) {
+  return value
+    .replace(emojiPattern, "")
+    .replace(/\r\n?/g, "\n")
+    .replace(/[ \t]{2,}/g, " ")
+    .trim();
 }
 
-export function StructuredNewsContent({ content }: { content: string | null }) {
+function isInfoHeading(text: string) {
+  return /^(informations(?: pratiques)?|contact(?:s)?|informations et visites|pour en savoir plus|coordonnées)\b/i.test(text);
+}
+
+export function StructuredNewsContent({
+  content,
+  title,
+}: {
+  content: string | null;
+  title?: string | null;
+}) {
   if (!content?.trim()) return null;
-  const blocks = content
-    .replace(/\r\n?/g, "\n")
+
+  const cleanTitle = cleanText(title ?? "").replace(/^#+\s*/, "").toLowerCase();
+  const blocks = cleanText(content)
     .split(/\n\s*\n/)
     .map((block) => block.trim())
-    .filter(Boolean);
+    .filter(Boolean)
+    .filter((block) => cleanText(block).replace(/^#+\s*/, "").toLowerCase() !== cleanTitle);
+
+  let paragraphIndex = 0;
 
   return (
-    <div className="space-y-7">
+    <div className="w-full space-y-8">
       {blocks.map((block, index) => {
-        const lines = block.split("\n").map((line) => line.trim()).filter(Boolean);
+        const lines = block
+          .split("\n")
+          .map((line) => cleanText(line))
+          .filter(Boolean);
+
+        const explicitHeading = lines.length === 1 && /^##\s+/.test(lines[0] ?? "");
+        const heading = explicitHeading ? (lines[0] ?? "").replace(/^##\s+/, "").trim() : "";
         const bullets = lines.filter((line) => /^•\s*/.test(line));
         const nonBullets = lines.filter((line) => !/^•\s*/.test(line));
-        const normalized = block.replace(/\s+/g, " ").trim();
+        const normalized = lines.join(" ").replace(/\s+/g, " ").trim();
+
+        if (explicitHeading) {
+          const info = isInfoHeading(heading);
+
+          return (
+            <div
+              key={"heading-" + index}
+              className={
+                info
+                  ? "rounded-2xl border border-border bg-accent/40 px-6 py-5"
+                  : "border-l-2 border-gold pl-5"
+              }
+            >
+              <h2 className="text-xl font-semibold tracking-tight text-foreground md:text-2xl">
+                {heading}
+              </h2>
+            </div>
+          );
+        }
 
         if (bullets.length >= 2 && nonBullets.length === 0) {
           return (
-            <div key={index} className="grid gap-3 sm:grid-cols-2">
-              {bullets.map((line) => (
-                <div key={line} className="rounded-xl border border-border bg-card px-5 py-4 text-[0.98rem] leading-7 text-foreground/80">
+            <div key={"facts-" + index} className="grid gap-3 sm:grid-cols-2">
+              {bullets.map((line, bulletIndex) => (
+                <div
+                  key={"fact-" + index + "-" + bulletIndex}
+                  className="rounded-xl border border-border bg-card px-5 py-4 text-[0.98rem] leading-7 text-foreground/80"
+                >
                   {line.replace(/^•\s*/, "")}
                 </div>
               ))}
@@ -32,21 +80,34 @@ export function StructuredNewsContent({ content }: { content: string | null }) {
           );
         }
 
-        if (/^(informations|contact|informations et visites|pour en savoir plus)\b/i.test(normalized)) {
+        if (isInfoHeading(normalized)) {
           return (
-            <div key={index} className="rounded-2xl border border-gold/30 bg-accent/40 p-6">
-              <p className="text-sm font-semibold text-foreground">{normalized}</p>
+            <div key={"info-" + index} className="rounded-2xl border border-border bg-accent/40 px-6 py-5">
+              <p className="text-[0.98rem] leading-7 text-foreground/85">{normalized}</p>
             </div>
           );
         }
 
-        if (isHeading(normalized)) {
-          return <h2 key={index} className="pt-2 text-2xl font-semibold tracking-tight text-foreground">{normalized}</h2>;
+        if (bullets.length === 1 && nonBullets.length === 0) {
+          return (
+            <div key={"bullet-" + index} className="flex gap-3 text-[1.02rem] leading-8 text-foreground/80">
+              <span className="mt-3 h-1.5 w-1.5 shrink-0 rounded-full bg-gold" />
+              <p className="text-left">{bullets[0].replace(/^•\s*/, "")}</p>
+            </div>
+          );
         }
 
+        const currentParagraph = paragraphIndex++;
         return (
-          <p key={index} className="text-[1.02rem] leading-8 text-foreground/80 [text-align:justify]">
-            {block}
+          <p
+            key={"paragraph-" + index}
+            className={
+              currentParagraph === 0
+                ? "max-w-5xl text-lg leading-8 text-foreground/90 [text-align:justify] md:text-xl md:leading-9"
+                : "max-w-6xl text-[1.03rem] leading-8 text-foreground/80 [text-align:justify]"
+            }
+          >
+            {lines.join(" ")}
           </p>
         );
       })}
