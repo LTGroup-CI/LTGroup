@@ -277,6 +277,30 @@ export default {
         return Response.json({ ok: true, sent });
       }
 
+      if (action === "admin_reply") {
+        const email = String(body.email || "").trim().toLowerCase();
+        const fullName = String(body.full_name || "Visiteur").trim();
+        const subject = String(body.subject || "LIGHT TERRA GROUP").trim();
+        const reply = String(body.reply || "").trim();
+        if (!email.includes("@") || reply.length < 2) {
+          return Response.json({ ok: false, message: "Réponse ou e-mail invalide." }, { status: 400 });
+        }
+
+        await sendResend({
+          to: email,
+          replyTo: "contact@ltgroup-ci.com",
+          subject: `Réponse à votre demande — ${subject}`,
+          text: `Bonjour ${fullName},\\n\\n${reply}\\n\\n--\\nLT GROUP — Light Terra Group\\nBâtir la terre, éclairer l'avenir\\ncontact@ltgroup-ci.com`,
+          html: emailLayout(
+            `<div style="padding:34px"><p style="color:#a47a28;text-transform:uppercase;letter-spacing:2px;font-size:11px;font-weight:700">Réponse LT GROUP</p>
+            <h1 style="font-size:28px;margin:10px 0 16px">Bonjour ${escapeHtml(fullName)},</h1>
+            <div style="font-size:16px;line-height:1.8;color:#59635e;white-space:pre-line">${escapeHtml(reply)}</div>
+            <div style="margin-top:28px;padding:18px;background:#f5f7f5;border-radius:12px"><strong>LT GROUP — Light Terra Group</strong><br><span style="color:#59635e">Bâtir la terre, éclairer l'avenir</span><br><span style="color:#8a938e;font-size:12px">contact@ltgroup-ci.com</span></div></div>`
+          ),
+        });
+        return Response.json({ ok: true, message: "Réponse envoyée par e-mail." });
+      }
+
       if (action === "assistant_confirmation") {
         const email = String(body.email || "").trim().toLowerCase();
         const fullName = String(body.full_name || "Visiteur").trim();
