@@ -12,6 +12,7 @@ import { LOGO_URL, getBrandDerivativeUrl } from "@/lib/media";
 import { activitiesQuery, companyQuery, formatDateFr } from "@/lib/site-data";
 import { replyToMessage } from "@/lib/admin.functions";
 import { notifyNewsSubscribers } from "@/lib/newsletter.functions";
+import { optimizeNewsForPublication } from "@/lib/news.functions";
 
 export const Route = createFileRoute("/admin")({
   ssr: false,
@@ -742,6 +743,7 @@ function CrudPanel({ def }: { def: TableDef }) {
   const [editing, setEditing] = useState<Row | null>(null);
   const [uploading, setUploading] = useState<string | null>(null);
   const queryKey = useMemo(() => ["admin", def.table], [def.table]);
+  const optimizeNews = useServerFn(optimizeNewsForPublication);
   const { data, isLoading, isError, error } = useQuery({
     queryKey,
     queryFn: async (): Promise<Row[]> => {
@@ -760,6 +762,22 @@ function CrudPanel({ def }: { def: TableDef }) {
       const payload: Row = {};
       for (const f of def.fields) payload[f.name] = row[f.name] ?? null;
       for (const f of def.fields) if (f.required && (payload[f.name] === null || payload[f.name] === undefined || payload[f.name] === "")) throw new Error("Le champ « " + f.label + " » est obligatoire.");
+
+      if (def.table === "news" && payload["is_published"] === true) {
+        const optimized = await optimizeNews({
+          data: {
+            title: String(payload["title"] ?? ""),
+            excerpt: payload["excerpt"] == null ? null : String(payload["excerpt"]),
+            content: String(payload["content"] ?? ""),
+            slug: String(payload["slug"] ?? ""),
+          },
+        });
+        payload["title"] = optimized.title;
+        payload["excerpt"] = optimized.excerpt;
+        payload["content"] = optimized.content;
+        payload["slug"] = optimized.slug;
+      }
+
       if (Array.isArray(payload["media_urls"])) {
         const media = payload["media_urls"] as Array<{ url: string; kind?: "photo" | "video"; poster?: string | null }>;
         payload["image_url"] = media.find((item) => item.kind !== "video")?.url ?? media[0]?.url ?? null;
@@ -793,7 +811,7 @@ function CrudPanel({ def }: { def: TableDef }) {
         }
       }
     },
-    onSuccess: () => { toast.success("Enregistré."); setEditing(null); void qc.invalidateQueries({ queryKey }); void qc.invalidateQueries({ queryKey: companyQuery.queryKey }); },
+    onSuccess: () => { toast.success(def.table === "news" ? "Actualité structurée et enregistrée." : "Enregistré."); setEditing(null); void qc.invalidateQueries({ queryKey }); void qc.invalidateQueries({ queryKey: companyQuery.queryKey }); },
     onError: (e: Error) => toast.error(e.message),
   });
   const remove = useMutation({
