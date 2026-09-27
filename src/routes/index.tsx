@@ -23,6 +23,7 @@ import {
   activitiesQuery,
   companyQuery,
   formatDateFr,
+  heroSlidesQuery,
   introVideosQuery,
   showcaseVideosQuery,
   newsListQuery,
@@ -133,30 +134,48 @@ function IntroVideoLoop() {
     </div>
   );
 }
-const HERO_SLIDES = [
-  { src: heroTerrain, label: "Vente de terrains" },
-  { src: heroFoncier, label: "Aménagement foncier & lotissement" },
-  { src: heroBtp, label: "BTP & VRD" },
-  { src: heroImmobilier, label: "Construction immobilière" },
-  { src: heroInfra, label: "Hydraulique & infrastructures" },
-  { src: heroEnergie, label: "Électrification" },
-  { src: heroConseil, label: "Topographie & études" },
+const FALLBACK_HERO_SLIDES = [
+  { id: "fallback-terrain", image_url: heroTerrain, title: "Vente de terrains", subtitle: null, cta_label: null, cta_url: null, duration_ms: 6000, position: 0, is_active: true },
+  { id: "fallback-foncier", image_url: heroFoncier, title: "Aménagement foncier & lotissement", subtitle: null, cta_label: null, cta_url: null, duration_ms: 6000, position: 1, is_active: true },
+  { id: "fallback-btp", image_url: heroBtp, title: "BTP & VRD", subtitle: null, cta_label: null, cta_url: null, duration_ms: 6000, position: 2, is_active: true },
+  { id: "fallback-immobilier", image_url: heroImmobilier, title: "Construction immobilière", subtitle: null, cta_label: null, cta_url: null, duration_ms: 6000, position: 3, is_active: true },
+  { id: "fallback-infra", image_url: heroInfra, title: "Hydraulique & infrastructures", subtitle: null, cta_label: null, cta_url: null, duration_ms: 6000, position: 4, is_active: true },
+  { id: "fallback-energie", image_url: heroEnergie, title: "Électrification", subtitle: null, cta_label: null, cta_url: null, duration_ms: 6000, position: 5, is_active: true },
+  { id: "fallback-conseil", image_url: heroConseil, title: "Topographie & études", subtitle: null, cta_label: null, cta_url: null, duration_ms: 6000, position: 6, is_active: true },
 ];
 
 function Hero() {
   const { data: company } = useQuery(companyQuery);
+  const { data: configuredSlides } = useQuery(heroSlidesQuery);
+  const slides = configuredSlides?.length ? configuredSlides : FALLBACK_HERO_SLIDES;
   const [index, setIndex] = useState(0);
 
   useEffect(() => {
-    const timer = window.setInterval(() => setIndex((i) => (i + 1) % HERO_SLIDES.length), 6000);
-    return () => window.clearInterval(timer);
-  }, []);
+    if (!slides.length) return;
+    const current = slides[index % slides.length];
+    const timer = window.setTimeout(
+      () => setIndex((i) => (i + 1) % slides.length),
+      Math.max(3500, current?.duration_ms ?? 6000),
+    );
+    return () => window.clearTimeout(timer);
+  }, [index, slides]);
 
-  const current = HERO_SLIDES[index]!;
+  const current = slides[index % slides.length]!;
 
   return (
-    <section className="border-b border-border bg-ink">
-      <div className="mx-auto max-w-[1480px] px-5 sm:px-8 lg:px-12 xl:px-16">
+    <section className="relative overflow-hidden border-b border-border bg-ink">
+      <div className="absolute inset-0">
+        <img
+          src={current.image_url}
+          alt=""
+          aria-hidden
+          className="h-full w-full object-cover opacity-35 transition-opacity duration-700"
+        />
+        <div className="absolute inset-0 bg-black/75" />
+        <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/70 to-black/85" />
+      </div>
+
+      <div className="relative mx-auto max-w-[1480px] px-5 sm:px-8 lg:px-12 xl:px-16">
         <div className="grid min-h-[78vh] gap-10 py-10 lg:grid-cols-[1.05fr_0.95fr] lg:items-center lg:gap-14 lg:py-14">
           <div className="order-2 min-w-0 lg:order-1">
             <div className="mb-8 max-w-3xl">
@@ -178,27 +197,9 @@ function Hero() {
               </div>
             </div>
 
-            <div className="relative overflow-hidden rounded-xl border border-gold/25 bg-black shadow-elevated">
+            <div className="relative overflow-hidden rounded-xl border border-gold/25 bg-black/60 shadow-elevated">
               <IntroVideoLoop />
               <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/55 via-transparent to-transparent" />
-              <div className="absolute bottom-5 left-5 right-5 z-10 sm:left-7 sm:right-7">
-                <p className="inline-flex items-center gap-3 rounded-full border border-white/25 bg-black/35 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.16em] text-white backdrop-blur">
-                  <span className="h-1.5 w-1.5 rounded-full bg-gold" />
-                  {current.label}
-                </p>
-              </div>
-            </div>
-
-            <div className="mt-5 flex flex-wrap gap-2">
-              {HERO_SLIDES.map((slide, i) => (
-                <button
-                  key={slide.src}
-                  type="button"
-                  aria-label={"Afficher : " + slide.label}
-                  onClick={() => setIndex(i)}
-                  className={i === index ? "h-1 w-12 rounded-full bg-gold" : "h-1 w-6 rounded-full bg-white/35 transition hover:bg-white/70"}
-                />
-              ))}
             </div>
           </div>
 
@@ -211,6 +212,11 @@ function Hero() {
               <p className="mt-7 max-w-2xl text-base leading-7 text-white/75 sm:text-lg sm:leading-8">
                 {company?.description ?? "LT GROUP accompagne particuliers, entreprises et institutions en Côte d’Ivoire : vente de terrains, aménagement foncier, BTP, immobilier, hydraulique et électrification."}
               </p>
+              {current.subtitle ? (
+                <p className="mt-5 max-w-xl text-sm leading-7 text-white/65 sm:text-base">
+                  {current.subtitle}
+                </p>
+              ) : null}
               <div className="mt-8 flex flex-wrap gap-3">
                 <Button asChild variant="gold" size="lg">
                   <Link to="/services">Demander un devis</Link>
@@ -218,6 +224,27 @@ function Hero() {
                 <Button asChild size="lg" variant="outline" className="border-white/40 bg-transparent text-white hover:bg-white hover:text-foreground">
                   <Link to="/projets">Voir nos réalisations</Link>
                 </Button>
+              </div>
+
+              <div className="mt-8">
+                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-gold">
+                  {current.title ?? "LT GROUP"}
+                </p>
+                <div className="mt-4 flex flex-wrap gap-2">
+                  {slides.map((slide, i) => (
+                    <button
+                      key={slide.id}
+                      type="button"
+                      aria-label={"Afficher : " + (slide.title ?? "Visuel " + (i + 1))}
+                      onClick={() => setIndex(i)}
+                      className={
+                        i === index % slides.length
+                          ? "h-1.5 w-12 rounded-full bg-gold"
+                          : "h-1.5 w-5 rounded-full bg-white/35 transition hover:bg-white/70"
+                      }
+                    />
+                  ))}
+                </div>
               </div>
             </div>
           </div>
