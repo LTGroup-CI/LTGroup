@@ -4,6 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { PageHero, SiteLayout } from "@/components/site/SiteLayout";
 import { DetailMedia } from "@/components/site/DetailMedia";
 import { formatDateFr, companyQuery, newsItemQuery, newsListQuery } from "@/lib/site-data";
+import { StructuredNewsContent } from "@/components/site/StructuredNewsContent";
 
 export const Route = createFileRoute("/actualites_/$slug")({
   loader: async ({ context, params }) => {
@@ -55,8 +56,8 @@ function Page() {
           alt={item.title}
         />
 
-        <div className="mt-10 max-w-none whitespace-pre-line text-[1.02rem] leading-8 text-foreground/80 [text-align:justify]">
-          {item.content}
+        <div className="mt-10 w-full">
+          <StructuredNewsContent content={item.content} />
         </div>
 
         <div className="mt-10 border-t border-border pt-8">
