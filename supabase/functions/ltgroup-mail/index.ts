@@ -47,7 +47,7 @@ async function sendResend(input: {
   const key = Deno.env.get("RESEND_API_KEY");
   if (!key) throw new Error("RESEND_API_KEY n'est pas configurée dans Supabase Edge Functions.");
 
-  const from = Deno.env.get("RESEND_FROM_EMAIL") || "LT GROUP <contact@ltgroup-ci.com>";
+  const from = Deno.env.get("RESEND_FROM_EMAIL") || "LT GROUP <assistance@ltgroup-ci.com>";
   const response = await fetch("https://api.resend.com/emails", {
     method: "POST",
     headers: {
