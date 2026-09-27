@@ -57,7 +57,7 @@ function Page() {
         />
 
         <div className="mt-10 w-full">
-          <StructuredNewsContent content={item.content} />
+          <StructuredNewsContent content={item.content} title={item.title} />
         </div>
 
         <div className="mt-10 border-t border-border pt-8">
