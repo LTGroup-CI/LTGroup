@@ -44,6 +44,7 @@ type FieldDef = {
   options?: string[];
   required?: boolean;
   accept?: string;
+  multiple?: boolean;
 };
 
 type TableDef = {
@@ -115,7 +116,8 @@ const TABLES: TableDef[] = [
       { name: "short_description", label: "Résumé", kind: "textarea", required: true },
       { name: "description", label: "Description", kind: "textarea" },
       { name: "icon", label: "Icône", kind: "text" },
-      { name: "image_url", label: "Média (photo ou vidéo)", kind: "file", accept: "image/*,video/*" },
+      { name: "media_urls", label: "Photo / vidéo principal (jusqu’à 5 fichiers)", kind: "file", accept: "image/*,video/*", multiple: true },
+      { name: "cover_image_url", label: "Photo de couverture", kind: "file", accept: "image/*", required: true },
       { name: "position", label: "Ordre", kind: "number" },
       { name: "is_active", label: "Actif", kind: "boolean" },
     ],
@@ -184,13 +186,11 @@ const TABLES: TableDef[] = [
       { name: "slug", label: "Identifiant", kind: "text", required: true },
       { name: "excerpt", label: "Résumé", kind: "textarea" },
       { name: "content", label: "Contenu", kind: "textarea" },
-      { name: "image_url", label: "Média principal (photo ou vidéo)", kind: "file", accept: "image/*,video/*" },
-      { name: "cover_image_url", label: "Photo de couverture", kind: "file", accept: "image/*" },
+      { name: "media_urls", label: "Photo / vidéo principal (jusqu’à 5 fichiers)", kind: "file", accept: "image/*,video/*", multiple: true },
+      { name: "cover_image_url", label: "Photo de couverture", kind: "file", accept: "image/*", required: true },
       { name: "author", label: "Auteur", kind: "text" },
       { name: "published_at", label: "Date de publication", kind: "text" },
       { name: "is_published", label: "Publiée", kind: "boolean" },
-      { name: "video_url", label: "Média secondaire (photo ou vidéo)", kind: "file", accept: "image/*,video/*" },
-      { name: "video_poster_url", label: "Affiche de la vidéo", kind: "file", accept: "image/*" },
     ],
   },
   {
@@ -202,8 +202,8 @@ const TABLES: TableDef[] = [
       { name: "slug", label: "Identifiant", kind: "text", required: true },
       { name: "summary", label: "Résumé", kind: "textarea" },
       { name: "content", label: "Description", kind: "textarea" },
-      { name: "image_url", label: "Média principal (photo ou vidéo)", kind: "file", accept: "image/*,video/*" },
-      { name: "cover_image_url", label: "Photo de couverture", kind: "file", accept: "image/*" },
+      { name: "media_urls", label: "Photo / vidéo principal (jusqu’à 5 fichiers)", kind: "file", accept: "image/*,video/*", multiple: true },
+      { name: "cover_image_url", label: "Photo de couverture", kind: "file", accept: "image/*", required: true },
       { name: "category", label: "Pôle d'activité", kind: "select" },
       { name: "location", label: "Localisation", kind: "text" },
       { name: "status", label: "État", kind: "select", options: ["en_cours", "termine", "a_venir"] },
@@ -332,13 +332,13 @@ async function uploadSiteFile(file: File, folder: string) {
 function newRowFor(def: TableDef, rows: Row[]) {
   const row: Row = {};
   const first = rows.length ? Math.min(...rows.map((r) => Number(r["position"] ?? 0))) - 1 : 0;
-  if (def.table === "news") Object.assign(row, { author: "LT Group", published_at: todayIsoDate(), is_published: false });
-  if (def.table === "projects") Object.assign(row, { position: first, status: "en_cours", is_published: false, is_featured: false });
+  if (def.table === "news") Object.assign(row, { author: "LT Group", published_at: todayIsoDate(), is_published: false, media_urls: [] });
+  if (def.table === "projects") Object.assign(row, { position: first, status: "en_cours", is_published: false, is_featured: false, media_urls: [] });
   if (def.table === "partners") Object.assign(row, { position: first, is_active: true });
   if (def.table === "media_items") Object.assign(row, { kind: "photo", position: first, is_active: true });
   if (def.table === "intro_videos") Object.assign(row, { position: first, placement: "home_showcase", is_active: true });
   if (def.table === "hero_slides") Object.assign(row, { position: first, duration_ms: 6000, is_active: true });
-  if (def.table === "activities") Object.assign(row, { position: first, is_active: true });
+  if (def.table === "activities") Object.assign(row, { position: first, is_active: true, media_urls: [] });
   if (def.table === "ai_knowledge") Object.assign(row, { position: first, is_active: true });
   if (def.table === "company_info") Object.assign(row, { name: "LT GROUP", slogan: "Bâtir la terre, éclairer l’avenir" });
   return row;
@@ -720,6 +720,23 @@ function Info({ label, value, href }: { label: string; value: string; href?: str
   );
 }
 
+function prepareEditingRow(def: TableDef, row: Row): Row {
+  const next = { ...row };
+  if ((def.table === "activities" || def.table === "projects" || def.table === "news") && !Array.isArray(next["media_urls"])) {
+    const legacy: string[] = [];
+    if (typeof next["image_url"] === "string" && next["image_url"]) legacy.push(next["image_url"]);
+    if (typeof next["video_url"] === "string" && next["video_url"]) legacy.push(next["video_url"]);
+    next["media_urls"] = legacy.map((url) => ({
+      url,
+      kind: /\.(mp4|webm|mov|m4v|ogg|ogv)(?:$|[?#])/i.test(url) ? "video" : "photo",
+    }));
+  }
+  next["media_preview_urls"] = Array.isArray(next["media_urls"])
+    ? (next["media_urls"] as Array<{ url?: string }>).map((item) => item.url).filter((url): url is string => Boolean(url))
+    : [];
+  return next;
+}
+
 function CrudPanel({ def }: { def: TableDef }) {
   const qc = useQueryClient();
   const [editing, setEditing] = useState<Row | null>(null);
@@ -743,6 +760,14 @@ function CrudPanel({ def }: { def: TableDef }) {
       const payload: Row = {};
       for (const f of def.fields) payload[f.name] = row[f.name] ?? null;
       for (const f of def.fields) if (f.required && (payload[f.name] === null || payload[f.name] === undefined || payload[f.name] === "")) throw new Error("Le champ « " + f.label + " » est obligatoire.");
+      if (Array.isArray(payload["media_urls"])) {
+        const media = payload["media_urls"] as Array<{ url: string; kind?: "photo" | "video"; poster?: string | null }>;
+        payload["image_url"] = media.find((item) => item.kind !== "video")?.url ?? media[0]?.url ?? null;
+        if (def.table === "news") {
+          payload["video_url"] = media.find((item) => item.kind === "video")?.url ?? null;
+          payload["video_poster_url"] = null;
+        }
+      }
       if ((def.table === "news" || def.table === "projects" || def.table === "activities") && !payload["slug"]) payload["slug"] = slugify(String(payload["title"] ?? ""));
       if (def.table === "activities" && payload["slug"]) payload["slug"] = slugify(String(payload["slug"]));
       if (def.table === "news") { payload["author"] = "LT Group"; if (!payload["published_at"]) payload["published_at"] = todayIsoDate(); }
@@ -798,7 +823,7 @@ function CrudPanel({ def }: { def: TableDef }) {
           <table className="w-full min-w-[680px] text-left text-sm">
             <thead className="bg-slate-50"><tr>{def.columns.map((column) => <th key={column} className="whitespace-nowrap px-4 py-3 text-[11px] font-semibold uppercase tracking-[0.12em] text-muted-foreground">{column.replaceAll("_", " ")}</th>)}<th className="px-4 py-3" /></tr></thead>
             <tbody>
-              {rows.map((row) => <tr key={String(row["id"])} className="border-t border-slate-100 hover:bg-slate-50/70">{def.columns.map((column) => <td key={column} className="max-w-[280px] truncate px-4 py-3">{typeof row[column] === "boolean" ? (row[column] ? "Oui" : "Non") : String(row[column] ?? "—")}</td>)}<td className="px-4 py-3"><div className="flex justify-end gap-2"><Button size="sm" variant="outline" onClick={() => setEditing(row)}>{def.table === "testimonials" ? "Modérer" : "Modifier"}</Button>{def.table !== "testimonials" && def.table !== "company_info" ? <Button size="sm" variant="outline" onClick={() => { if (confirm("Supprimer cet élément ?")) remove.mutate(String(row["id"])); }}>Supprimer</Button> : null}</div></td></tr>)}
+              {rows.map((row) => <tr key={String(row["id"])} className="border-t border-slate-100 hover:bg-slate-50/70">{def.columns.map((column) => <td key={column} className="max-w-[280px] truncate px-4 py-3">{typeof row[column] === "boolean" ? (row[column] ? "Oui" : "Non") : String(row[column] ?? "—")}</td>)}<td className="px-4 py-3"><div className="flex justify-end gap-2"><Button size="sm" variant="outline" onClick={() => setEditing(prepareEditingRow(def, row))}>{def.table === "testimonials" ? "Modérer" : "Modifier"}</Button>{def.table !== "testimonials" && def.table !== "company_info" ? <Button size="sm" variant="outline" onClick={() => { if (confirm("Supprimer cet élément ?")) remove.mutate(String(row["id"])); }}>Supprimer</Button> : null}</div></td></tr>)}
             </tbody>
           </table>
         </div>
@@ -807,7 +832,7 @@ function CrudPanel({ def }: { def: TableDef }) {
       <div className="grid gap-3 md:hidden">
         {rows.map((row) => <div key={String(row["id"])} className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
           <div className="space-y-2">{def.columns.slice(0, 4).map((column) => <div key={column} className="flex min-w-0 justify-between gap-4 text-sm"><span className="shrink-0 text-xs uppercase tracking-wide text-muted-foreground">{column.replaceAll("_", " ")}</span><span className="min-w-0 truncate text-right font-medium">{typeof row[column] === "boolean" ? (row[column] ? "Oui" : "Non") : String(row[column] ?? "—")}</span></div>)}</div>
-          <div className="mt-4 flex gap-2"><Button size="sm" variant="outline" className="flex-1" onClick={() => setEditing(row)}>Modifier</Button>{def.table !== "testimonials" && def.table !== "company_info" ? <Button size="sm" variant="outline" className="flex-1" onClick={() => { if (confirm("Supprimer cet élément ?")) remove.mutate(String(row["id"])); }}>Supprimer</Button> : null}</div>
+          <div className="mt-4 flex gap-2"><Button size="sm" variant="outline" className="flex-1" onClick={() => setEditing(prepareEditingRow(def, row))}>Modifier</Button>{def.table !== "testimonials" && def.table !== "company_info" ? <Button size="sm" variant="outline" className="flex-1" onClick={() => { if (confirm("Supprimer cet élément ?")) remove.mutate(String(row["id"])); }}>Supprimer</Button> : null}</div>
         </div>)}
         {!rows.length ? <div className="rounded-2xl border border-dashed p-8 text-center text-sm text-muted-foreground">Aucun élément.</div> : null}
       </div>
@@ -824,31 +849,79 @@ function CrudPanel({ def }: { def: TableDef }) {
                   {f.kind === "textarea" ? <textarea rows={f.name === "content" || f.name === "description" ? 7 : 4} className={field} value={String(editing[f.name] ?? "")} onChange={(e) => setEditing({ ...editing, [f.name]: e.target.value })} />
                   : f.kind === "boolean" ? <div className="mt-2 flex items-center gap-2"><input type="checkbox" checked={Boolean(editing[f.name])} onChange={(e) => setEditing({ ...editing, [f.name]: e.target.checked })} /><span className="text-xs text-muted-foreground">{editing[f.name] ? "Activé" : "Désactivé"}</span></div>
                   : f.kind === "select" ? <select className={field} value={String(editing[f.name] ?? "")} onChange={(e) => setEditing({ ...editing, [f.name]: e.target.value })}><option value="">—</option>{(f.name === "category" ? categoryOptions : f.options ?? []).map((o) => <option key={o} value={o}>{f.name === "placement" ? (o === "hero_intro" ? "Hero — introduction / identité" : "Accueil — carousel projets") : o}</option>)}</select>
-                  : f.kind === "file" ? <div className="mt-2 rounded-xl border border-dashed border-slate-300 p-4"><input type="file" accept={f.accept ?? "image/*,video/*"} className="block w-full max-w-full text-sm" onChange={async (e) => {
-                    const file = e.target.files?.[0]; if (!file) return; setUploading(f.name);
-                    try {
-                      if (def.table === "company_info" && f.name === "logo_png_url") {
-                        const brand = await generateBrandAssets(file);
-                        setEditing((current) => current ? {
-                          ...current,
-                          logo_png_url: brand["brand/logo.png"],
-                          logo_jpg_url: brand["brand/logo.jpg"],
-                          logo_url: brand["brand/logo.png"],
-                        } : current);
-                        toast.success("Logo maître enregistré : PNG, JPG, favicon et image OG générés automatiquement.");
-                      } else {
-                        const url = await uploadSiteFile(file, def.table === "news" ? "news" : def.table === "projects" ? "projects" : def.table === "partners" ? "partners" : def.table === "intro_videos" ? "intro-videos" : "media");
-                        setEditing((current) => current ? {
-                          ...current,
-                          [f.name]: url,
-                          ...(def.table === "media_items" && f.name === "url" ? { kind: file.type.startsWith("video/") ? "video" : "photo" } : {}),
-                          ...(def.table === "news" && f.name === "image_url" ? { video_url: null } : {}),
-                          ...(def.table === "news" && f.name === "video_url" ? { image_url: null } : {}),
-                        } : current);
-                        toast.success("Fichier téléversé.");
-                      }
-                    } catch (err) { toast.error(err instanceof Error ? err.message : "Téléversement impossible."); } finally { setUploading(null); e.currentTarget.value = ""; }
-                  }} />{uploading === f.name ? <p className="mt-2 text-xs text-muted-foreground">Téléversement…</p> : null}{editing[f.name] ? <p className="mt-2 truncate rounded-lg bg-slate-50 p-2 text-xs">{String(editing[f.name])}</p> : <p className="mt-2 text-xs text-muted-foreground">Aucun fichier.</p>}</div>
+                  : f.kind === "file" ? <div className="mt-2 rounded-xl border border-dashed border-slate-300 p-4">
+                    <input
+                      type="file"
+                      accept={f.accept ?? "image/*,video/*"}
+                      multiple={Boolean(f.multiple)}
+                      className="block w-full max-w-full text-sm"
+                      onChange={async (e) => {
+                        const files = Array.from(e.target.files ?? []);
+                        if (!files.length) return;
+                        if (f.multiple && files.length > 5) {
+                          toast.error("Vous pouvez sélectionner au maximum 5 photos/vidéos.");
+                          e.currentTarget.value = "";
+                          return;
+                        }
+                        setUploading(f.name);
+                        try {
+                          if (def.table === "company_info" && f.name === "logo_png_url") {
+                            const file = files[0]!;
+                            const brand = await generateBrandAssets(file);
+                            setEditing((current) => current ? {
+                              ...current,
+                              logo_png_url: brand["brand/logo.png"],
+                              logo_jpg_url: brand["brand/logo.jpg"],
+                              logo_url: brand["brand/logo.png"],
+                            } : current);
+                            toast.success("Logo maître enregistré : PNG, JPG, favicon et image OG générés automatiquement.");
+                          } else if (f.multiple) {
+                            const previews = files.map((file) => URL.createObjectURL(file));
+                            const uploaded = [];
+                            for (const file of files) {
+                              const url = await uploadSiteFile(file, def.table === "news" ? "news" : def.table === "projects" ? "projects" : def.table === "activities" ? "activities" : def.table === "partners" ? "partners" : def.table === "intro_videos" ? "intro-videos" : "media");
+                              uploaded.push({
+                                url,
+                                kind: file.type.startsWith("video/") ? "video" : "photo",
+                              });
+                            }
+                            setEditing((current) => {
+                              if (!current) return current;
+                              const previous = Array.isArray(current["media_urls"]) ? current["media_urls"] as Array<{ url: string; kind?: "photo" | "video" }> : [];
+                              const merged = [...previous, ...uploaded].slice(0, 5);
+                              return { ...current, media_urls: merged, media_preview_urls: merged.map((item) => item.url) };
+                            });
+                            previews.forEach((url) => window.setTimeout(() => URL.revokeObjectURL(url), 1000));
+                            toast.success("Médias ajoutés. Prévisualisation prête avant validation.");
+                          } else {
+                            const file = files[0]!;
+                            const preview = URL.createObjectURL(file);
+                            const url = await uploadSiteFile(file, def.table === "news" ? "news" : def.table === "projects" ? "projects" : def.table === "activities" ? "activities" : def.table === "partners" ? "partners" : def.table === "intro_videos" ? "intro-videos" : "media");
+                            setEditing((current) => current ? { ...current, [f.name]: url, media_preview_urls: [preview] } : current);
+                            toast.success("Fichier téléversé. Prévisualisation prête avant validation.");
+                          }
+                        } catch (err) {
+                          toast.error(err instanceof Error ? err.message : "Téléversement impossible.");
+                        } finally {
+                          setUploading(null);
+                          e.currentTarget.value = "";
+                        }
+                      }}
+                    />
+                    {uploading === f.name ? <p className="mt-2 text-xs text-muted-foreground">Téléversement…</p> : null}
+                    {f.multiple ? (
+                      <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-5">
+                        {(Array.isArray(editing["media_urls"]) ? editing["media_urls"] as Array<{ url: string; kind?: "photo" | "video" }> : []).map((item, i) => (
+                          <div key={item.url + i} className="relative overflow-hidden rounded-lg border bg-slate-50">
+                            {item.kind === "video" ? <video src={item.url} muted playsInline className="aspect-square h-full w-full object-cover" /> : <img src={item.url} alt="" className="aspect-square h-full w-full object-cover" />}
+                            <button type="button" onClick={() => setEditing((current) => current ? { ...current, media_urls: (current["media_urls"] as Array<{ url: string; kind?: "photo" | "video" }>).filter((_, index) => index !== i) } : current)} className="absolute right-1 top-1 rounded-full bg-black/70 px-2 py-1 text-xs text-white">×</button>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      editing[f.name] ? <div className="mt-3 overflow-hidden rounded-lg border bg-slate-50 p-2"><img src={String(editing[f.name])} alt="" className="max-h-48 w-full object-contain" /></div> : <p className="mt-2 text-xs text-muted-foreground">Aucun fichier.</p>
+                    )}
+                  </div>
                   : <input type={f.kind === "number" ? "number" : "text"} className={field} value={String(editing[f.name] ?? "")} onChange={(e) => { const value = f.kind === "number" ? (e.target.value === "" ? null : Number(e.target.value)) : e.target.value; const next = { ...editing, [f.name]: value }; if ((def.table === "news" || def.table === "projects" || def.table === "activities") && f.name === "title" && !editing["id"]) next["slug"] = slugify(String(value ?? "")); setEditing(next); }} disabled={def.table === "news" && f.name === "author"} />}
                 </label>
               ))}
