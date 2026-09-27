@@ -50,7 +50,7 @@ function Page() {
     <SiteLayout>
       <PageHero
         eyebrow="À propos"
-        title={company?.name ?? "LT GROUP"}
+        title="LIGHT TERRA GROUP SARL"
         description={company?.slogan ?? "Bâtir la terre, éclairer l'avenir"}
       />
 
@@ -155,7 +155,7 @@ function Page() {
         <div className="mx-auto grid max-w-7xl gap-10 px-5 lg:grid-cols-2 lg:px-8">
           <div className="rounded-lg border border-border bg-card p-8">
             <p className="eyebrow">Fiche entreprise</p>
-            <h2 className="mt-3 text-2xl">{company?.name ?? "LT GROUP"}</h2>
+            <h2 className="mt-3 text-2xl">LIGHT TERRA GROUP SARL</h2>
             <dl className="mt-6 space-y-3 text-sm">
               {[
                 ["Activité", "Aménagement foncier, BTP, immobilier, énergie"],
