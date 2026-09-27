@@ -59,6 +59,8 @@ export type Activity = {
   description: string | null;
   icon: string | null;
   image_url: string | null;
+  cover_image_url: string | null;
+  media_urls: Array<{ url: string; kind?: "photo" | "video"; poster?: string | null }>;
   position: number;
   is_active: boolean;
 };
@@ -71,6 +73,7 @@ export type Project = {
   content: string | null;
   image_url: string | null;
   cover_image_url: string | null;
+  media_urls: Array<{ url: string; kind?: "photo" | "video"; poster?: string | null }>;
   category: string | null;
   location: string | null;
   status: string;
@@ -94,6 +97,7 @@ export type NewsItem = {
   created_at: string;
   video_url: string | null;
   video_poster_url: string | null;
+  media_urls: Array<{ url: string; kind?: "photo" | "video"; poster?: string | null }>;
 };
 
 export type Partner = {
