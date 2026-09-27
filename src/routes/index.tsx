@@ -156,28 +156,69 @@ function Hero() {
 
   return (
     <section className="border-b border-border bg-ink">
-      <div className="mx-auto grid min-h-[78vh] max-w-7xl lg:grid-cols-2">
-        <div className="relative min-h-[46vh] overflow-hidden lg:min-h-[78vh]">
-          <div className="absolute inset-0"><IntroVideoLoop /></div>
-          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-          <div className="absolute bottom-6 left-5 right-5 z-10 lg:left-8">
-            <p className="inline-flex items-center gap-3 rounded-full border border-white/25 bg-black/35 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.16em] text-white backdrop-blur">
-              <span className="h-1.5 w-1.5 rounded-full bg-gold" />
-              {current.label}
-            </p>
-          </div>
-        </div>
-        <div className="flex items-center bg-ink px-5 py-14 text-ink-foreground sm:px-8 lg:px-12 lg:py-20 xl:px-16">
-          <div className="w-full max-w-2xl">
-            <p className="eyebrow text-gold">LT GROUP · Côte d’Ivoire</p>
-            <h1 className="mt-4 text-4xl leading-[1.08] text-white sm:text-5xl lg:text-6xl">Bâtir la terre, <span className="text-gold-gradient">éclairer l’avenir</span></h1>
-            <p className="mt-6 text-base leading-7 text-white/75 sm:text-lg">{company?.description ?? "LT GROUP accompagne particuliers, entreprises et institutions en Côte d’Ivoire : vente de terrains, aménagement foncier, BTP, immobilier, hydraulique et électrification."}</p>
-            <div className="mt-8 flex flex-wrap gap-3">
-              <Button asChild variant="gold" size="lg"><Link to="/services">Demander un devis</Link></Button>
-              <Button asChild size="lg" variant="outline" className="border-white/40 bg-transparent text-white hover:bg-white hover:text-foreground"><Link to="/projets">Voir nos réalisations</Link></Button>
+      <div className="mx-auto max-w-[1480px] px-5 sm:px-8 lg:px-12 xl:px-16">
+        <div className="grid min-h-[78vh] gap-10 py-10 lg:grid-cols-[1.05fr_0.95fr] lg:items-center lg:gap-14 lg:py-14">
+          <div className="order-2 min-w-0 lg:order-1">
+            <div className="mb-8 max-w-3xl">
+              <p className="eyebrow text-gold">Qui sommes-nous</p>
+              <h2 className="mt-3 text-3xl text-white sm:text-4xl lg:text-[2.7rem] lg:leading-[1.12]">
+                Un partenaire solide pour vos projets fonciers et immobiliers
+              </h2>
+              <hr className="gold-rule mt-5 w-24" />
+              <p className="mt-5 max-w-2xl text-base leading-7 text-white/75 sm:text-lg">
+                De la recherche du terrain à la remise des clés, LT GROUP réunit topographes, ingénieurs et bâtisseurs pour sécuriser chaque étape de votre investissement.
+              </p>
+              <div className="mt-6 flex flex-wrap gap-3">
+                <Button asChild variant="gold">
+                  <Link to="/a-propos">Découvrir le groupe</Link>
+                </Button>
+                <Button asChild variant="outline" className="border-white/40 bg-transparent text-white hover:bg-white hover:text-foreground">
+                  <Link to="/contact">Nous rencontrer</Link>
+                </Button>
+              </div>
             </div>
-            <div className="mt-9 flex flex-wrap gap-2">
-              {HERO_SLIDES.map((slide, i) => <button key={slide.src} type="button" aria-label={"Afficher : " + slide.label} onClick={() => setIndex(i)} className={i === index ? "h-1 w-12 rounded-full bg-gold" : "h-1 w-6 rounded-full bg-white/35 transition hover:bg-white/70"} />)}
+
+            <div className="relative overflow-hidden rounded-xl border border-gold/25 bg-black shadow-elevated">
+              <IntroVideoLoop />
+              <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/55 via-transparent to-transparent" />
+              <div className="absolute bottom-5 left-5 right-5 z-10 sm:left-7 sm:right-7">
+                <p className="inline-flex items-center gap-3 rounded-full border border-white/25 bg-black/35 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.16em] text-white backdrop-blur">
+                  <span className="h-1.5 w-1.5 rounded-full bg-gold" />
+                  {current.label}
+                </p>
+              </div>
+            </div>
+
+            <div className="mt-5 flex flex-wrap gap-2">
+              {HERO_SLIDES.map((slide, i) => (
+                <button
+                  key={slide.src}
+                  type="button"
+                  aria-label={"Afficher : " + slide.label}
+                  onClick={() => setIndex(i)}
+                  className={i === index ? "h-1 w-12 rounded-full bg-gold" : "h-1 w-6 rounded-full bg-white/35 transition hover:bg-white/70"}
+                />
+              ))}
+            </div>
+          </div>
+
+          <div className="order-1 flex min-w-0 items-center lg:order-2">
+            <div className="w-full">
+              <p className="eyebrow text-gold">LT GROUP · Côte d’Ivoire</p>
+              <h1 className="mt-4 text-4xl leading-[1.05] text-white sm:text-5xl lg:text-6xl xl:text-[4.5rem]">
+                Bâtir la terre, <span className="text-gold-gradient">éclairer l’avenir</span>
+              </h1>
+              <p className="mt-7 max-w-2xl text-base leading-7 text-white/75 sm:text-lg sm:leading-8">
+                {company?.description ?? "LT GROUP accompagne particuliers, entreprises et institutions en Côte d’Ivoire : vente de terrains, aménagement foncier, BTP, immobilier, hydraulique et électrification."}
+              </p>
+              <div className="mt-8 flex flex-wrap gap-3">
+                <Button asChild variant="gold" size="lg">
+                  <Link to="/services">Demander un devis</Link>
+                </Button>
+                <Button asChild size="lg" variant="outline" className="border-white/40 bg-transparent text-white hover:bg-white hover:text-foreground">
+                  <Link to="/projets">Voir nos réalisations</Link>
+                </Button>
+              </div>
             </div>
           </div>
         </div>
@@ -194,7 +235,7 @@ function KeyFigures() {
     { value: "Abidjan", label: "et tout le territoire ivoirien" },
   ];
   return (
-    <section className="relative z-20 mx-auto -mt-12 max-w-7xl px-5 lg:px-8">
+    <section className="relative z-20 mx-auto -mt-12 max-w-[1480px] px-5 sm:px-8 lg:px-12 xl:px-16">
       <div className="grid gap-px overflow-hidden rounded-2xl border border-border bg-border shadow-elevated sm:grid-cols-2 lg:grid-cols-4">
         {items.map((it) => (
           <div key={it.label} className="bg-card p-6 lg:p-8">
@@ -203,27 +244,6 @@ function KeyFigures() {
           </div>
         ))}
       </div>
-    </section>
-  );
-}
-
-function IntroSection() {
-  return (
-    <section className="mx-auto grid max-w-7xl items-center gap-12 px-5 py-20 lg:grid-cols-2 lg:px-8 lg:py-28">
-      <div>
-        <p className="eyebrow">Qui sommes-nous</p>
-        <h2 className="mt-3 text-3xl lg:text-4xl">Un partenaire solide pour vos projets fonciers et immobiliers</h2>
-        <hr className="gold-rule mt-6 w-24" />
-        <p className="mt-6 text-lg leading-relaxed text-muted-foreground">
-          De la recherche du terrain à la remise des clés, LT GROUP réunit topographes, ingénieurs et
-          bâtisseurs pour sécuriser chaque étape de votre investissement.
-        </p>
-        <div className="mt-8 flex flex-wrap gap-3">
-          <Button asChild variant="gold"><Link to="/a-propos">Découvrir le groupe</Link></Button>
-          <Button asChild variant="outline"><Link to="/contact">Nous rencontrer</Link></Button>
-        </div>
-      </div>
-      <IntroVideoLoop />
     </section>
   );
 }
@@ -458,10 +478,8 @@ function Index() {
       <main className="flex-1">
         <Hero />
         <KeyFigures />
-        <IntroSection />
         <Activities />
         <Visuals />
-        <VideoShowcase />
         <FeaturedProjects />
         <LatestNews />
         <HomeMap />
