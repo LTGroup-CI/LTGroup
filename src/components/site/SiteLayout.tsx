@@ -17,6 +17,7 @@ const NAV = [
   { to: "/services", label: "Services & devis" },
   { to: "/actualites", label: "Actualités" },
   { to: "/temoignages", label: "Témoignages" },
+  { to: "/faq", label: "FAQ" },
   { to: "/contact", label: "Contact" },
 ];
 
