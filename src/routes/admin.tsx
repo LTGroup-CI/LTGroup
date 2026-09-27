@@ -51,7 +51,7 @@ type FieldDef = {
 type TableDef = {
   key: string;
   label: string;
-  table: "hero_slides" | "activities" | "news" | "projects" | "testimonials" | "partners" | "media_items" | "intro_videos" | "company_info" | "ai_knowledge" | "ai_visitors" | "ai_conversations" | "ai_conversation_messages" | "newsletter_subscribers" | "newsletter_deliveries";
+  table: "hero_slides" | "activities" | "news" | "projects" | "testimonials" | "partners" | "media_items" | "intro_videos" | "company_info" | "ai_knowledge" | "ai_visitors" | "ai_conversations" | "ai_conversation_messages" | "newsletter_subscribers" | "newsletter_deliveries" | "faq_items";
   order: { column: string; ascending: boolean };
   columns: string[];
   fields: FieldDef[];
@@ -148,6 +148,18 @@ const TABLES: TableDef[] = [
       { name: "linkedin_url", label: "LinkedIn", kind: "text" },
       { name: "instagram_url", label: "Instagram", kind: "text" },
       { name: "logo_png_url", label: "Logo maître PNG — source de toute l’identité", kind: "file", accept: "image/png" },
+    ],
+  },
+  {
+    key: "faq_items", label: "FAQ — questions fréquentes", table: "faq_items",
+    order: { column: "position", ascending: true },
+    columns: ["question", "category", "position", "is_active"], create: true,
+    fields: [
+      { name: "question", label: "Question", kind: "text", required: true },
+      { name: "answer", label: "Réponse", kind: "textarea", required: true },
+      { name: "category", label: "Catégorie", kind: "text", required: true },
+      { name: "position", label: "Ordre", kind: "number" },
+      { name: "is_active", label: "Visible sur le site", kind: "boolean" },
     ],
   },
   {
