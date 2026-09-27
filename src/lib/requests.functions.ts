@@ -35,7 +35,7 @@ export const submitRequest = createServerFn({ method: "POST" })
       return {
         ok: true as const,
         message:
-          String(result.message) ||
+          String(result["message"]) ||
           "Votre demande a bien été envoyée. Un e-mail de confirmation vous a été adressé.",
       };
     } catch (error) {
