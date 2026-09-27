@@ -176,7 +176,7 @@ export default {
           return Response.json({ ok: false, message: "Informations d'inscription invalides." }, { status: 400 });
         }
 
-        const db = adminClient(ctx);
+        const db = ctx.supabaseAdmin;
         const { data: existing } = await db.from("newsletter_subscribers").select("*").eq("email", email).maybeSingle();
 
         if (existing?.welcome_sent_at && existing.status === "active") {
@@ -220,7 +220,7 @@ export default {
           return Response.json({ ok: false, message: "Session administrateur requise." }, { status: 401 });
         }
 
-        const db = adminClient(ctx);
+        const db = ctx.supabaseAdmin;
         const { data: role } = await db.from("user_roles").select("role").eq("user_id", ctx.userClaims.sub).eq("role", "admin").maybeSingle();
         if (!role) return Response.json({ ok: false, message: "Accès administrateur requis." }, { status: 403 });
 
