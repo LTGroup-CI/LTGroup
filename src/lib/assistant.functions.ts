@@ -1,6 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { createClient } from "@supabase/supabase-js";
+import { invokeLtgroupMail } from "@/lib/edge-mail";
 
 const schema = z.object({
   messages: z.array(
@@ -27,23 +28,10 @@ function escapeHtml(value: string) {
 }
 
 async function sendVisitorEmail(to: string, fullName: string) {
-  const key = process.env["RESEND_API_KEY"];
-  if (!key) return;
-  const from = process.env["RESEND_FROM_EMAIL"] ?? "LT GROUP <contact@ltgroup-ci.com>";
-  const name = escapeHtml(fullName);
-  const response = await fetch("https://api.resend.com/emails", {
-    method: "POST",
-    headers: { "Content-Type": "application/json", Authorization: `Bearer ${key}` },
-    body: JSON.stringify({
-      from,
-      to: [to],
-      reply_to: "contact@ltgroup-ci.com",
-      subject: "Votre demande a bien été prise en compte — LT GROUP",
-      text: `Bonjour ${fullName},\\n\\nRaï, l’assistante virtuelle de LT GROUP, a bien enregistré vos informations. Notre équipe pourra reprendre votre demande si nécessaire.\\n\\nLT GROUP — Light Terra Group\\nBâtir la terre, éclairer l'avenir\\ncontact@ltgroup-ci.com`,
-      html: `<p>Bonjour ${name},</p><p>Raï, l’assistante virtuelle de LT GROUP, a bien enregistré vos informations. Notre équipe pourra reprendre votre demande si nécessaire.</p><p><strong>LT GROUP — Light Terra Group</strong><br>Bâtir la terre, éclairer l'avenir<br>contact@ltgroup-ci.com</p>`,
-    }),
+  await invokeLtgroupMail("assistant_confirmation", {
+    email: to,
+    full_name: fullName,
   });
-  if (!response.ok) throw new Error("E-mail visiteur non envoyé");
 }
 
 function extractVisitorData(messages: Array<{ role: string; content: string }>) {
