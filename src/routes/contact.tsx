@@ -75,7 +75,7 @@ function Page() {
 
       <section className="mx-auto grid max-w-7xl gap-12 px-5 py-12 lg:grid-cols-2 lg:px-8 lg:py-12">
         <div>
-          <h2 className="text-2xl">Nos coordonnées</h2>
+          <h2 className="text-2xl">Nos locaux à Abidjan</h2>
           <hr className="gold-rule mt-4 w-16" />
           <ul className="mt-6 space-y-5 text-sm text-muted-foreground">
             <li className="flex gap-3">
@@ -108,8 +108,7 @@ function Page() {
             <li className="flex gap-3">
               <MapPin className="mt-0.5 h-5 w-5 shrink-0 text-gold-deep" />
               <span>
-                Siège social : Abidjan Cocody Akouédo extension sud-est, Lot 637, îlot 60 ; 01 BP
-                2259 Abidjan 01
+                Siège social : Cocody Akouédo Extension Sud-Est, Lot 637, Îlot 60, 01 BP 2259 Abidjan 01
               </span>
             </li>
           </ul>
