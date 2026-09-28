@@ -31,7 +31,7 @@ export function NewsletterSignup() {
   }
 
   return (
-    <section className="bg-ink py-16 text-white sm:py-20">
+    <section className="bg-ink py-12 text-white sm:py-12">
       <div className="mx-auto max-w-7xl px-5 lg:px-8">
         <div className="grid gap-10 lg:grid-cols-[1fr_1.15fr] lg:items-center">
           <div>

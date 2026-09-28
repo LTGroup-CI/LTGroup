@@ -38,7 +38,7 @@ export function MediaGallery() {
   const current = items[index]!;
 
   return (
-    <section className="border-t border-border bg-secondary py-16 lg:py-20">
+    <section className="border-t border-border bg-secondary py-12 lg:py-12">
       <div className="mx-auto max-w-7xl px-5 lg:px-8">
         <p className="eyebrow">Médias du groupe</p>
         <h2 className="mt-3 text-3xl lg:text-4xl">Découvrez nos contenus</h2>

@@ -54,7 +54,7 @@ function Page() {
         description={company?.slogan ?? "Bâtir la terre, éclairer l'avenir"}
       />
 
-      <section className="mx-auto max-w-7xl px-5 py-20 lg:px-8">
+      <section className="mx-auto max-w-7xl px-5 py-12 lg:px-8">
         <div className="grid gap-12 lg:grid-cols-2">
           <div>
             <p className="eyebrow">Qui sommes-nous</p>
@@ -88,7 +88,7 @@ function Page() {
 
 
 
-      <section className="bg-ink-gradient py-20 text-ink-foreground">
+      <section className="bg-ink-gradient py-12 text-ink-foreground">
         <div className="mx-auto grid max-w-7xl gap-8 px-5 lg:grid-cols-3 lg:px-8">
           <div className="lg:col-span-2">
             <p className="eyebrow text-gold">Notre manière de travailler</p>
@@ -110,7 +110,7 @@ function Page() {
         </div>
       </section>
       {activities && activities.length > 0 ? (
-        <section className="bg-muted/50 py-20">
+        <section className="bg-muted/50 py-12">
           <div className="mx-auto max-w-7xl px-5 lg:px-8">
             <p className="eyebrow">Domaines d'intervention</p>
             <h2 className="mt-3 text-3xl">Ce que nous faisons</h2>
@@ -131,7 +131,7 @@ function Page() {
         </section>
       ) : null}
 
-      <section className="mx-auto max-w-7xl px-5 py-20 lg:px-8">
+      <section className="mx-auto max-w-7xl px-5 py-12 lg:px-8">
         <p className="eyebrow">Notre démarche</p>
         <h2 className="mt-3 text-3xl">Comment nous accompagnons chaque projet</h2>
         <hr className="gold-rule mt-6 w-24" />
@@ -151,7 +151,7 @@ function Page() {
         </ol>
       </section>
 
-      <section className="bg-muted/50 py-20">
+      <section className="bg-muted/50 py-12">
         <div className="mx-auto grid max-w-7xl gap-10 px-5 lg:grid-cols-2 lg:px-8">
           <div className="rounded-lg border border-border bg-card p-8">
             <p className="eyebrow">Fiche entreprise</p>

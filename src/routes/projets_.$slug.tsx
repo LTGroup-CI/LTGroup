@@ -35,7 +35,7 @@ function Page() {
   }
 
   if (!project) {
-    return <SiteLayout><PageHero eyebrow="Projet" title="Projet introuvable" description="Ce projet n’est plus disponible." /><section className="mx-auto max-w-7xl px-5 py-16 lg:px-8"><Link to="/projets" className="font-semibold underline">← Tous les projets</Link></section></SiteLayout>;
+    return <SiteLayout><PageHero eyebrow="Projet" title="Projet introuvable" description="Ce projet n’est plus disponible." /><section className="mx-auto max-w-7xl px-5 py-12 lg:px-8"><Link to="/projets" className="font-semibold underline">← Tous les projets</Link></section></SiteLayout>;
   }
 
   const legacyMedia = [
@@ -47,7 +47,7 @@ function Page() {
     <SiteLayout>
       <PageHero eyebrow={project.category ?? "Projet"} title={project.title} description={project.summary ?? ""} />
 
-      <article className="mx-auto max-w-7xl px-5 py-12 lg:px-8 lg:py-16">
+      <article className="mx-auto max-w-7xl px-5 py-12 lg:px-8 lg:py-12">
         <div className="min-w-0">
           <DetailMedia
             cover={project.cover_image_url}
@@ -75,7 +75,7 @@ function Page() {
         </div>
 
         {related.length ? (
-          <section className="mt-16 border-t border-border pt-12">
+          <section className="mt-10 border-t border-border pt-12">
             <p className="eyebrow">Autres projets</p>
             <div className="mt-6 grid gap-6 md:grid-cols-3">
               {related.map((item) => (

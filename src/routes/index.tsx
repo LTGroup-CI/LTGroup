@@ -262,7 +262,7 @@ function KeyFigures() {
     { value: "Abidjan", label: "et tout le territoire ivoirien" },
   ];
   return (
-    <section className="relative z-20 mx-auto -mt-12 max-w-[1480px] px-5 sm:px-8 lg:px-12 xl:px-16">
+    <section className="relative z-20 mx-auto -mt-8 max-w-[1480px] px-5 sm:px-8 lg:px-12 xl:px-16">
       <div className="grid gap-px overflow-hidden rounded-2xl border border-border bg-border shadow-elevated sm:grid-cols-2 lg:grid-cols-4">
         {items.map((it) => (
           <div key={it.label} className="bg-card p-6 lg:p-8">
@@ -277,7 +277,7 @@ function KeyFigures() {
 
 function Visuals() {
   return (
-    <section className="bg-secondary py-20 lg:py-24">
+    <section className="bg-secondary py-12 lg:py-12">
       <div className="mx-auto max-w-7xl px-5 lg:px-8">
         <p className="eyebrow">Opportunités du moment</p>
         <h2 className="mt-3 text-3xl lg:text-4xl">Nos terrains disponibles</h2>
@@ -290,7 +290,7 @@ function Visuals() {
 
 function HomeMap() {
   return (
-    <section className="mx-auto grid max-w-[1480px] gap-10 px-5 py-16 sm:px-8 lg:grid-cols-[0.9fr_1.4fr] lg:px-12 lg:py-20 xl:px-16">
+    <section className="mx-auto grid max-w-[1480px] gap-10 px-5 py-12 sm:px-8 lg:grid-cols-[0.9fr_1.4fr] lg:px-12 lg:py-12 xl:px-16">
       <div className="min-w-0 self-center">
         <h2 className="mt-0 text-3xl lg:text-4xl">Nos locaux à Abidjan</h2>
         <hr className="gold-rule mt-6 w-24" />
@@ -332,7 +332,7 @@ function VideoShowcase() {
   const current = videoList[safeIndex]!;
 
   return (
-    <section className="bg-muted/40 py-16 sm:py-20 lg:py-24">
+    <section className="bg-muted/40 py-12 sm:py-12 lg:py-12">
       <div className="mx-auto max-w-7xl px-5 lg:px-8">
         <div className="max-w-3xl">
           <p className="eyebrow">Projets en images</p>
@@ -401,11 +401,11 @@ function Activities() {
   if (!activities || activities.length === 0) return null;
 
   return (
-    <section className="mx-auto max-w-7xl px-5 py-20 lg:px-8 lg:py-28">
+    <section className="mx-auto max-w-7xl px-5 py-12 lg:px-8 lg:py-12">
       <p className="eyebrow">Nos pôles d'activité</p>
       <h2 className="mt-3 text-3xl lg:text-4xl">Un groupe, plusieurs expertises</h2>
       <hr className="gold-rule mt-6 w-24" />
-      <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {activities.map((activity) => {
           const Icon = activityIcon(activity.icon);
           return (
@@ -429,12 +429,12 @@ function FeaturedProjects() {
   if (list.length === 0) return null;
 
   return (
-    <section className="bg-muted/50 py-20 lg:py-28">
+    <section className="bg-muted/50 py-12 lg:py-12">
       <div className="mx-auto max-w-7xl px-5 lg:px-8">
         <p className="eyebrow">Réalisations</p>
         <h2 className="mt-3 text-3xl lg:text-4xl">Des projets qui transforment le territoire</h2>
         <hr className="gold-rule mt-6 w-24" />
-        <div className="mt-12 grid gap-6 md:grid-cols-3">
+        <div className="mt-8 grid gap-6 md:grid-cols-3">
           {list.map((project) => (
             <Link to="/projets/$slug" params={{ slug: project.slug }} key={project.id} className="overflow-hidden rounded-lg border border-border bg-card transition hover:-translate-y-1 hover:shadow-elevated">
               {project.cover_image_url || project.image_url ? <MediaPreview url={project.cover_image_url || project.image_url || ""} alt={project.title} className="aspect-[4/3] w-full object-cover" /> : null}
@@ -458,11 +458,11 @@ function LatestNews() {
   if (list.length === 0) return null;
 
   return (
-    <section className="mx-auto max-w-7xl px-5 py-20 lg:px-8 lg:py-28">
+    <section className="mx-auto max-w-7xl px-5 py-12 lg:px-8 lg:py-12">
       <p className="eyebrow">Actualités</p>
       <h2 className="mt-3 text-3xl lg:text-4xl">La vie du groupe</h2>
       <hr className="gold-rule mt-6 w-24" />
-      <div className="mt-12 grid gap-6 md:grid-cols-3">
+      <div className="mt-8 grid gap-6 md:grid-cols-3">
         {list.map((item) => (
           <Link key={item.id} to="/actualites/$slug" params={{ slug: item.slug }} className="group overflow-hidden rounded-lg border border-border bg-card transition hover:-translate-y-1 hover:shadow-elevated">
             {item.cover_image_url || item.image_url || item.video_url ? <MediaPreview url={item.cover_image_url ?? item.image_url ?? item.video_url ?? ""} alt={item.title} poster={item.video_poster_url} className="aspect-[16/9] w-full object-cover transition duration-500 group-hover:scale-[1.02]" /> : null}
@@ -483,7 +483,7 @@ function LatestNews() {
 function CallToAction() {
   const { data: company } = useQuery(companyQuery);
   return (
-    <section className="bg-ink-gradient py-20 text-ink-foreground lg:py-24">
+    <section className="bg-ink-gradient py-12 text-ink-foreground lg:py-12">
       <div className="mx-auto flex max-w-7xl flex-col items-start gap-8 px-5 lg:flex-row lg:items-center lg:justify-between lg:px-8">
         <div>
           <h2 className="text-3xl lg:text-4xl">Un projet foncier, immobilier ou électrique ?</h2>

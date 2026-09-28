@@ -92,7 +92,7 @@ function Page() {
     <SiteLayout>
       <PageHero eyebrow="Services & devis" title="Demandez votre devis" description={description} />
 
-      <section className="mx-auto grid max-w-7xl gap-12 px-5 py-16 lg:grid-cols-[1fr_1.2fr] lg:px-8 lg:py-20">
+      <section className="mx-auto grid max-w-7xl gap-12 px-5 py-12 lg:grid-cols-[1fr_1.2fr] lg:px-8 lg:py-12">
         <div>
           <h2 className="text-2xl">Nos prestations</h2>
           <hr className="gold-rule mt-4 w-16" />

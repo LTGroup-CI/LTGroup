@@ -137,7 +137,7 @@ export function SiteFooter() {
 
   return (
     <footer className="bg-ink-gradient text-ink-foreground">
-      <div className="mx-auto grid max-w-7xl gap-10 px-5 py-16 lg:grid-cols-4 lg:px-8">
+      <div className="mx-auto grid max-w-7xl gap-10 px-5 py-12 lg:grid-cols-4 lg:px-8">
         <div className="lg:col-span-2">
           <div className="inline-block rounded-lg bg-secondary p-4 shadow-sm">
             <img

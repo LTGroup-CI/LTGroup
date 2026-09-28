@@ -34,7 +34,7 @@ function Page() {
   return (
     <SiteLayout>
       <PageHero eyebrow="Newsletter" title="Désabonnement" description="Gérez votre inscription à la newsletter LIGHT TERRA GROUP." />
-      <section className="mx-auto max-w-2xl px-5 py-16 text-justify">
+      <section className="mx-auto max-w-2xl px-5 py-12 text-justify">
         {!id ? <p>Lien de désabonnement invalide.</p>
           : state === "done" ? <p>Vous êtes désabonné. Vous ne recevrez plus nos e-mails d'information.</p>
           : <>

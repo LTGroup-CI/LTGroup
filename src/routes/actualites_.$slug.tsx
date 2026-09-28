@@ -31,7 +31,7 @@ function Page() {
   }
 
   if (!item) {
-    return <SiteLayout><PageHero eyebrow="Actualités" title="Actualité introuvable" description="Cette publication n’est plus disponible." /><section className="mx-auto max-w-7xl px-5 py-16 lg:px-8"><Link to="/actualites" className="font-semibold underline">← Retour aux actualités</Link></section></SiteLayout>;
+    return <SiteLayout><PageHero eyebrow="Actualités" title="Actualité introuvable" description="Cette publication n’est plus disponible." /><section className="mx-auto max-w-7xl px-5 py-12 lg:px-8"><Link to="/actualites" className="font-semibold underline">← Retour aux actualités</Link></section></SiteLayout>;
   }
 
   const legacyMedia = [
@@ -44,7 +44,7 @@ function Page() {
     <SiteLayout>
       <PageHero eyebrow="Actualité" title={item.title} description={item.excerpt ?? ""} />
 
-      <article className="mx-auto max-w-7xl px-5 py-12 lg:px-8 lg:py-16">
+      <article className="mx-auto max-w-7xl px-5 py-12 lg:px-8 lg:py-12">
         <div className="mb-8 flex flex-wrap items-center gap-x-4 gap-y-2 text-xs uppercase tracking-[0.16em] text-muted-foreground">
           <span>{formatDateFr(item.published_at ?? item.created_at)}</span>
           {item.author ? <span>— {item.author}</span> : null}
@@ -65,7 +65,7 @@ function Page() {
         </div>
 
         {related.length ? (
-          <section className="mt-16 border-t border-border pt-12">
+          <section className="mt-10 border-t border-border pt-12">
             <p className="eyebrow">À découvrir également</p>
             <div className="mt-6 grid gap-6 md:grid-cols-3">
               {related.map((news) => (

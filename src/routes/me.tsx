@@ -58,7 +58,7 @@ function LoginPage() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-ink-gradient px-5 py-16">
+    <div className="flex min-h-screen items-center justify-center bg-ink-gradient px-5 py-12">
       <div className="w-full max-w-md rounded-lg border border-gold/30 bg-card p-8 shadow-elevated">
         <img src={company?.logo_png_url || company?.logo_url || LOGO_URL} alt="LT GROUP" className="mx-auto h-16 w-auto" />
         <h1 className="mt-6 text-center text-2xl">Espace réservé</h1>

@@ -28,7 +28,7 @@ function Page() {
   }
 
   if (!activity) {
-    return <SiteLayout><PageHero eyebrow="Nos activités" title="Pôle introuvable" description="Ce pôle d'activité n'est plus disponible." /><section className="mx-auto max-w-7xl px-5 py-16 lg:px-8"><Link to="/activites" className="font-semibold underline">← Toutes nos activités</Link></section></SiteLayout>;
+    return <SiteLayout><PageHero eyebrow="Nos activités" title="Pôle introuvable" description="Ce pôle d'activité n'est plus disponible." /><section className="mx-auto max-w-7xl px-5 py-12 lg:px-8"><Link to="/activites" className="font-semibold underline">← Toutes nos activités</Link></section></SiteLayout>;
   }
 
   const legacyMedia = activity.image_url ? [{ url: activity.image_url }] : [];
@@ -39,7 +39,7 @@ function Page() {
     <SiteLayout>
       <PageHero eyebrow="Pôle d'activité" title={activity.title} description={activity.short_description} />
 
-      <article className="mx-auto max-w-7xl px-5 py-12 lg:px-8 lg:py-16">
+      <article className="mx-auto max-w-7xl px-5 py-12 lg:px-8 lg:py-12">
         {activity.cover_image_url || activity.media_urls?.length || activity.image_url ? (
           <DetailMedia
             cover={activity.cover_image_url}
@@ -63,7 +63,7 @@ function Page() {
         </div>
 
         {relatedProjects.length ? (
-          <section className="mt-16 border-t border-border pt-12">
+          <section className="mt-10 border-t border-border pt-12">
             <p className="eyebrow">Réalisations liées</p>
             <div className="mt-6 grid gap-6 md:grid-cols-3">
               {relatedProjects.map((project) => (
@@ -77,7 +77,7 @@ function Page() {
         ) : null}
 
         {otherActivities.length ? (
-          <section className="mt-16 border-t border-border pt-12">
+          <section className="mt-10 border-t border-border pt-12">
             <p className="eyebrow">Explorer nos autres pôles</p>
             <div className="mt-6 grid gap-4 md:grid-cols-3">
               {otherActivities.map((other) => (

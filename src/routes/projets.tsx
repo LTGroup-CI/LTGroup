@@ -40,7 +40,7 @@ function Page() {
   return (
     <SiteLayout>
       <PageHero eyebrow="Réalisations" title="Nos projets" description={description} />
-      <section className="mx-auto max-w-7xl px-5 py-20 lg:px-8">
+      <section className="mx-auto max-w-7xl px-5 py-12 lg:px-8">
         {categories.length > 0 ? (
           <div className="mb-10 flex flex-wrap gap-2">
             {["tous", ...categories].map((cat) => (
