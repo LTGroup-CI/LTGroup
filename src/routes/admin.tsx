@@ -263,7 +263,7 @@ const TABLES: TableDef[] = [
 ];
 
 const field =
-  "mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm outline-none focus:ring-1 focus:ring-ring";
+  "mt-1 block min-w-0 w-full max-w-full rounded-md border border-input bg-background px-3 py-2 text-sm outline-none focus:ring-1 focus:ring-ring";
 
 function slugify(value: string) {
   return value.normalize("NFD").replace(/\p{Diacritic}/gu, "").toLowerCase().trim().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
@@ -467,20 +467,20 @@ function AdminPage() {
 
       <div className="lg:pl-72">
         <header className="sticky top-0 z-30 border-b border-slate-200/80 bg-white/90 backdrop-blur-xl">
-          <div className="flex items-center justify-between gap-4 px-5 py-3 lg:px-8">
-            <div className="flex items-center gap-3">
+          <div className="flex min-w-0 items-center justify-between gap-3 px-3 py-3 sm:px-5 lg:px-8">
+            <div className="flex min-w-0 items-center gap-2">
               <button type="button" className="rounded-md border border-border p-2 lg:hidden" onClick={() => setMobileOpen(true)} aria-label="Ouvrir le menu">
                 <Menu className="h-5 w-5" />
               </button>
-              <div>
-                <p className="text-xs uppercase tracking-[0.14em] text-muted-foreground">LT GROUP</p>
-                <h1 className="text-lg">{tab === "dashboard" ? "Tableau de bord" : tab === "messages" ? "Demandes" : [...TABLES, ...AI_ADMIN_DEFS].find((t) => t.key === tab)?.label ?? "Administration"}</h1>
+              <div className="min-w-0">
+                <p className="text-[10px] uppercase tracking-[0.14em] text-muted-foreground">LT GROUP</p>
+                <h1 className="truncate text-base sm:text-lg">{tab === "dashboard" ? "Tableau de bord" : tab === "messages" ? "Demandes" : [...TABLES, ...AI_ADMIN_DEFS].find((t) => t.key === tab)?.label ?? "Administration"}</h1>
               </div>
             </div>
           </div>
         </header>
 
-        <main className="mx-auto max-w-[1500px] px-4 py-6 sm:px-6 lg:px-10">
+        <main className="mx-auto w-full max-w-[1500px] min-w-0 overflow-x-hidden px-3 py-4 sm:px-6 sm:py-6 lg:px-10">
           {tab === "dashboard" ? <DashboardOverview onSelect={selectTab} /> : tab === "messages" ? <MessagesPanel /> : <CrudPanel def={[...TABLES, ...AI_ADMIN_DEFS].find((t) => t.key === tab)!} />}
         </main>
       </div>
@@ -868,15 +868,15 @@ function CrudPanel({ def }: { def: TableDef }) {
       </div>
 
       {editing ? (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 p-3 sm:p-6" role="dialog" aria-modal="true" aria-label={def.create && !editing["id"] ? "Ajouter" : "Modifier"}>
-          <div className="flex max-h-[94vh] w-full max-w-4xl flex-col overflow-hidden rounded-2xl bg-white shadow-2xl">
-            <div className="flex items-center justify-between border-b px-5 py-4 sm:px-6"><div><p className="text-xs uppercase tracking-[0.14em] text-muted-foreground">{def.create && !editing["id"] ? "Nouvel élément" : "Modification"}</p><h3 className="text-lg font-semibold">{def.label}</h3></div><button type="button" onClick={() => setEditing(null)} className="rounded-lg p-2 hover:bg-slate-100" aria-label="Fermer"><X className="h-5 w-5" /></button></div>
-            <form className="grid min-h-0 gap-4 overflow-y-auto p-5 sm:grid-cols-2 sm:p-6" onSubmit={(e) => { e.preventDefault(); save.mutate(editing); }}>
+        <div className="fixed inset-0 z-[100] flex items-center justify-center overflow-y-auto bg-black/60 p-2 sm:p-6" role="dialog" aria-modal="true" aria-label={def.create && !editing["id"] ? "Ajouter" : "Modifier"}>
+          <div className="my-2 flex max-h-[96dvh] w-full min-w-0 max-w-4xl flex-col overflow-hidden rounded-2xl bg-white shadow-2xl sm:my-0">
+            <div className="flex min-w-0 items-center justify-between gap-3 border-b px-3 py-3 sm:px-6 sm:py-4"><div className="min-w-0"><p className="text-[10px] uppercase tracking-[0.14em] text-muted-foreground">{def.create && !editing["id"] ? "Nouvel élément" : "Modification"}</p><h3 className="truncate text-base font-semibold sm:text-lg">{def.label}</h3></div><button type="button" onClick={() => setEditing(null)} className="rounded-lg p-2 hover:bg-slate-100" aria-label="Fermer"><X className="h-5 w-5" /></button></div>
+            <form className="grid min-h-0 min-w-0 gap-4 overflow-x-hidden overflow-y-auto p-3 sm:grid-cols-2 sm:p-6" onSubmit={(e) => { e.preventDefault(); save.mutate(editing); }}>
               {def.table === "testimonials" ? <div className="rounded-xl bg-slate-50 p-4 text-sm sm:col-span-2"><p className="font-medium">{String(editing["author_name"] ?? "")}</p><p className="mt-1 text-muted-foreground">{String(editing["message"] ?? "")}</p></div> : null}
               {def.fields.map((f) => (
-                <label key={f.name} className={f.kind === "textarea" || f.kind === "file" ? "text-sm sm:col-span-2" : "text-sm"}>
+                <label key={f.name} className={"min-w-0 break-words " + (f.kind === "textarea" || f.kind === "file" ? "text-sm sm:col-span-2" : "text-sm")}>
                   <span className="font-medium">{f.label}{f.required ? " *" : ""}</span>
-                  {f.kind === "textarea" ? <textarea rows={f.name === "content" || f.name === "description" ? 7 : 4} className={field} value={String(editing[f.name] ?? "")} onChange={(e) => setEditing({ ...editing, [f.name]: e.target.value })} />
+                  {f.kind === "textarea" ? <textarea rows={f.name === "content" || f.name === "description" ? 7 : 4} wrap="soft" className={field + " resize-y break-words"} value={String(editing[f.name] ?? "")} onChange={(e) => setEditing({ ...editing, [f.name]: e.target.value })} />
                   : f.kind === "boolean" ? <div className="mt-2 flex items-center gap-2"><input type="checkbox" checked={Boolean(editing[f.name])} onChange={(e) => setEditing({ ...editing, [f.name]: e.target.checked })} /><span className="text-xs text-muted-foreground">{editing[f.name] ? "Activé" : "Désactivé"}</span></div>
                   : f.kind === "select" ? <select className={field} value={String(editing[f.name] ?? "")} onChange={(e) => setEditing({ ...editing, [f.name]: e.target.value })}><option value="">—</option>{(f.name === "category" ? categoryOptions : f.options ?? []).map((o) => <option key={o} value={o}>{f.name === "placement" ? (o === "hero_intro" ? "Hero — introduction / identité" : "Accueil — carousel projets") : o}</option>)}</select>
                   : f.kind === "file" ? <div className="mt-2 rounded-xl border border-dashed border-slate-300 p-4">
@@ -955,7 +955,7 @@ function CrudPanel({ def }: { def: TableDef }) {
                   : <input type={f.kind === "number" ? "number" : "text"} className={field} value={String(editing[f.name] ?? "")} onChange={(e) => { const value = f.kind === "number" ? (e.target.value === "" ? null : Number(e.target.value)) : e.target.value; const next = { ...editing, [f.name]: value }; if ((def.table === "news" || def.table === "projects" || def.table === "activities") && f.name === "title" && !editing["id"]) next["slug"] = slugify(String(value ?? "")); setEditing(next); }} disabled={def.table === "news" && f.name === "author"} />}
                 </label>
               ))}
-              <div className="flex gap-2 border-t pt-4 sm:col-span-2"><Button type="submit" variant="gold" disabled={save.isPending || uploading !== null}>{save.isPending ? "Enregistrement…" : "Enregistrer"}</Button><Button type="button" variant="outline" onClick={() => setEditing(null)}>Annuler</Button></div>
+              <div className="flex flex-col gap-2 border-t pt-4 sm:col-span-2 sm:flex-row"><Button type="submit" className="w-full sm:w-auto" variant="gold" disabled={save.isPending || uploading !== null}>{save.isPending ? "Enregistrement…" : "Enregistrer"}</Button><Button type="button" variant="outline" className="w-full sm:w-auto" onClick={() => setEditing(null)}>Annuler</Button></div>
             </form>
           </div>
         </div>
