@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, ShieldCheck, Users, HardHat, Handshake } from "lucide-react";
 import { activityIcon } from "@/lib/activity-icons";
 import { OfficeMap } from "@/components/site/OfficeMap";
 import heroTerrain from "@/assets/hero-terrain.jpg";
@@ -176,12 +176,13 @@ function Hero() {
       </div>
 
       <div className="relative mx-auto max-w-[1480px] px-5 sm:px-8 lg:px-12 xl:px-16">
-        <div className="grid min-h-[78vh] gap-10 py-10 lg:grid-cols-[1.05fr_0.95fr] lg:items-center lg:gap-14 lg:py-14">
+        <div className="grid min-h-[70vh] gap-8 py-8 lg:grid-cols-[1.05fr_0.95fr] lg:items-center lg:gap-14 lg:py-14">
           <div className="order-2 min-w-0 lg:order-1">
-            <div className="mb-8 max-w-3xl">
+            <div className="mb-6">
               <p className="eyebrow text-gold">Qui sommes-nous</p>
-              <h2 className="mt-3 text-3xl text-white sm:text-4xl lg:text-[2.7rem] lg:leading-[1.12]">
-                Un partenaire solide pour vos projets fonciers et immobiliers
+              <h2 className="mt-3 text-2xl leading-tight text-white sm:text-3xl lg:text-[1.75rem] xl:text-[2.05rem]">
+                <span className="lg:block lg:whitespace-nowrap">Un partenaire solide pour vos projets </span>
+                <span className="lg:block lg:whitespace-nowrap">fonciers et immobiliers</span>
               </h2>
               <hr className="gold-rule mt-5 w-24" />
               <p className="mt-5 max-w-2xl text-base leading-7 text-white/75 sm:text-lg">
@@ -423,6 +424,46 @@ function Activities() {
   );
 }
 
+const WHY = [
+  { icon: ShieldCheck, title: "Sécurité foncière", text: "Terrains vérifiés, documents contrôlés et accompagnement jusqu'au titre foncier." },
+  { icon: Users, title: "Équipe pluridisciplinaire", text: "Topographes, ingénieurs, juristes et bâtisseurs réunis autour de votre projet." },
+  { icon: HardHat, title: "Maîtrise des chantiers", text: "Études, VRD, construction et réseaux réalisés dans le respect des normes." },
+  { icon: Handshake, title: "Suivi transparent", text: "Un interlocuteur unique, des comptes rendus réguliers et des délais tenus." },
+];
+const STEPS = ["Écoute et étude du besoin", "Visite et vérifications", "Proposition et devis", "Réalisation et remise"];
+
+function WhyUs() {
+  return (
+    <section className="bg-secondary py-12 lg:py-16">
+      <div className="mx-auto grid max-w-7xl gap-10 px-5 lg:grid-cols-[1fr_1.3fr] lg:px-8">
+        <div>
+          <p className="eyebrow">Pourquoi LT GROUP</p>
+          <h2 className="mt-3 text-3xl lg:text-4xl">Un accompagnement sérieux, de A à Z</h2>
+          <hr className="gold-rule mt-5 w-24" />
+          <p className="mt-5 text-justify leading-relaxed text-muted-foreground">LIGHT TERRA GROUP SARL accompagne particuliers, entreprises et institutions dans leurs projets fonciers, immobiliers et d'infrastructures en Côte d'Ivoire, avec rigueur, transparence et proximité.</p>
+          <ol className="mt-6 space-y-3">
+            {STEPS.map((s, i) => (
+              <li key={s} className="flex items-center gap-3">
+                <span className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gold font-semibold text-ink">{i + 1}</span>
+                <span className="font-medium">{s}</span>
+              </li>
+            ))}
+          </ol>
+        </div>
+        <div className="grid gap-4 sm:grid-cols-2">
+          {WHY.map(({ icon: Icon, title, text }) => (
+            <div key={title} className="rounded-xl border border-border bg-card p-6 shadow-soft">
+              <span className="inline-flex h-11 w-11 items-center justify-center rounded-lg bg-accent text-gold-deep"><Icon className="h-5 w-5" /></span>
+              <h3 className="mt-4 text-lg">{title}</h3>
+              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{text}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
 function FeaturedProjects() {
   const { data: projects } = useQuery(projectsQuery);
   const list = (projects ?? []).slice(0, 3);
@@ -510,6 +551,7 @@ function Index() {
         <Hero />
         <KeyFigures />
         <Activities />
+        <WhyUs />
         <Visuals />
         <FeaturedProjects />
         <LatestNews />
