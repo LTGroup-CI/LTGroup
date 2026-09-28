@@ -296,7 +296,7 @@ function HomeMap() {
         <h2 className="mt-0 text-3xl lg:text-4xl">Nos locaux à Abidjan</h2>
         <hr className="gold-rule mt-6 w-24" />
         <p className="mt-6 leading-relaxed text-muted-foreground">
-          Cocody Akouédo extension sud-est, Lot 637, îlot 60 ; 01 BP 2259 Abidjan 01.
+          <span className="font-semibold text-foreground">Siège social :</span> Cocody Akouédo Extension Sud-Est, Lot 637, Îlot 60, 01 BP 2259 Abidjan 01.
         </p>
         <p className="mt-4 leading-relaxed text-muted-foreground">
           (+225) 07 49 22 47 22 / 07 07 74 14 84<br />contact@ltgroup-ci.com
