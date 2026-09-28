@@ -177,11 +177,6 @@ function Page() {
             </dl>
             <Link to="/contact" className="mt-6 inline-flex font-semibold underline">Nous contacter →</Link>
           </div>
-          <div>
-            <p className="eyebrow">Nous trouver</p>
-            <h2 className="mt-3 mb-6 text-2xl">Nos locaux à Abidjan</h2>
-            <OfficeMap className="h-96" />
-          </div>
         </div>
       </section>
     </SiteLayout>
