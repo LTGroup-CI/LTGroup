@@ -290,10 +290,9 @@ function Visuals() {
 
 function HomeMap() {
   return (
-    <section className="mx-auto grid max-w-7xl gap-10 px-5 py-20 lg:grid-cols-[1fr_1.4fr] lg:px-8 lg:py-24">
-      <div>
-        <p className="eyebrow">Nous trouver</p>
-        <h2 className="mt-3 text-3xl lg:text-4xl">Notre siège à Abidjan</h2>
+    <section className="mx-auto grid max-w-[1480px] gap-10 px-5 py-16 sm:px-8 lg:grid-cols-[0.9fr_1.4fr] lg:px-12 lg:py-20 xl:px-16">
+      <div className="min-w-0 self-center">
+        <h2 className="mt-0 text-3xl lg:text-4xl">Nos locaux à Abidjan</h2>
         <hr className="gold-rule mt-6 w-24" />
         <p className="mt-6 leading-relaxed text-muted-foreground">
           Cocody Akouédo extension sud-est, Lot 637, îlot 60 ; 01 BP 2259 Abidjan 01.
@@ -303,7 +302,12 @@ function HomeMap() {
         </p>
         <Button asChild variant="gold" className="mt-8"><Link to="/contact">Prendre rendez-vous</Link></Button>
       </div>
-      <OfficeMap className="h-80 lg:h-96" />
+      <div className="min-w-0">
+        <div className="mb-4">
+          <p className="eyebrow">Nous trouver</p>
+        </div>
+        <OfficeMap className="h-80 sm:h-96 lg:h-[27rem]" />
+      </div>
     </section>
   );
 }
