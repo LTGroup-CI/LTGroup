@@ -26,7 +26,7 @@ export function OfficeMap({ className = "h-72" }: { className?: string }) {
             <span className="absolute h-10 w-10 animate-ping rounded-full bg-red-500/40" />
             <span className="relative h-5 w-5 rounded-full border-[3px] border-white bg-red-600 shadow-[0_0_0_2px_rgba(220,38,38,0.65)]" />
             <span className="mt-2 whitespace-nowrap rounded-full border border-white/70 bg-white px-3 py-1 text-xs font-bold uppercase tracking-[0.12em] text-slate-900 shadow-lg">
-              LT GROUP
+              LIGHT TERRA GROUP SARL
             </span>
           </div>
         </div>
