@@ -103,6 +103,10 @@ function extractVisitorData(messages: Array<{ role: string; content: string }>) 
 }
 
 
+function hasCompleteContact(visitor: ReturnType<typeof extractVisitorData>) {
+  return Boolean(visitor.full_name && visitor.email && visitor.phone);
+}
+
 function isContactOnlyMessage(message: string, visitor: ReturnType<typeof extractVisitorData>) {
   const normalized = message.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().trim();
   if (!normalized) return false;
@@ -191,11 +195,13 @@ async function persistConversation(
   }).eq("id", conversationId);
 }
 
-function localReply(question: string, ctx: SiteContext) {
-    const normalize = (value: string) =>
+function localReply(question: string, ctx: SiteContext, visitor: ReturnType<typeof extractVisitorData>) {
+  const normalize = (value: string) =>
     value.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
 
   const nq = normalize(question);
+  const name = visitor.full_name ? visitor.full_name.split(/\s+/)[0] : "";
+
   const scored = ctx.knowledge
     .filter((item) => item.is_active)
     .map((item) => {
@@ -207,24 +213,42 @@ function localReply(question: string, ctx: SiteContext) {
     .sort((a, b) => b.score - a.score);
 
   const best = scored[0];
-  if (best && best.score > 0) return best.item.answer;
+  if (best && best.score > 0) {
+    return best.item.answer + "\n\n" + (name ? name + ", " : "") + "si vous le souhaitez, je peux aussi vous guider sur la prochaine étape.";
+  }
 
-  if (/activit|service|fait|metier|domaine|secteur/.test(nq) && ctx.activities.length) {
+  if (/devis|prix|cout|tarif|budget|estimation/.test(nq)) {
+    return (name ? name + ", " : "") + "je peux vous orienter pour une demande de devis. Quel service ou type de projet souhaitez-vous chiffrer ?";
+  }
+
+  if (/terrain|foncier|lotissement|parcelle|acheter|achat|vente/.test(nq)) {
+    return (name ? name + ", " : "") + "pour votre recherche foncière, dans quelle zone ou quelle commune souhaitez-vous investir ? Je pourrai ensuite vous orienter vers les informations disponibles.";
+  }
+
+  if (/btp|vrd|route|chantier|construction|immobilier|maison/.test(nq)) {
+    return (name ? name + ", " : "") + "quel est votre projet exactement : construction, BTP & VRD, immobilier ou autre ? Et dans quelle zone se situe le projet ?";
+  }
+
+  if (/eau|hydraulique|adduction|electricite|electrification|reseau electrique|topographie|geometre|releve|etude/.test(nq)) {
+    return (name ? name + ", " : "") + "je peux vous aider à préciser cette demande. Pouvez-vous me donner la zone concernée et ce que vous souhaitez réaliser ?";
+  }
+
+  if (/activit|service|metier|domaine|secteur/.test(nq) && ctx.activities.length) {
     return "LT GROUP intervient notamment dans " +
-      ctx.activities.slice(0, 5).map((a) => a.title).join(", ") +
-      ". Vous pouvez consulter la page « Nos activités » pour le détail.";
+      ctx.activities.slice(0, 6).map((a) => a.title).join(", ") +
+      ". Quel type de besoin avez-vous afin que je vous oriente vers le bon interlocuteur ?";
   }
 
   if (/projet|realisation|chantier/.test(nq) && ctx.projects.length) {
     return "Les projets publiés comprennent notamment : " +
       ctx.projects.map((p) => p.title + (p.location ? " (" + p.location + ")" : "")).join(", ") +
-      ". Je peux vous orienter vers le projet qui correspond à votre besoin.";
+      ". Souhaitez-vous que je vous renseigne sur l’un de ces projets ?";
   }
 
   if (/actualite|nouvelle|news/.test(nq) && ctx.news.length) {
     return "Les dernières actualités publiées sont : " +
       ctx.news.map((n) => n.title).join(", ") +
-      ". Je peux vous donner les informations disponibles sur l'une d'elles.";
+      ". Dites-moi laquelle vous intéresse et je vous donne les informations disponibles.";
   }
 
   const company = ctx.company ?? {};
@@ -235,10 +259,10 @@ function localReply(question: string, ctx: SiteContext) {
       company["email"] ? "E-mail : " + company["email"] : "",
       company["address"] ? "Adresse : " + [company["address"], company["city"], company["country"]].filter(Boolean).join(", ") : "",
     ].filter(Boolean);
-    if (parts.length) return parts.join(" — ");
+    if (parts.length) return parts.join(" — ") + "\n\nJe peux aussi vous aider à préciser votre demande avant de vous orienter vers l’équipe.";
   }
 
-  return "Je peux vous renseigner sur les activités, projets, actualités et coordonnées de LT GROUP. Pour une demande précise ou un devis, utilisez la page « Services & devis » ou « Contact ».";
+  return (name ? name + ", " : "") + "je suis là pour vous accompagner. Dites-moi ce que vous recherchez — terrain, projet immobilier, BTP & VRD, hydraulique, électrification, topographie, devis ou autre besoin — et je vous poserai uniquement les questions utiles pour avancer.";
 }
 
 export const askAssistant = createServerFn({ method: "POST" })
@@ -272,6 +296,10 @@ export const askAssistant = createServerFn({ method: "POST" })
 
     const latestUserMessage = [...data.messages].reverse().find((m) => m.role === "user")?.content ?? "";
     const visitorData = extractVisitorData(data.messages);
+    const previousVisitorData = extractVisitorData(data.messages.slice(0, -1));
+    const contactWasJustCompleted =
+      hasCompleteContact(visitorData) && !hasCompleteContact(previousVisitorData);
+
     if (!visitorData.full_name) {
       const reply = "Pour commencer, quel est votre nom et prénom(s) ?";
       try { await persistConversation(data, reply); } catch (error) { console.error("Assistant persistence error"); }
@@ -290,6 +318,14 @@ export const askAssistant = createServerFn({ method: "POST" })
 
     const lastUserMessage = latestUserMessage.trim();
     const contactOnly = isContactOnlyMessage(lastUserMessage, visitorData);
+
+    if (contactWasJustCompleted) {
+      const firstName = visitorData.full_name?.split(/s+/)[0] ?? "vous";
+      const reply =
+        "Parfait " + firstName + ", j’ai bien enregistré vos coordonnées. Maintenant, nous pouvons vraiment avancer ensemble. Dites-moi ce que vous souhaitez faire ou savoir, et je vous guiderai étape par étape sans vous redemander vos coordonnées.";
+      try { await persistConversation(data, reply); } catch (error) { console.error("Assistant persistence error"); }
+      return { ok: true as const, reply };
+    }
 
     if (contactOnly) {
       const reply =
@@ -373,7 +409,7 @@ ${ctx.news.map((n) => "- " + n.title + (n.excerpt ? ": " + n.excerpt : "")).join
     }
 
     // Fallback autonome : Raï reste fonctionnelle même sans fournisseur IA externe.
-    const fallback = localReply(latestUserMessage, ctx);
+    const fallback = localReply(latestUserMessage, ctx, visitorData);
     try { await persistConversation(data, fallback); } catch (error) { console.error("Assistant persistence error"); }
     return { ok: true as const, reply: fallback };
   });
