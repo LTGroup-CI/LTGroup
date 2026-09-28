@@ -44,7 +44,7 @@ function FaqPage() {
           description="Retrouvez les réponses aux questions les plus courantes sur LT GROUP, ses expertises, ses projets, ses prestations et les moyens de nous contacter."
         />
 
-        <section className="mx-auto w-full max-w-[1180px] px-5 py-14 sm:px-8 lg:py-20">
+        <section className="mx-auto w-full max-w-[1180px] px-5 py-14 sm:px-8 lg:py-12">
           <div className="rounded-3xl border border-border bg-card p-5 shadow-soft sm:p-7">
             <div className="grid gap-4 lg:grid-cols-[1fr_auto]">
               <label className="relative block">

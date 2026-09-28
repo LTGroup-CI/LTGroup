@@ -29,7 +29,7 @@ function Page() {
   return (
     <SiteLayout>
       <PageHero eyebrow="Actualités" title="La vie du groupe" description={description} />
-      <section className="mx-auto max-w-7xl px-5 py-20 lg:px-8">
+      <section className="mx-auto max-w-7xl px-5 py-12 lg:px-8">
         {isLoading ? <p className="text-muted-foreground">Chargement…</p> : null}
         {!isLoading && list.length === 0 ? (
           <p className="text-muted-foreground">Aucune actualité publiée pour le moment.</p>

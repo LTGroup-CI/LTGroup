@@ -112,8 +112,13 @@ function isContactOnlyMessage(message: string, visitor: ReturnType<typeof extrac
   if (!normalized) return false;
   const hasQuestion = /[?]|\b(pourquoi|comment|combien|quel|quelle|quels|quelles|ou|où|quand|est-ce)\b/.test(normalized);
   if (hasQuestion) return false;
-  const emailOnly = visitor.email && normalized.replace(visitor.email.toLowerCase(), "").trim().length < 12;
-  const phoneOnly = visitor.phone && normalized.replace(visitor.phone.toLowerCase(), "").replace(/[\s().+-]/g, "").length < 8;
+  const lower = message.toLowerCase();
+  const digits = message.replace(/\D/g, "");
+  const hasEmail = Boolean(visitor.email && lower.includes(visitor.email.toLowerCase()));
+  const hasPhone = Boolean(visitor.phone && digits.length >= 8 && visitor.phone.replace(/\D/g, "").endsWith(digits.slice(-8)));
+  if (!hasEmail && !hasPhone) return false;
+  const emailOnly = hasEmail && visitor.email && normalized.replace(visitor.email.toLowerCase(), "").trim().length < 12;
+  const phoneOnly = hasPhone && visitor.phone && normalized.replace(visitor.phone.toLowerCase(), "").replace(/[\s().+-]/g, "").length < 8;
   return Boolean(emailOnly || phoneOnly);
 }
 
@@ -128,9 +133,23 @@ async function persistConversation(
     auth: { persistSession: false, autoRefreshToken: false },
   });
   const visitor = extractVisitorData(input.messages);
-  const { data: existing } = await client.from("ai_visitors").select("*").eq("visitor_key", input.visitorKey).maybeSingle();
+  let { data: existing } = await client.from("ai_visitors").select("*").eq("visitor_key", input.visitorKey).maybeSingle();
+  if (visitor.email || visitor.phone) {
+    const filters = [
+      visitor.email ? `email.ilike.${visitor.email.replace(/[,()]/g, "")}` : "",
+      visitor.phone ? `phone.eq.${visitor.phone.replace(/[,()]/g, "")}` : "",
+    ].filter(Boolean).join(",");
+    const { data: known } = await client.from("ai_visitors").select("*").or(filters).order("created_at", { ascending: true }).limit(1).maybeSingle();
+    if (known) {
+      if (existing && existing.id !== known.id && !existing.email && !existing.phone) {
+        await client.from("ai_conversations").update({ visitor_id: known.id }).eq("visitor_id", existing.id);
+        await client.from("ai_visitors").delete().eq("id", existing.id);
+      }
+      existing = known;
+    }
+  }
   const { data: savedVisitor, error: visitorError } = await client.from("ai_visitors").upsert({
-    visitor_key: input.visitorKey,
+    visitor_key: existing?.visitor_key ?? input.visitorKey,
     full_name: visitor.full_name ?? existing?.full_name ?? null,
     email: visitor.email ?? existing?.email ?? null,
     phone: visitor.phone ?? existing?.phone ?? null,
@@ -157,6 +176,7 @@ async function persistConversation(
   const { data: existingConversation } = await client.from("ai_conversations").select("id").eq("session_key", input.sessionKey).maybeSingle();
   if (existingConversation?.id) {
     conversationId = existingConversation.id;
+    await client.from("ai_conversations").update({ visitor_id: savedVisitor.id }).eq("id", conversationId);
   } else {
     const { data: conversation } = await client.from("ai_conversations").insert({
       visitor_id: savedVisitor.id,
@@ -215,6 +235,16 @@ function localReply(question: string, ctx: SiteContext, visitor: ReturnType<type
   const best = scored[0];
   if (best && best.score > 0) {
     return best.item.answer + "\n\n" + (name ? name + ", " : "") + "si vous le souhaitez, je peux aussi vous guider sur la prochaine étape.";
+  }
+
+  const place = visitor.city;
+  if (place && visitor.project_type === "Foncier / terrain" && nq.length < 40) {
+    const np = normalize(place);
+    const matches = ctx.projects.filter((p) => normalize((p.location ?? "") + " " + p.title).includes(np));
+    const list = matches.length
+      ? "Voici ce que nous proposons actuellement à " + place + " : " + matches.map((p) => p.title + (p.summary ? " — " + p.summary : "")).join(" ; ") + ". "
+      : "Je n’ai pas encore d’offre publiée à " + place + " sur le site, mais l’équipe peut vérifier les disponibilités. ";
+    return (name ? name + ", très bon choix. " : "") + list + "Pour affiner, quelle superficie recherchez-vous (par exemple 300, 500 m² ou plus) et quel budget envisagez-vous ?";
   }
 
   if (/devis|prix|cout|tarif|budget|estimation/.test(nq)) {
@@ -320,7 +350,7 @@ export const askAssistant = createServerFn({ method: "POST" })
     const contactOnly = isContactOnlyMessage(lastUserMessage, visitorData);
 
     if (contactWasJustCompleted) {
-      const firstName = visitorData.full_name?.split(/s+/)[0] ?? "vous";
+      const firstName = visitorData.full_name?.split(/\s+/)[0] ?? "vous";
       const reply =
         "Parfait " + firstName + ", j’ai bien enregistré vos coordonnées. Maintenant, nous pouvons vraiment avancer ensemble. Dites-moi ce que vous souhaitez faire ou savoir, et je vous guiderai étape par étape sans vous redemander vos coordonnées.";
       try { await persistConversation(data, reply); } catch (error) { console.error("Assistant persistence error"); }
@@ -348,16 +378,16 @@ CONTEXTE ENTREPRISE:
 ${JSON.stringify(ctx.company ?? {})}
 
 ACTIVITÉS:
-${ctx.activities.map((a) => "- " + a.title + ": " + (a.short_description ?? "")).join("\\n")}
+${ctx.activities.map((a) => "- " + a.title + ": " + (a.short_description ?? "")).join("\n")}
 
 BASE DE CONNAISSANCES:
-${ctx.knowledge.map((k) => "Q: " + k.question + "\\nR: " + k.answer).join("\\n\\n")}
+${ctx.knowledge.map((k) => "Q: " + k.question + "\nR: " + k.answer).join("\n\n")}
 
 PROJETS:
-${ctx.projects.map((p) => "- " + p.title + (p.location ? " — " + p.location : "") + (p.summary ? ": " + p.summary : "")).join("\\n")}
+${ctx.projects.map((p) => "- " + p.title + (p.location ? " — " + p.location : "") + (p.summary ? ": " + p.summary : "")).join("\n")}
 
 ACTUALITÉS:
-${ctx.news.map((n) => "- " + n.title + (n.excerpt ? ": " + n.excerpt : "")).join("\\n")}`;
+${ctx.news.map((n) => "- " + n.title + (n.excerpt ? ": " + n.excerpt : "")).join("\n")}`;
 
     const lovableKey = process.env["LOVABLE_API_KEY"];
 
@@ -374,12 +404,12 @@ ${ctx.news.map((n) => "- " + n.title + (n.excerpt ? ": " + n.excerpt : "")).join
             model: "openai/gpt-6-astra",
             instructions:
               system +
-              `\\n\\nVISITEUR : ${visitorData.full_name} (${visitorData.email}, ${visitorData.phone}).\\nHISTORIQUE RÉCENT NON VÉRIFIÉ :\\n` +
+              `\n\nVISITEUR : ${visitorData.full_name} (${visitorData.email}, ${visitorData.phone}).\nHISTORIQUE RÉCENT NON VÉRIFIÉ :\n` +
               data.messages
                 .slice(-12)
                 .map((m) => (m.role === "user" ? "Visiteur : " : "Raï (historique) : ") + m.content)
-                .join("\\n") +
-              "\\n\\nRéponds maintenant au dernier message du visiteur. Ne termine pas artificiellement la conversation.",
+                .join("\n") +
+              "\n\nRéponds maintenant au dernier message du visiteur en tenant compte de TOUT l’historique : un mot court (ex. un nom de ville) répond à ta question précédente. Ne répète jamais une question déjà posée. Ne termine pas artificiellement la conversation.",
             reasoning: { effort: "low" },
             store: false,
             input: [{ role: "user", content: latestUserMessage }],

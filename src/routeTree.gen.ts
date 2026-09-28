@@ -16,6 +16,7 @@ import { Route as ActualitesRouteImport } from './routes/actualites'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as DesabonnementRouteImport } from './routes/desabonnement'
+import { Route as FaqRouteImport } from './routes/faq'
 import { Route as MeRouteImport } from './routes/me'
 import { Route as ProjetsRouteImport } from './routes/projets'
 import { Route as ServicesRouteImport } from './routes/services'
@@ -58,6 +59,11 @@ const ContactRoute = ContactRouteImport.update({
 const DesabonnementRoute = DesabonnementRouteImport.update({
   id: '/desabonnement',
   path: '/desabonnement',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FaqRoute = FaqRouteImport.update({
+  id: '/faq',
+  path: '/faq',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MeRoute = MeRouteImport.update({
@@ -109,6 +115,7 @@ export interface FileRoutesByFullPath {
   '/admin': typeof AdminRoute
   '/contact': typeof ContactRoute
   '/desabonnement': typeof DesabonnementRoute
+  '/faq': typeof FaqRoute
   '/me': typeof MeRoute
   '/projets': typeof ProjetsRoute
   '/services': typeof ServicesRoute
@@ -126,6 +133,7 @@ export interface FileRoutesByTo {
   '/admin': typeof AdminRoute
   '/contact': typeof ContactRoute
   '/desabonnement': typeof DesabonnementRoute
+  '/faq': typeof FaqRoute
   '/me': typeof MeRoute
   '/projets': typeof ProjetsRoute
   '/services': typeof ServicesRoute
@@ -144,6 +152,7 @@ export interface FileRoutesById {
   '/admin': typeof AdminRoute
   '/contact': typeof ContactRoute
   '/desabonnement': typeof DesabonnementRoute
+  '/faq': typeof FaqRoute
   '/me': typeof MeRoute
   '/projets': typeof ProjetsRoute
   '/services': typeof ServicesRoute
@@ -163,6 +172,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/contact'
     | '/desabonnement'
+    | '/faq'
     | '/me'
     | '/projets'
     | '/services'
@@ -180,6 +190,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/contact'
     | '/desabonnement'
+    | '/faq'
     | '/me'
     | '/projets'
     | '/services'
@@ -197,6 +208,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/contact'
     | '/desabonnement'
+    | '/faq'
     | '/me'
     | '/projets'
     | '/services'
@@ -215,6 +227,7 @@ export interface RootRouteChildren {
   AdminRoute: typeof AdminRoute
   ContactRoute: typeof ContactRoute
   DesabonnementRoute: typeof DesabonnementRoute
+  FaqRoute: typeof FaqRoute
   MeRoute: typeof MeRoute
   ProjetsRoute: typeof ProjetsRoute
   ServicesRoute: typeof ServicesRoute
@@ -274,6 +287,13 @@ declare module '@tanstack/react-router' {
       path: '/desabonnement'
       fullPath: '/desabonnement'
       preLoaderRoute: typeof DesabonnementRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/faq': {
+      id: '/faq'
+      path: '/faq'
+      fullPath: '/faq'
+      preLoaderRoute: typeof FaqRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/me': {
@@ -343,6 +363,7 @@ const rootRouteChildren: RootRouteChildren = {
   AdminRoute: AdminRoute,
   ContactRoute: ContactRoute,
   DesabonnementRoute: DesabonnementRoute,
+  FaqRoute: FaqRoute,
   MeRoute: MeRoute,
   ProjetsRoute: ProjetsRoute,
   ServicesRoute: ServicesRoute,

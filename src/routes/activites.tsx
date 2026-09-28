@@ -31,7 +31,7 @@ function Page() {
   return (
     <SiteLayout>
       <PageHero eyebrow="Nos activités" title="Nos pôles d'activité" description={description} />
-      <section className="mx-auto max-w-7xl px-5 py-20 lg:px-8">
+      <section className="mx-auto max-w-7xl px-5 py-12 lg:px-8">
         {isLoading ? <p className="text-muted-foreground">Chargement…</p> : null}
         <div className="grid gap-6 lg:grid-cols-2">
           {(activities ?? []).map((activity, i) => {
@@ -56,7 +56,7 @@ function Page() {
           })}
         </div>
 
-        <div className="mt-12">
+        <div className="mt-8">
           <Button asChild variant="gold" size="lg">
             <Link to="/services">Demander un devis</Link>
           </Button>

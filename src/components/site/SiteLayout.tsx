@@ -137,14 +137,14 @@ export function SiteFooter() {
 
   return (
     <footer className="bg-ink-gradient text-ink-foreground">
-      <div className="mx-auto grid max-w-7xl gap-10 px-5 py-16 lg:grid-cols-4 lg:px-8">
+      <div className="mx-auto grid max-w-7xl gap-10 px-5 py-12 lg:grid-cols-4 lg:py-14 lg:px-8">
         <div className="lg:col-span-2">
-          <div className="inline-block rounded-lg bg-secondary p-4 shadow-sm">
+          <div className="inline-block">
             <img
               src={company?.logo_jpg_url || company?.logo_url || LOGO_URL}
               alt="Logo LT GROUP"
               loading="lazy"
-              className="h-14 w-auto max-w-[210px] object-contain sm:h-16"
+              className="h-16 w-auto max-w-[230px] rounded-sm object-contain sm:h-20"
               width={600}
               height={400}
             />
@@ -259,7 +259,7 @@ export function PageHero({
   description?: string;
 }) {
   return (
-    <section className="relative overflow-hidden border-b border-border bg-sand-gradient pb-14 pt-32 lg:pb-20 lg:pt-44">
+    <section className="relative overflow-hidden border-b border-border bg-sand-gradient pb-10 pt-28 lg:pb-12 lg:pt-36">
       <svg aria-hidden className="pointer-events-none absolute -right-20 top-10 h-[420px] w-[420px] text-gold/15" viewBox="0 0 100 100" fill="none" stroke="currentColor" strokeWidth="0.6">
         <path d="M50 6 L94 88 H6 Z" />
         <path d="M50 26 L78 78 H22 Z" />

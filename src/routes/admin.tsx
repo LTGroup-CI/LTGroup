@@ -907,7 +907,7 @@ function CrudPanel({ def }: { def: TableDef }) {
                             toast.success("Logo maître enregistré : PNG, JPG, favicon et image OG générés automatiquement.");
                           } else if (f.multiple) {
                             const previews = files.map((file) => URL.createObjectURL(file));
-                            const uploaded = [];
+                            const uploaded: Array<{ url: string; kind: "photo" | "video" }> = [];
                             for (const file of files) {
                               const url = await uploadSiteFile(file, def.table === "news" ? "news" : def.table === "projects" ? "projects" : def.table === "activities" ? "activities" : def.table === "partners" ? "partners" : def.table === "intro_videos" ? "intro-videos" : "media");
                               uploaded.push({

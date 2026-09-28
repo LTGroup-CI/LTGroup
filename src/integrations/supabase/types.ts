@@ -16,39 +16,39 @@ export type Database = {
     Tables: {
       activities: {
         Row: {
+          cover_image_url: string | null
           description: string | null
           icon: string | null
           id: string
           image_url: string | null
-          cover_image_url: string | null
-          media_urls: Json
           is_active: boolean
+          media_urls: Json
           position: number
           short_description: string
           slug: string
           title: string
         }
         Insert: {
+          cover_image_url?: string | null
           description?: string | null
           icon?: string | null
           id?: string
           image_url?: string | null
-          cover_image_url?: string | null
-          media_urls?: Json
           is_active?: boolean
+          media_urls?: Json
           position?: number
           short_description: string
           slug: string
           title: string
         }
         Update: {
+          cover_image_url?: string | null
           description?: string | null
           icon?: string | null
           id?: string
           image_url?: string | null
-          cover_image_url?: string | null
-          media_urls?: Json
           is_active?: boolean
+          media_urls?: Json
           position?: number
           short_description?: string
           slug?: string
@@ -520,12 +520,12 @@ export type Database = {
           id: string
           image_url: string | null
           is_published: boolean
+          media_urls: Json
           published_at: string | null
           slug: string
           title: string
           video_poster_url: string | null
           video_url: string | null
-          media_urls: Json
           view_count: number
         }
         Insert: {
@@ -537,12 +537,12 @@ export type Database = {
           id?: string
           image_url?: string | null
           is_published?: boolean
+          media_urls?: Json
           published_at?: string | null
           slug: string
           title: string
           video_poster_url?: string | null
           video_url?: string | null
-          media_urls?: Json
           view_count?: number
         }
         Update: {
@@ -554,6 +554,7 @@ export type Database = {
           id?: string
           image_url?: string | null
           is_published?: boolean
+          media_urls?: Json
           published_at?: string | null
           slug?: string
           title?: string
@@ -679,10 +680,10 @@ export type Database = {
           created_at: string
           id: string
           image_url: string | null
-          media_urls: Json
           is_featured: boolean
           is_published: boolean
           location: string | null
+          media_urls: Json
           position: number
           slug: string
           status: string
@@ -696,10 +697,10 @@ export type Database = {
           created_at?: string
           id?: string
           image_url?: string | null
-          media_urls?: Json
           is_featured?: boolean
           is_published?: boolean
           location?: string | null
+          media_urls?: Json
           position?: number
           slug: string
           status?: string
@@ -713,10 +714,10 @@ export type Database = {
           created_at?: string
           id?: string
           image_url?: string | null
-          media_urls?: Json
           is_featured?: boolean
           is_published?: boolean
           location?: string | null
+          media_urls?: Json
           position?: number
           slug?: string
           status?: string

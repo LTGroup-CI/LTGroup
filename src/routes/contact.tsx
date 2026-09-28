@@ -73,7 +73,7 @@ function Page() {
     <SiteLayout>
       <PageHero eyebrow="Contact" title="Nous contacter" description={description} />
 
-      <section className="mx-auto grid max-w-7xl gap-12 px-5 py-16 lg:grid-cols-2 lg:px-8 lg:py-20">
+      <section className="mx-auto grid max-w-7xl gap-12 px-5 py-12 lg:grid-cols-2 lg:px-8 lg:py-12">
         <div>
           <h2 className="text-2xl">Nos coordonnées</h2>
           <hr className="gold-rule mt-4 w-16" />

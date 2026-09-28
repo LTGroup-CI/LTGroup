@@ -71,7 +71,7 @@ function Page() {
     <SiteLayout>
       <PageHero eyebrow="Témoignages" title="Ils nous ont fait confiance" description={description} />
 
-      <section className="mx-auto max-w-7xl px-5 py-20 lg:px-8">
+      <section className="mx-auto max-w-7xl px-5 py-12 lg:px-8">
         {list.length === 0 ? (
           <p className="text-muted-foreground">
             Les premiers témoignages seront publiés très prochainement. Vous pouvez déjà partager le vôtre.
@@ -99,7 +99,7 @@ function Page() {
         )}
       </section>
 
-      <section className="bg-muted/50 py-20">
+      <section className="bg-muted/50 py-12">
         <div className="mx-auto max-w-3xl px-5 lg:px-8">
           <p className="eyebrow">Votre avis</p>
           <h2 className="mt-3 text-3xl">Laisser un témoignage</h2>
