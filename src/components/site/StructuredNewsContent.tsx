@@ -92,7 +92,7 @@ export function StructuredNewsContent({
           return (
             <div key={"bullet-" + index} className="flex gap-3 text-[1.02rem] leading-8 text-foreground/80">
               <span className="mt-3 h-1.5 w-1.5 shrink-0 rounded-full bg-gold" />
-              <p className="text-left">{bullets[0].replace(/^•\s*/, "")}</p>
+              <p className="text-left">{(bullets[0] ?? "").replace(/^•\s*/, "")}</p>
             </div>
           );
         }

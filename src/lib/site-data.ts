@@ -209,7 +209,7 @@ export const showcaseVideosQuery = queryOptions({
 export const activitiesQuery = queryOptions({
   queryKey: ["activities", "public"],
   queryFn: async (): Promise<Activity[]> =>
-    unwrap(
+    (unwrap as (r: unknown) => Activity[])(
       await supabase
         .from("activities")
         .select("*")
@@ -236,7 +236,7 @@ export const activityItemQuery = (slug: string) =>
 export const projectsQuery = queryOptions({
   queryKey: ["projects", "public"],
   queryFn: async (): Promise<Project[]> =>
-    unwrap(
+    (unwrap as (r: unknown) => Project[])(
       await supabase
         .from("projects")
         .select("*")
@@ -248,7 +248,7 @@ export const projectsQuery = queryOptions({
 export const newsListQuery = queryOptions({
   queryKey: ["news", "public"],
   queryFn: async (): Promise<NewsItem[]> =>
-    unwrap(
+    (unwrap as (r: unknown) => NewsItem[])(
       await supabase
         .from("news")
         .select("*")
