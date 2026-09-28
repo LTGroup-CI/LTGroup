@@ -435,8 +435,8 @@ function AdminPage() {
 
   return (
     <div className="min-h-screen bg-slate-50/70">
-      <aside className={"fixed inset-y-0 left-0 z-50 w-[280px] border-r border-white/10 bg-[#0b1f18] text-ink-foreground transition-transform lg:translate-x-0 " + (mobileOpen ? "translate-x-0" : "-translate-x-full")}>
-        <div className="flex h-full flex-col shadow-2xl">
+      <aside className={"fixed inset-y-0 left-0 z-50 w-[min(300px,88vw)] border-r border-white/10 bg-[#0b1f18] text-ink-foreground transition-transform lg:translate-x-0 " + (mobileOpen ? "translate-x-0" : "-translate-x-full")}>
+        <div className="flex h-full min-w-0 flex-col shadow-2xl">
           <div className="flex items-center justify-between border-b border-white/10 px-5 py-5">
             <div className="flex min-h-16 items-center rounded-lg bg-white px-3 py-2 shadow-sm ring-1 ring-white/10">
               <img src={company?.logo_jpg_url || LOGO_URL} alt="LT GROUP" className="h-12 w-auto max-w-[230px] object-contain" />
@@ -467,14 +467,14 @@ function AdminPage() {
 
       <div className="lg:pl-72">
         <header className="sticky top-0 z-30 border-b border-slate-200/80 bg-white/90 backdrop-blur-xl">
-          <div className="flex min-w-0 items-center justify-between gap-3 px-3 py-3 sm:px-5 lg:px-8">
+          <div className="flex min-w-0 items-center justify-between gap-3 px-2.5 py-2.5 sm:px-5 sm:py-3 lg:px-8">
             <div className="flex min-w-0 items-center gap-2">
               <button type="button" className="rounded-md border border-border p-2 lg:hidden" onClick={() => setMobileOpen(true)} aria-label="Ouvrir le menu">
                 <Menu className="h-5 w-5" />
               </button>
               <div className="min-w-0">
                 <p className="text-[10px] uppercase tracking-[0.14em] text-muted-foreground">LT GROUP</p>
-                <h1 className="truncate text-base sm:text-lg">{tab === "dashboard" ? "Tableau de bord" : tab === "messages" ? "Demandes" : [...TABLES, ...AI_ADMIN_DEFS].find((t) => t.key === tab)?.label ?? "Administration"}</h1>
+                <h1 className="min-w-0 break-words text-sm font-semibold sm:text-lg">{tab === "dashboard" ? "Tableau de bord" : tab === "messages" ? "Demandes" : [...TABLES, ...AI_ADMIN_DEFS].find((t) => t.key === tab)?.label ?? "Administration"}</h1>
               </div>
             </div>
           </div>
@@ -869,7 +869,7 @@ function CrudPanel({ def }: { def: TableDef }) {
 
       {editing ? (
         <div className="fixed inset-0 z-[100] flex items-center justify-center overflow-y-auto bg-black/60 p-2 sm:p-6" role="dialog" aria-modal="true" aria-label={def.create && !editing["id"] ? "Ajouter" : "Modifier"}>
-          <div className="my-2 flex max-h-[96dvh] w-full min-w-0 max-w-4xl flex-col overflow-hidden rounded-2xl bg-white shadow-2xl sm:my-0">
+          <div className="my-1 flex max-h-[98dvh] w-full min-w-0 max-w-4xl flex-col overflow-hidden rounded-2xl bg-white shadow-2xl sm:my-0">
             <div className="flex min-w-0 items-center justify-between gap-3 border-b px-3 py-3 sm:px-6 sm:py-4"><div className="min-w-0"><p className="text-[10px] uppercase tracking-[0.14em] text-muted-foreground">{def.create && !editing["id"] ? "Nouvel élément" : "Modification"}</p><h3 className="truncate text-base font-semibold sm:text-lg">{def.label}</h3></div><button type="button" onClick={() => setEditing(null)} className="rounded-lg p-2 hover:bg-slate-100" aria-label="Fermer"><X className="h-5 w-5" /></button></div>
             <form className="grid min-h-0 min-w-0 gap-4 overflow-x-hidden overflow-y-auto p-3 sm:grid-cols-2 sm:p-6" onSubmit={(e) => { e.preventDefault(); save.mutate(editing); }}>
               {def.table === "testimonials" ? <div className="rounded-xl bg-slate-50 p-4 text-sm sm:col-span-2"><p className="font-medium">{String(editing["author_name"] ?? "")}</p><p className="mt-1 text-muted-foreground">{String(editing["message"] ?? "")}</p></div> : null}
