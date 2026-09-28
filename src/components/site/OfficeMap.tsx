@@ -7,7 +7,7 @@ export function OfficeMap({ className = "h-72" }: { className?: string }) {
   const { data: company } = useQuery(companyQuery);
   const lat = Number(company?.latitude ?? FALLBACK.lat);
   const lng = Number(company?.longitude ?? FALLBACK.lng);
-  const d = 0.012;
+  const d = 0.018;
   const bbox = `${lng - d}%2C${lat - d}%2C${lng + d}%2C${lat + d}`;
   const src = `https://www.openstreetmap.org/export/embed.html?bbox=${bbox}&layer=mapnik`;
 
@@ -15,7 +15,7 @@ export function OfficeMap({ className = "h-72" }: { className?: string }) {
     <div className="overflow-hidden rounded-2xl border border-border bg-card shadow-elevated">
       <div className="relative">
         <iframe
-          title="Carte de localisation du siège LT GROUP et des environs"
+          title="Carte de localisation des locaux LIGHT TERRA GROUP SARL et des environs"
           src={src}
           className={`block w-full ${className}`}
           loading="lazy"
