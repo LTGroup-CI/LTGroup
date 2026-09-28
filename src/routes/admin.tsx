@@ -95,11 +95,11 @@ const TABLES: TableDef[] = [
   {
     key: "hero_slides", label: "Accueil — visuels", table: "hero_slides",
     order: { column: "position", ascending: true },
-    columns: ["title", "position", "is_active"], create: true,
+    columns: ["title", "image_url", "position", "is_active"], create: true,
     fields: [
       { name: "title", label: "Titre", kind: "text" },
       { name: "subtitle", label: "Sous-titre", kind: "textarea" },
-      { name: "image_url", label: "Média (photo ou vidéo)", kind: "file", required: true, accept: "image/*,video/*" },
+      { name: "image_url", label: "Arrière-plan du Hero (photo ou vidéo)", kind: "file", required: true, accept: "image/*,video/*" },
       { name: "cta_label", label: "Bouton", kind: "text" },
       { name: "cta_url", label: "Lien du bouton", kind: "text" },
       { name: "duration_ms", label: "Durée (ms)", kind: "number" },
