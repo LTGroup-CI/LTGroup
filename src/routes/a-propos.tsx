@@ -180,9 +180,6 @@ function Page() {
           <div>
             <p className="eyebrow">Nous trouver</p>
             <h2 className="mt-3 mb-6 text-2xl">Nos locaux à Abidjan</h2>
-            <p className="mb-6 text-sm leading-relaxed text-muted-foreground">
-              <span className="font-semibold text-foreground">Siège social :</span> Cocody Akouédo Extension Sud-Est, Lot 637, Îlot 60, 01 BP 2259 Abidjan 01.
-            </p>
             <OfficeMap className="h-96" />
           </div>
         </div>
