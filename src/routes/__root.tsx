@@ -13,7 +13,7 @@ import { Toaster } from "@/components/ui/sonner";
 import appCss from "../styles.css?url";
 import { reportRuntimeError } from "../lib/runtime-error-reporting";
 import { LOGO_URL, SITE_URL, FAVICON_URL, getBrandDerivativeUrl } from "@/lib/media";
-import { companyQuery } from "@/lib/site-data";
+import { companyQuery, type CompanyInfo } from "@/lib/site-data";
 
 const SITE_NAME = "LT GROUP";
 const SITE_TITLE = "LT GROUP Côte d’Ivoire | Light Terra Group | Foncier, BTP, Immobilier & Infrastructures";
@@ -42,7 +42,7 @@ function NotFoundComponent() {
   );
 }
 
-function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
+function ErrorComponent({ error, reset }: { error: unknown; reset: () => void }) {
   console.error(error);
   const router = useRouter();
   useEffect(() => {
