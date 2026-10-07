@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { companyQuery } from "@/lib/site-data";
 
-const FALLBACK = { lat: 5.3495277778, lng: -3.9240277778 };
+const FALLBACK = { lat: 5.355498313903809, lng: -3.925191879272461 };
 
 export function OfficeMap({ className = "h-72" }: { className?: string }) {
   const { data: company } = useQuery(companyQuery);
