@@ -103,11 +103,11 @@ export function StructuredNewsContent({
             key={"paragraph-" + index}
             className={
               currentParagraph === 0
-                ? "max-w-5xl text-lg leading-8 text-foreground/90 [text-align:justify] md:text-xl md:leading-9"
-                : "max-w-6xl text-[1.03rem] leading-8 text-foreground/80 [text-align:justify]"
+                ? "text-lg leading-8 text-foreground/90 [text-align:justify] md:text-xl md:leading-9"
+                : "text-[1.03rem] leading-8 text-foreground/80 [text-align:justify]"
             }
           >
-            {lines.join(" ")}
+            {lines.join(" ").replace(/([.!?])([A-ZÀ-Ý])/g, "$1 $2")}
           </p>
         );
       })}
