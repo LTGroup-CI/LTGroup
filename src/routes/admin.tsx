@@ -605,6 +605,7 @@ function MessagesPanel() {
   const reply = useServerFn(replyToMessage);
   const [openId, setOpenId] = useState<string | null>(null);
   const [text, setText] = useState("");
+  const [filter, setFilter] = useState<"all" | "nouveau" | "traite" | "devis" | "contact">("all");
 
   const { data, isLoading } = useQuery({
     queryKey: ["admin", "messages"],
@@ -630,16 +631,23 @@ function MessagesPanel() {
   });
 
   if (isLoading) return <p className="text-sm text-muted-foreground">Chargement…</p>;
-  const list = data ?? [];
-  if (list.length === 0)
-    return <p className="text-sm text-muted-foreground">Aucune demande pour le moment.</p>;
+  const all = data ?? [];
+  const counts = { all: all.length, nouveau: all.filter((m) => m.status !== "traite").length, traite: all.filter((m) => m.status === "traite").length, devis: all.filter((m) => m.request_type === "devis").length, contact: all.filter((m) => m.request_type === "contact").length };
+  const list = all.filter((m) => filter === "all" ? true : filter === "nouveau" ? m.status !== "traite" : filter === "traite" ? m.status === "traite" : m.request_type === filter);
+  const labels = { all: "Toutes", nouveau: "À traiter", traite: "Répondues", devis: "Devis", contact: "Contact" } as const;
 
   return (
-    <div className="space-y-4">
+    <div className="min-w-0 space-y-4">
+      <div className="grid grid-cols-2 gap-2 sm:flex sm:flex-wrap">
+        {(Object.keys(labels) as Array<keyof typeof labels>).map((k) => (
+          <TabButton key={k} active={filter === k} onClick={() => setFilter(k)}>{labels[k]} ({counts[k]})</TabButton>
+        ))}
+      </div>
+      {list.length === 0 ? <p className="rounded-2xl border border-dashed p-8 text-center text-sm text-muted-foreground">Aucune demande dans cette catégorie.</p> : null}
       {list.map((m) => (
-        <article key={m.id} className="rounded-lg border border-border bg-card p-5">
+        <article key={m.id} className="min-w-0 rounded-2xl border border-border bg-card p-4 shadow-sm sm:p-5">
           <div className="flex flex-wrap items-center justify-between gap-3">
-            <div>
+            <div className="min-w-0 break-words">
               <h3 className="text-lg">
                 {m.full_name}{" "}
                 <span className="text-xs uppercase tracking-[0.14em] text-gold-deep">
@@ -648,10 +656,10 @@ function MessagesPanel() {
               </h3>
               <p className="text-xs text-muted-foreground">{formatDateFr(m.created_at)}</p>
             </div>
-            <span className="rounded-full border border-border px-3 py-1 text-xs">{m.status}</span>
+            <span className={"shrink-0 rounded-full px-3 py-1 text-xs font-semibold " + (m.status === "traite" ? "bg-emerald-100 text-emerald-800" : "bg-amber-100 text-amber-800")}>{m.status === "traite" ? "Répondue" : "À traiter"}</span>
           </div>
 
-          <dl className="mt-4 grid gap-2 text-sm sm:grid-cols-2">
+          <dl className="mt-4 grid min-w-0 gap-2 break-words text-sm sm:grid-cols-2">
             <Info label="E-mail" value={m.email} href={`mailto:${m.email}`} />
             {m.phone ? (
               <Info label="Téléphone" value={m.phone} href={`tel:${m.phone.replace(/\s/g, "")}`} />
@@ -662,7 +670,7 @@ function MessagesPanel() {
             {m.desired_date ? <Info label="Date souhaitée" value={m.desired_date} /> : null}
           </dl>
 
-          <p className="mt-4 whitespace-pre-line text-sm leading-relaxed text-muted-foreground">
+          <p className="mt-4 whitespace-pre-line break-words rounded-xl bg-slate-50 p-4 text-sm leading-relaxed text-muted-foreground">
             {m.message}
           </p>
 
@@ -684,7 +692,7 @@ function MessagesPanel() {
                 placeholder="Votre réponse…"
                 className={field}
               />
-              <div className="mt-3 flex gap-2">
+              <div className="mt-3 flex flex-col gap-2 sm:flex-row">
                 <Button
                   variant="gold"
                   disabled={send.isPending || text.trim().length < 2}
@@ -848,7 +856,7 @@ function CrudPanel({ def }: { def: TableDef }) {
         {def.create ? <Button variant="gold" size="sm" onClick={() => setEditing(newRowFor(def, rows))}>+ Ajouter</Button> : null}
       </div>
 
-      <div className="hidden overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm md:block">
+      <div className="hidden overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm xl:block">
         <div className="overflow-x-auto">
           <table className="w-full min-w-[680px] text-left text-sm">
             <thead className="bg-slate-50"><tr>{def.columns.map((column) => <th key={column} className="whitespace-nowrap px-4 py-3 text-[11px] font-semibold uppercase tracking-[0.12em] text-muted-foreground">{column.replaceAll("_", " ")}</th>)}<th className="px-4 py-3" /></tr></thead>
@@ -859,10 +867,10 @@ function CrudPanel({ def }: { def: TableDef }) {
         </div>
       </div>
 
-      <div className="grid gap-3 md:hidden">
+      <div className="grid gap-3 sm:grid-cols-2 xl:hidden">
         {rows.map((row) => <div key={String(row["id"])} className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
           <div className="space-y-2">{def.columns.slice(0, 4).map((column) => <div key={column} className="flex min-w-0 justify-between gap-4 text-sm"><span className="shrink-0 text-xs uppercase tracking-wide text-muted-foreground">{column.replaceAll("_", " ")}</span><span className="min-w-0 truncate text-right font-medium">{typeof row[column] === "boolean" ? (row[column] ? "Oui" : "Non") : String(row[column] ?? "—")}</span></div>)}</div>
-          <div className="mt-4 flex gap-2"><Button size="sm" variant="outline" className="flex-1" onClick={() => setEditing(prepareEditingRow(def, row))}>Modifier</Button>{def.table !== "testimonials" && def.table !== "company_info" ? <Button size="sm" variant="outline" className="flex-1" onClick={() => { if (confirm("Supprimer cet élément ?")) remove.mutate(String(row["id"])); }}>Supprimer</Button> : null}</div>
+          <div className="mt-4 flex flex-wrap gap-2"><Button size="sm" variant="outline" className="min-w-0 flex-1" onClick={() => setEditing(prepareEditingRow(def, row))}>Modifier</Button>{def.table !== "testimonials" && def.table !== "company_info" ? <Button size="sm" variant="outline" className="flex-1" onClick={() => { if (confirm("Supprimer cet élément ?")) remove.mutate(String(row["id"])); }}>Supprimer</Button> : null}</div>
         </div>)}
         {!rows.length ? <div className="rounded-2xl border border-dashed p-8 text-center text-sm text-muted-foreground">Aucun élément.</div> : null}
       </div>
@@ -873,8 +881,9 @@ function CrudPanel({ def }: { def: TableDef }) {
             <div className="flex min-w-0 items-center justify-between gap-3 border-b px-3 py-3 sm:px-6 sm:py-4"><div className="min-w-0"><p className="text-[10px] uppercase tracking-[0.14em] text-muted-foreground">{def.create && !editing["id"] ? "Nouvel élément" : "Modification"}</p><h3 className="truncate text-base font-semibold sm:text-lg">{def.label}</h3></div><button type="button" onClick={() => setEditing(null)} className="rounded-lg p-2 hover:bg-slate-100" aria-label="Fermer"><X className="h-5 w-5" /></button></div>
             <form className="grid min-h-0 min-w-0 gap-4 overflow-x-hidden overflow-y-auto p-3 sm:grid-cols-2 sm:p-6" onSubmit={(e) => { e.preventDefault(); save.mutate(editing); }}>
               {def.table === "testimonials" ? <div className="rounded-xl bg-slate-50 p-4 text-sm sm:col-span-2"><p className="font-medium">{String(editing["author_name"] ?? "")}</p><p className="mt-1 text-muted-foreground">{String(editing["message"] ?? "")}</p></div> : null}
+              {def.table === "company_info" ? <div className="min-w-0 rounded-xl border border-gold/40 bg-amber-50/60 p-4 text-sm sm:col-span-2"><p className="font-medium">Localisation du bureau</p><p className="mt-1 text-xs text-muted-foreground">Collez un lien Google Maps : la latitude et la longitude se remplissent automatiquement et la carte du site se met à jour.</p><input type="text" placeholder="https://maps.google.com/maps?q=5.3554,-3.9251" className={field} onChange={(e) => { const m = decodeURIComponent(e.target.value).match(/(-?\d{1,2}\.\d+)\s*,\s*(-?\d{1,3}\.\d+)/); if (m) { setEditing((current) => current ? { ...current, latitude: Number(m[1]), longitude: Number(m[2]) } : current); toast.success("Coordonnées détectées."); } }} />{editing["latitude"] != null && editing["longitude"] != null ? <a className="mt-2 inline-block text-xs font-semibold text-gold-deep underline" target="_blank" rel="noreferrer" href={`https://www.google.com/maps?q=${editing["latitude"]},${editing["longitude"]}`}>Vérifier sur Google Maps →</a> : null}</div> : null}
               {def.fields.map((f) => (
-                <label key={f.name} className={"min-w-0 break-words " + (f.kind === "textarea" || f.kind === "file" ? "text-sm sm:col-span-2" : "text-sm")}>
+                <div key={f.name} className={"min-w-0 break-words " + (f.kind === "textarea" || f.kind === "file" ? "text-sm sm:col-span-2" : "text-sm")}>
                   <span className="font-medium">{f.label}{f.required ? " *" : ""}</span>
                   {f.kind === "textarea" ? <textarea rows={f.name === "content" || f.name === "description" ? 7 : 4} wrap="soft" className={field + " resize-y break-words"} value={String(editing[f.name] ?? "")} onChange={(e) => setEditing({ ...editing, [f.name]: e.target.value })} />
                   : f.kind === "boolean" ? <div className="mt-2 flex items-center gap-2"><input type="checkbox" checked={Boolean(editing[f.name])} onChange={(e) => setEditing({ ...editing, [f.name]: e.target.checked })} /><span className="text-xs text-muted-foreground">{editing[f.name] ? "Activé" : "Désactivé"}</span></div>
@@ -949,11 +958,11 @@ function CrudPanel({ def }: { def: TableDef }) {
                         ))}
                       </div>
                     ) : (
-                      editing[f.name] ? <div className="mt-3 overflow-hidden rounded-lg border bg-slate-50 p-2"><img src={String(editing[f.name])} alt="" className="max-h-48 w-full object-contain" /></div> : <p className="mt-2 text-xs text-muted-foreground">Aucun fichier.</p>
+                      editing[f.name] ? <div className="mt-3 overflow-hidden rounded-lg border bg-slate-50 p-2">{/\.(mp4|webm|mov|m4v|ogg|ogv)(?:$|[?#])/i.test(String(editing[f.name])) ? <video src={String(editing[f.name])} controls muted playsInline className="max-h-56 w-full object-contain" /> : <img src={String(editing[f.name])} alt="" className="max-h-48 w-full object-contain" />}<button type="button" className="mt-2 text-xs font-medium text-destructive underline" onClick={() => setEditing((current) => current ? { ...current, [f.name]: null } : current)}>Retirer ce fichier</button></div> : <p className="mt-2 text-xs text-muted-foreground">Aucun fichier.</p>
                     )}
                   </div>
-                  : <input type={f.kind === "number" ? "number" : "text"} className={field} value={String(editing[f.name] ?? "")} onChange={(e) => { const value = f.kind === "number" ? (e.target.value === "" ? null : Number(e.target.value)) : e.target.value; const next = { ...editing, [f.name]: value }; if ((def.table === "news" || def.table === "projects" || def.table === "activities") && f.name === "title" && !editing["id"]) next["slug"] = slugify(String(value ?? "")); setEditing(next); }} disabled={def.table === "news" && f.name === "author"} />}
-                </label>
+                  : <input type={f.kind === "number" ? "number" : "text"} step={f.kind === "number" ? "any" : undefined} className={field} value={String(editing[f.name] ?? "")} onChange={(e) => { const value = f.kind === "number" ? (e.target.value === "" ? null : Number(e.target.value)) : e.target.value; const next = { ...editing, [f.name]: value }; if ((def.table === "news" || def.table === "projects" || def.table === "activities") && f.name === "title" && !editing["id"]) next["slug"] = slugify(String(value ?? "")); setEditing(next); }} disabled={def.table === "news" && f.name === "author"} />}
+                </div>
               ))}
               <div className="flex flex-col gap-2 border-t pt-4 sm:col-span-2 sm:flex-row"><Button type="submit" className="w-full sm:w-auto" variant="gold" disabled={save.isPending || uploading !== null}>{save.isPending ? "Enregistrement…" : "Enregistrer"}</Button><Button type="button" variant="outline" className="w-full sm:w-auto" onClick={() => setEditing(null)}>Annuler</Button></div>
             </form>

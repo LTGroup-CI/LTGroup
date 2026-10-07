@@ -1,0 +1,1 @@
+UPDATE public.company_info SET latitude = 5.355498313903809, longitude = -3.925191879272461;
