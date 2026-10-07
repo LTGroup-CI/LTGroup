@@ -60,18 +60,19 @@ function Page() {
           <StructuredNewsContent content={item.content} title={item.title} />
         </div>
 
-        <div className="mt-10 border-t border-border pt-8">
+        <div className="mt-10 flex flex-wrap items-center justify-between gap-4 border-t border-border pt-6">
           <Link to="/actualites" className="text-sm font-semibold underline underline-offset-4">← Toutes les actualités</Link>
+          <Link to="/contact" className="text-sm font-semibold text-gold-deep underline underline-offset-4">Être recontacté pour cette offre →</Link>
         </div>
 
         {related.length ? (
-          <section className="mt-10 border-t border-border pt-12">
+          <section className="mt-10">
             <p className="eyebrow">À découvrir également</p>
-            <div className="mt-6 grid gap-6 md:grid-cols-3">
+            <div className={"mt-6 grid gap-6 " + (related.length === 1 ? "" : related.length === 2 ? "md:grid-cols-2" : "md:grid-cols-3")}>
               {related.map((news) => (
-                <Link key={news.id} to="/actualites/$slug" params={{ slug: news.slug }} className="overflow-hidden rounded-2xl border border-border bg-card transition hover:-translate-y-1 hover:shadow-elevated">
-                  {news.cover_image_url || news.image_url || news.video_url ? <img src={news.cover_image_url || news.image_url || news.video_url || ""} alt={news.title} className="aspect-[16/9] w-full object-cover" /> : null}
-                  <div className="p-5">
+                <Link key={news.id} to="/actualites/$slug" params={{ slug: news.slug }} className={"overflow-hidden rounded-2xl border border-border bg-card transition hover:-translate-y-1 hover:shadow-elevated " + (related.length === 1 ? "grid md:grid-cols-[360px_1fr]" : "")}>
+                  {news.cover_image_url || news.image_url || news.video_url ? <img src={news.cover_image_url || news.image_url || news.video_url || ""} alt={news.title} className="aspect-[16/9] h-full w-full object-cover" /> : null}
+                  <div className="p-6">
                     <p className="text-xs uppercase tracking-[0.16em] text-muted-foreground">{formatDateFr(news.published_at ?? news.created_at)}</p>
                     <h2 className="mt-2 text-lg">{news.title}</h2>
                     {news.excerpt ? <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{news.excerpt}</p> : null}

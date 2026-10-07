@@ -111,7 +111,7 @@ export function DetailMedia({
                   item.poster ? (
                     <img src={item.poster} alt="" className="h-full w-full object-cover" />
                   ) : (
-                    <video src={item.url} muted playsInline preload="metadata" className="h-full w-full object-cover" />
+                    <video src={item.url.includes("#") ? item.url : item.url + "#t=0.5"} muted playsInline preload="metadata" className="h-full w-full object-cover" />
                   )
                 ) : (
                   <img src={item.url} alt="" className="h-full w-full object-cover" loading="lazy" />
