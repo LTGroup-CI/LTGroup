@@ -605,6 +605,7 @@ function MessagesPanel() {
   const reply = useServerFn(replyToMessage);
   const [openId, setOpenId] = useState<string | null>(null);
   const [text, setText] = useState("");
+  const [filter, setFilter] = useState<"all" | "nouveau" | "traite" | "devis" | "contact">("all");
 
   const { data, isLoading } = useQuery({
     queryKey: ["admin", "messages"],
@@ -630,16 +631,23 @@ function MessagesPanel() {
   });
 
   if (isLoading) return <p className="text-sm text-muted-foreground">Chargement…</p>;
-  const list = data ?? [];
-  if (list.length === 0)
-    return <p className="text-sm text-muted-foreground">Aucune demande pour le moment.</p>;
+  const all = data ?? [];
+  const counts = { all: all.length, nouveau: all.filter((m) => m.status !== "traite").length, traite: all.filter((m) => m.status === "traite").length, devis: all.filter((m) => m.request_type === "devis").length, contact: all.filter((m) => m.request_type === "contact").length };
+  const list = all.filter((m) => filter === "all" ? true : filter === "nouveau" ? m.status !== "traite" : filter === "traite" ? m.status === "traite" : m.request_type === filter);
+  const labels = { all: "Toutes", nouveau: "À traiter", traite: "Répondues", devis: "Devis", contact: "Contact" } as const;
 
   return (
-    <div className="space-y-4">
+    <div className="min-w-0 space-y-4">
+      <div className="grid grid-cols-2 gap-2 sm:flex sm:flex-wrap">
+        {(Object.keys(labels) as Array<keyof typeof labels>).map((k) => (
+          <TabButton key={k} active={filter === k} onClick={() => setFilter(k)}>{labels[k]} ({counts[k]})</TabButton>
+        ))}
+      </div>
+      {list.length === 0 ? <p className="rounded-2xl border border-dashed p-8 text-center text-sm text-muted-foreground">Aucune demande dans cette catégorie.</p> : null}
       {list.map((m) => (
-        <article key={m.id} className="rounded-lg border border-border bg-card p-5">
+        <article key={m.id} className="min-w-0 rounded-2xl border border-border bg-card p-4 shadow-sm sm:p-5">
           <div className="flex flex-wrap items-center justify-between gap-3">
-            <div>
+            <div className="min-w-0 break-words">
               <h3 className="text-lg">
                 {m.full_name}{" "}
                 <span className="text-xs uppercase tracking-[0.14em] text-gold-deep">
@@ -648,10 +656,10 @@ function MessagesPanel() {
               </h3>
               <p className="text-xs text-muted-foreground">{formatDateFr(m.created_at)}</p>
             </div>
-            <span className="rounded-full border border-border px-3 py-1 text-xs">{m.status}</span>
+            <span className={"shrink-0 rounded-full px-3 py-1 text-xs font-semibold " + (m.status === "traite" ? "bg-emerald-100 text-emerald-800" : "bg-amber-100 text-amber-800")}>{m.status === "traite" ? "Répondue" : "À traiter"}</span>
           </div>
 
-          <dl className="mt-4 grid gap-2 text-sm sm:grid-cols-2">
+          <dl className="mt-4 grid min-w-0 gap-2 break-words text-sm sm:grid-cols-2">
             <Info label="E-mail" value={m.email} href={`mailto:${m.email}`} />
             {m.phone ? (
               <Info label="Téléphone" value={m.phone} href={`tel:${m.phone.replace(/\s/g, "")}`} />
@@ -662,7 +670,7 @@ function MessagesPanel() {
             {m.desired_date ? <Info label="Date souhaitée" value={m.desired_date} /> : null}
           </dl>
 
-          <p className="mt-4 whitespace-pre-line text-sm leading-relaxed text-muted-foreground">
+          <p className="mt-4 whitespace-pre-line break-words rounded-xl bg-slate-50 p-4 text-sm leading-relaxed text-muted-foreground">
             {m.message}
           </p>
 
@@ -684,7 +692,7 @@ function MessagesPanel() {
                 placeholder="Votre réponse…"
                 className={field}
               />
-              <div className="mt-3 flex gap-2">
+              <div className="mt-3 flex flex-col gap-2 sm:flex-row">
                 <Button
                   variant="gold"
                   disabled={send.isPending || text.trim().length < 2}
