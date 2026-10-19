@@ -23,7 +23,7 @@ export const Route = createFileRoute("/actualites")({
 });
 
 function Page() {
-  const { data: news, isLoading } = useQuery(newsListQuery);
+  const { data: news, isLoading, error, refetch, isError } = useQuery(newsListQuery);
   const list = news ?? [];
 
   return (
@@ -31,7 +31,14 @@ function Page() {
       <PageHero eyebrow="Actualités" title="La vie du groupe" description={description} />
       <section className="mx-auto max-w-7xl px-5 py-12 lg:px-8">
         {isLoading ? <p className="text-muted-foreground">Chargement…</p> : null}
-        {!isLoading && list.length === 0 ? (
+        {isError ? (
+          <div className="rounded-lg border border-destructive/30 bg-destructive/5 p-5 text-sm">
+            <p className="font-semibold">Impossible de charger les actualités depuis la base de données.</p>
+            <p className="mt-2 text-muted-foreground">{error instanceof Error ? error.message : "Erreur de connexion à Supabase."}</p>
+            <button type="button" onClick={() => void refetch()} className="mt-3 underline underline-offset-4">Réessayer</button>
+          </div>
+        ) : null}
+        {!isLoading && !isError && list.length === 0 ? (
           <p className="text-muted-foreground">Aucune actualité publiée pour le moment.</p>
         ) : null}
 
