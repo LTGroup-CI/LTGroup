@@ -439,7 +439,7 @@ function AdminPage() {
         <div className="flex h-full min-w-0 flex-col shadow-2xl">
           <div className="flex items-center justify-between border-b border-white/10 px-5 py-5">
             <div className="flex min-h-16 items-center rounded-lg bg-white px-3 py-2 shadow-sm ring-1 ring-white/10">
-              <img src={company?.logo_jpg_url || LOGO_URL} alt="LT GROUP" className="h-12 w-auto max-w-[230px] object-contain" />
+              <img src={LOGO_URL} alt="LIGHT TERRA GROUP" className="h-12 w-auto max-w-[230px] object-contain" />
             </div>
             <button type="button" className="rounded-md p-2 hover:bg-white/10 lg:hidden" onClick={() => setMobileOpen(false)} aria-label="Fermer le menu">
               <X className="h-5 w-5" />
