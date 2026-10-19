@@ -8,7 +8,7 @@ import { Menu, X } from "lucide-react";
 
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
-import { LOGO_URL, FAVICON_URL, OG_IMAGE_URL, SITE_URL, getBrandDerivativeUrl } from "@/lib/media";
+import { LOGO_URL, FAVICON_URL, OG_IMAGE_URL, SITE_URL } from "@/lib/media";
 import { activitiesQuery, companyQuery, formatDateFr } from "@/lib/site-data";
 import { replyToMessage } from "@/lib/admin.functions";
 import { notifyNewsSubscribers } from "@/lib/newsletter.functions";
@@ -131,7 +131,7 @@ const TABLES: TableDef[] = [
   {
     key: "company_info", label: "Paramètres — identité & logo", table: "company_info",
     order: { column: "updated_at", ascending: false },
-    columns: ["name", "logo_png_url", "logo_jpg_url", "email", "phone_primary", "city"], create: false,
+    columns: ["name", "email", "phone_primary", "city"], create: false,
     fields: [
       { name: "name", label: "Nom", kind: "text", required: true },
       { name: "slogan", label: "Slogan", kind: "text", required: true },
@@ -151,7 +151,6 @@ const TABLES: TableDef[] = [
       { name: "facebook_url", label: "Facebook", kind: "text" },
       { name: "linkedin_url", label: "LinkedIn", kind: "text" },
       { name: "instagram_url", label: "Instagram", kind: "text" },
-      { name: "logo_png_url", label: "Logo maître PNG — source de toute l’identité", kind: "file", accept: "image/png" },
     ],
   },
   {
@@ -369,44 +368,6 @@ function AdminPage() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const { data: company } = useQuery(companyQuery);
   const queryClient = useQueryClient();
-
-  useEffect(() => {
-    const logoUrl = company?.logo_png_url;
-    if (!company?.id || typeof logoUrl !== "string" || !logoUrl) return;
-    const canonicalLogoUrl = logoUrl;
-    let active = true;
-    void (async () => {
-      try {
-        const favicon = getBrandDerivativeUrl(canonicalLogoUrl, "favicon");
-        const og = getBrandDerivativeUrl(canonicalLogoUrl, "og");
-        const [faviconCheck, ogCheck] = await Promise.all([
-          fetch(favicon, { method: "HEAD", cache: "no-store" }),
-          fetch(og, { method: "HEAD", cache: "no-store" }),
-        ]);
-        if (faviconCheck.ok && ogCheck.ok) return;
-        const response = await fetch(canonicalLogoUrl, { cache: "no-store" });
-        if (!response.ok) throw new Error("Logo PNG inaccessible.");
-        const source = await response.blob();
-        const file = new File([source], "logo.png", { type: "image/png" });
-        const brand = await generateBrandAssets(file);
-        const logoPngUrl = brand["brand/logo.png"];
-        const logoJpgUrl = brand["brand/logo.jpg"];
-        if (!logoPngUrl || !logoJpgUrl) throw new Error("Déclinaisons du logo incomplètes.");
-        if (!active) return;
-        const { error } = await supabase.from("company_info").update({
-          logo_png_url: logoPngUrl,
-          logo_jpg_url: logoJpgUrl,
-          logo_url: logoPngUrl,
-        }).eq("id", company.id);
-        if (error) throw new Error(error.message);
-        await queryClient.invalidateQueries({ queryKey: ["company_info"] });
-        toast.success("Déclinaisons du logo synchronisées.");
-      } catch {
-        // Une erreur de génération ne bloque pas l'administration.
-      }
-    })();
-    return () => { active = false; };
-  }, [company?.id, company?.logo_png_url, queryClient]);
 
   useEffect(() => {
     let active = true;
