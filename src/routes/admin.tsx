@@ -8,7 +8,7 @@ import { Menu, X } from "lucide-react";
 
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
-import { LOGO_URL, getBrandDerivativeUrl } from "@/lib/media";
+import { LOGO_URL, FAVICON_URL, getBrandDerivativeUrl } from "@/lib/media";
 import { activitiesQuery, companyQuery, formatDateFr } from "@/lib/site-data";
 import { replyToMessage } from "@/lib/admin.functions";
 import { notifyNewsSubscribers } from "@/lib/newsletter.functions";
@@ -27,9 +27,9 @@ export const Route = createFileRoute("/admin")({
       { name: "twitter:card", content: "summary" },
     ],
     links: [
-      { rel: "icon", href: "/favicon.png", type: "image/png" },
-      { rel: "shortcut icon", href: "/favicon.png", type: "image/png" },
-      { rel: "apple-touch-icon", href: "/favicon.png" },
+      { rel: "icon", href: FAVICON_URL, type: "image/png" },
+      { rel: "shortcut icon", href: FAVICON_URL, type: "image/png" },
+      { rel: "apple-touch-icon", href: FAVICON_URL },
     ],
   }),
   component: AdminPage,
