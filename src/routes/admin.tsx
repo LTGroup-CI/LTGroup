@@ -8,7 +8,7 @@ import { Menu, X } from "lucide-react";
 
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
-import { LOGO_URL, FAVICON_URL, getBrandDerivativeUrl } from "@/lib/media";
+import { LOGO_URL, FAVICON_URL, OG_IMAGE_URL, SITE_URL, getBrandDerivativeUrl } from "@/lib/media";
 import { activitiesQuery, companyQuery, formatDateFr } from "@/lib/site-data";
 import { replyToMessage } from "@/lib/admin.functions";
 import { notifyNewsSubscribers } from "@/lib/newsletter.functions";
@@ -24,7 +24,11 @@ export const Route = createFileRoute("/admin")({
       { property: "og:title", content: "Tableau de bord — LT GROUP" },
       { property: "og:description", content: "Administration du site LT GROUP." },
       { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary" },
+      { property: "og:image", content: OG_IMAGE_URL.startsWith("http") ? OG_IMAGE_URL : `${SITE_URL}${OG_IMAGE_URL}` },
+      { property: "og:image:alt", content: "Logo officiel LIGHT TERRA GROUP — Bâtir la terre, éclairer l’avenir" },
+      { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:image", content: OG_IMAGE_URL.startsWith("http") ? OG_IMAGE_URL : `${SITE_URL}${OG_IMAGE_URL}` },
+      { name: "twitter:image:alt", content: "Logo officiel LIGHT TERRA GROUP — Bâtir la terre, éclairer l’avenir" },
     ],
     links: [
       { rel: "icon", href: FAVICON_URL, type: "image/png" },
