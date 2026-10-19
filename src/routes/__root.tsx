@@ -87,7 +87,6 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
   head: ({ loaderData }) => {
     const configuredLogo = LOGO_URL;
     const configuredOg = OG_IMAGE_URL;
-    const configuredFavicon = FAVICON_URL;
     const configuredLogoAbsolute = configuredLogo.startsWith("http") ? configuredLogo : new URL(configuredLogo, SITE_URL).toString();
     const configuredOgAbsolute = configuredOg.startsWith("http") ? configuredOg : new URL(configuredOg, SITE_URL).toString();
     return ({
