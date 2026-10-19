@@ -12,7 +12,7 @@ import { useEffect, type ReactNode } from "react";
 import { Toaster } from "@/components/ui/sonner";
 import appCss from "../styles.css?url";
 import { reportRuntimeError } from "../lib/runtime-error-reporting";
-import { LOGO_URL, SITE_URL, FAVICON_URL, getBrandDerivativeUrl } from "@/lib/media";
+import { LOGO_URL, SITE_URL, FAVICON_URL, OG_IMAGE_URL } from "@/lib/media";
 import { companyQuery, type CompanyInfo } from "@/lib/site-data";
 
 const SITE_NAME = "LT GROUP";
@@ -85,9 +85,9 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     try { return await context.queryClient.ensureQueryData(companyQuery); } catch { return null; }
   },
   head: ({ loaderData }) => {
-    const configuredLogo = loaderData?.logo_png_url || loaderData?.logo_url || LOGO_URL;
-    const configuredOg = getBrandDerivativeUrl(configuredLogo, "og");
-    const configuredFavicon = getBrandDerivativeUrl(configuredLogo, "favicon");
+    const configuredLogo = LOGO_URL;
+    const configuredOg = OG_IMAGE_URL;
+    const configuredFavicon = FAVICON_URL;
     const configuredLogoAbsolute = configuredLogo.startsWith("http") ? configuredLogo : new URL(configuredLogo, SITE_URL).toString();
     const configuredOgAbsolute = configuredOg.startsWith("http") ? configuredOg : new URL(configuredOg, SITE_URL).toString();
     return ({
@@ -139,7 +139,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 
 function RootShell({ children }: { children: ReactNode }) {
   const company = Route.useLoaderData();
-  const configuredLogo = company?.logo_png_url || company?.logo_url || LOGO_URL;
+  const configuredLogo = LOGO_URL;
   const organizationJsonLd = {
     "@context": "https://schema.org",
     "@type": "Organization",
