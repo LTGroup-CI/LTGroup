@@ -3,7 +3,7 @@ import { Link, useRouterState } from "@tanstack/react-router";
 import { Menu, Phone, Mail, MapPin, MessageCircle, X } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 
-import { LOGO_URL, WHATSAPP_NUMBERS, DEVELOPER } from "@/lib/media";
+import { LOGO_URL, LOGO_ALT, WHATSAPP_NUMBERS, DEVELOPER } from "@/lib/media";
 import { companyQuery, partnersQuery } from "@/lib/site-data";
 import { Button } from "@/components/ui/button";
 import { AiAssistant } from "@/components/site/AiAssistant";
@@ -37,7 +37,7 @@ export function SiteHeader() {
         <Link to="/" className="flex min-w-0 items-center gap-3" aria-label="LT GROUP — accueil">
           <img
             src={LOGO_URL}
-            alt="Logo LT GROUP"
+            alt={LOGO_ALT}
             className="h-11 w-auto max-w-[210px] shrink-0 object-contain lg:h-14 lg:max-w-[250px]"
             width={600}
             height={400}
@@ -142,7 +142,7 @@ export function SiteFooter() {
           <div className="inline-block">
             <img
               src={LOGO_URL}
-              alt="Logo LT GROUP"
+              alt={LOGO_ALT}
               loading="lazy"
               className="h-16 w-auto max-w-[230px] rounded-sm object-contain sm:h-20"
               width={600}
