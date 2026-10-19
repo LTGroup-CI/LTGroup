@@ -1,7 +1,7 @@
 import { withSupabase } from "npm:@supabase/server";
 
 const LOGO_URL =
-  "https://ghkijyimotuivykvwlge.supabase.co/storage/v1/object/public/site-media/brand/logo-email-fond-blanc.jpg";
+  "https://ltgroup-ci.com/media/logo-light-terra-transparent.png";
 const SITE_URL = "https://ltgroup-ci.com";
 const NOTIFY_LIST = [
   "lightterragroup@gmail.com",
