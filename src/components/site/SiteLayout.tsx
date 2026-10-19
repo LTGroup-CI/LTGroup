@@ -36,7 +36,7 @@ export function SiteHeader() {
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-5 py-3 lg:px-8">
         <Link to="/" className="flex min-w-0 items-center gap-3" aria-label="LT GROUP — accueil">
           <img
-            src={company?.logo_png_url || company?.logo_url || LOGO_URL}
+            src={LOGO_URL}
             alt="Logo LT GROUP"
             className="h-11 w-auto max-w-[210px] shrink-0 object-contain lg:h-14 lg:max-w-[250px]"
             width={600}
@@ -141,7 +141,7 @@ export function SiteFooter() {
         <div className="lg:col-span-2">
           <div className="inline-block">
             <img
-              src={company?.logo_jpg_url || company?.logo_url || LOGO_URL}
+              src={LOGO_URL}
               alt="Logo LT GROUP"
               loading="lazy"
               className="h-16 w-auto max-w-[230px] rounded-sm object-contain sm:h-20"
