@@ -38,7 +38,7 @@ export function SiteHeader() {
           <img
             src={LOGO_URL}
             alt={LOGO_ALT}
-            className="h-11 w-auto max-w-[210px] shrink-0 object-contain lg:h-14 lg:max-w-[250px]"
+            className="block h-11 w-auto max-w-[210px] shrink-0 bg-transparent object-contain lg:h-14 lg:max-w-[250px]"
             width={600}
             height={400}
           />
@@ -139,12 +139,12 @@ export function SiteFooter() {
     <footer className="bg-ink-gradient text-ink-foreground">
       <div className="mx-auto grid max-w-7xl gap-10 px-5 py-12 lg:grid-cols-4 lg:py-14 lg:px-8">
         <div className="lg:col-span-2">
-          <div className="inline-block">
+          <div className="inline-flex rounded-md bg-white p-3 shadow-sm">
             <img
               src={LOGO_URL}
               alt={LOGO_ALT}
               loading="lazy"
-              className="h-16 w-auto max-w-[230px] rounded-sm object-contain sm:h-20"
+              className="block h-16 w-auto max-w-[230px] bg-transparent object-contain sm:h-20"
               width={600}
               height={400}
             />
