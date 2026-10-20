@@ -18,7 +18,7 @@ import { MediaGallery } from "@/components/site/MediaGallery";
 import { MediaPreview } from "@/components/site/MediaPreview";
 import { NewsletterSignup } from "@/components/site/NewsletterSignup";
 import { Button } from "@/components/ui/button";
-import { SITE_URL, getBrandDerivativeUrl } from "@/lib/media";
+import { SITE_URL, OG_IMAGE_URL } from "@/lib/media";
 import {
   activitiesQuery,
   companyQuery,
@@ -39,8 +39,7 @@ export const Route = createFileRoute("/")({
     try { return await context.queryClient.ensureQueryData(companyQuery); } catch { return null; }
   },
   head: ({ loaderData }) => {
-    const logo = loaderData?.logo_png_url || loaderData?.logo_url || null;
-    const ogImage = getBrandDerivativeUrl(logo, "og");
+    const ogImage = OG_IMAGE_URL;
     return {
     meta: [
       { title },

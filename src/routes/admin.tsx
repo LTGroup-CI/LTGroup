@@ -335,10 +335,36 @@ async function generateBrandAssets(file: File) {
   }
 }
 
-async function uploadSiteFile(file: File, folder: string) {
-  if (file.size > 50 * 1024 * 1024) throw new Error("Fichier trop volumineux (50 Mo maximum).");
+// Compresse automatiquement les photos (max 1920 px, WebP qualité 82) avant envoi.
+async function compressImage(file: File): Promise<File> {
+  if (!/^image\/(jpeg|png|webp)$/i.test(file.type)) return file;
+  const bitmap = await createImageBitmap(file);
+  try {
+    const scale = Math.min(1, 1920 / Math.max(bitmap.width, bitmap.height));
+    const w = Math.round(bitmap.width * scale);
+    const h = Math.round(bitmap.height * scale);
+    const canvas = document.createElement("canvas");
+    canvas.width = w;
+    canvas.height = h;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return file;
+    ctx.drawImage(bitmap, 0, 0, w, h);
+    const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, "image/webp", 0.82));
+    if (!blob || blob.size >= file.size) return file;
+    return new File([blob], file.name.replace(/\.[^.]+$/, "") + ".webp", { type: "image/webp" });
+  } finally {
+    bitmap.close();
+  }
+}
+
+async function uploadSiteFile(original: File, folder: string) {
   const allowed = /^(image\/(jpeg|png|webp|gif|svg\+xml)|video\/(mp4|webm|quicktime))$/i;
-  if (!allowed.test(file.type)) throw new Error("Format non pris en charge. Utilisez une image ou une vidéo web.");
+  if (!allowed.test(original.type)) throw new Error("Format non pris en charge. Utilisez une image ou une vidéo web.");
+  const file = await compressImage(original);
+  if (file.type.startsWith("video/") && file.size > 15 * 1024 * 1024) {
+    throw new Error("Vidéo trop lourde (15 Mo maximum). Réduisez-la avant l'envoi (ex. 720p, 30 secondes).");
+  }
+  if (file.size > 15 * 1024 * 1024) throw new Error("Fichier trop volumineux (15 Mo maximum).");
   const path = folder + "/" + safeFileName(file.name);
   const { error } = await supabase.storage.from("site-media").upload(path, file, { cacheControl: "31536000", upsert: false, contentType: file.type });
   if (error) throw new Error(error.message);
