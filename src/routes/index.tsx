@@ -126,7 +126,7 @@ function IntroVideoLoop() {
           className={"absolute inset-0 h-full w-full object-cover transition-opacity duration-500 " + (slot === front ? "opacity-100" : "opacity-0")}
           muted
           playsInline
-          preload={slot === front ? "auto" : "metadata"}
+          preload="metadata"
           onEnded={slot === front ? handleEnded : undefined}
           aria-hidden={slot !== front}
         />
@@ -354,9 +354,8 @@ function VideoShowcase() {
               muted
               playsInline
               autoPlay
-              loop
               controls
-              preload="auto"
+              preload="metadata"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/15 to-transparent pointer-events-none" />
             <div className="absolute inset-x-0 bottom-0 p-5 pointer-events-none sm:p-8 lg:p-10">

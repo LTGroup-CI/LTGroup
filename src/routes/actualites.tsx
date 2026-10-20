@@ -55,8 +55,6 @@ function Page() {
                     url={mediaUrl}
                     alt={item.title}
                     poster={item.video_poster_url}
-                    autoPlay={!item.video_poster_url}
-                    loop
                     className="h-full min-h-48 w-full object-cover transition duration-500 group-hover:scale-[1.02]"
                   />
                 ) : null}
