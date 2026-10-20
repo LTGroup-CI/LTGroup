@@ -7,9 +7,9 @@ import { PageHero, SiteLayout } from "@/components/site/SiteLayout";
 import { Button } from "@/components/ui/button";
 import { submitRequest } from "@/lib/requests.functions";
 
-const title = "Services & devis — LT GROUP";
+const title = "Services & demande de devis | BTP, terrains, immobilier — LT GROUP";
 const description =
-  "Demandez un accompagnement personnalisé : vente de terrains, commercialisation foncière, aménagement, BTP & VRD, immobilier, hydraulique, électrification et études.";
+  "Demandez un devis à LIGHT TERRA GROUP SARL en Côte d’Ivoire : vente et aménagement de terrains, lotissement, BTP & VRD, construction, hydraulique, électrification et topographie.";
 
 export const Route = createFileRoute("/services")({
   head: () => ({
@@ -19,8 +19,13 @@ export const Route = createFileRoute("/services")({
       { property: "og:title", content: title },
       { property: "og:description", content: description },
       { property: "og:type", content: "website" },
+      { property: "og:image", content: "https://ltgroup-ci.com/media/og-light-terra.jpg" },
+      { name: "twitter:title", content: title },
+      { name: "twitter:description", content: description },
+      { name: "twitter:image", content: "https://ltgroup-ci.com/media/og-light-terra.jpg" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
+    links: [{ rel: "canonical", href: `https://ltgroup-ci.com${"/services"}` }],
   }),
   component: Page,
 });
