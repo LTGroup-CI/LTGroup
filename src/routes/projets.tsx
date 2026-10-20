@@ -7,8 +7,9 @@ import { PageHero, SiteLayout } from "@/components/site/SiteLayout";
 import { MediaPreview } from "@/components/site/MediaPreview";
 import { projectsQuery } from "@/lib/site-data";
 
-const title = "Projets & réalisations — LT GROUP";
-const description = "Découvrez les projets fonciers, immobiliers et électriques réalisés par LT GROUP.";
+const title = "Projets & réalisations en Côte d’Ivoire | LIGHT TERRA GROUP";
+const description =
+  "Explorez les projets et réalisations de LIGHT TERRA GROUP SARL : aménagement foncier, lotissements, construction, immobilier et infrastructures en Côte d’Ivoire.";
 
 export const Route = createFileRoute("/projets")({
   head: () => ({
@@ -18,8 +19,13 @@ export const Route = createFileRoute("/projets")({
       { property: "og:title", content: title },
       { property: "og:description", content: description },
       { property: "og:type", content: "website" },
+      { property: "og:image", content: "https://ltgroup-ci.com/media/og-light-terra.jpg" },
+      { name: "twitter:title", content: title },
+      { name: "twitter:description", content: description },
+      { name: "twitter:image", content: "https://ltgroup-ci.com/media/og-light-terra.jpg" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
+    links: [{ rel: "canonical", href: `https://ltgroup-ci.com${"/projets"}` }],
   }),
   component: Page,
 });
