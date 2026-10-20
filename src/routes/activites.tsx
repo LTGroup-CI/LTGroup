@@ -6,9 +6,9 @@ import { PageHero, SiteLayout } from "@/components/site/SiteLayout";
 import { Button } from "@/components/ui/button";
 import { activitiesQuery } from "@/lib/site-data";
 
-const title = "Nos activités — LT GROUP";
+const title = "Nos activités | Foncier, BTP, Immobilier & Énergie — LT GROUP";
 const description =
-  "Aménagement foncier, BTP, promotion immobilière, infrastructures électriques : découvrez les pôles d'activité de LT GROUP.";
+  "Découvrez les activités de LIGHT TERRA GROUP SARL en Côte d’Ivoire : aménagement foncier, lotissement, BTP & VRD, immobilier, hydraulique, électrification et topographie.";
 
 export const Route = createFileRoute("/activites")({
   head: () => ({
@@ -18,8 +18,13 @@ export const Route = createFileRoute("/activites")({
       { property: "og:title", content: title },
       { property: "og:description", content: description },
       { property: "og:type", content: "website" },
+      { property: "og:image", content: "https://ltgroup-ci.com/media/og-light-terra.jpg" },
+      { name: "twitter:title", content: title },
+      { name: "twitter:description", content: description },
+      { name: "twitter:image", content: "https://ltgroup-ci.com/media/og-light-terra.jpg" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
+    links: [{ rel: "canonical", href: `https://ltgroup-ci.com${"/activites"}` }],
   }),
   component: Page,
 });
