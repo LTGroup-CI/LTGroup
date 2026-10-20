@@ -18,7 +18,7 @@ import { MediaGallery } from "@/components/site/MediaGallery";
 import { MediaPreview } from "@/components/site/MediaPreview";
 import { NewsletterSignup } from "@/components/site/NewsletterSignup";
 import { Button } from "@/components/ui/button";
-import { SITE_URL, getBrandDerivativeUrl } from "@/lib/media";
+import { SITE_URL, OG_IMAGE_URL } from "@/lib/media";
 import {
   activitiesQuery,
   companyQuery,
