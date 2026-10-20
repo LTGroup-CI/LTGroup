@@ -5,8 +5,9 @@ import { PageHero, SiteLayout } from "@/components/site/SiteLayout";
 import { formatDateFr, newsListQuery } from "@/lib/site-data";
 import { MediaPreview } from "@/components/site/MediaPreview";
 
-const title = "Actualités — LT GROUP";
-const description = "Les dernières actualités, chantiers et annonces de LT GROUP.";
+const title = "Actualités BTP, foncier & immobilier en Côte d’Ivoire | LT GROUP";
+const description =
+  "Suivez les actualités, chantiers, projets et annonces de LIGHT TERRA GROUP SARL à Abidjan et en Côte d’Ivoire.";
 
 export const Route = createFileRoute("/actualites")({
   head: () => ({
@@ -16,8 +17,13 @@ export const Route = createFileRoute("/actualites")({
       { property: "og:title", content: title },
       { property: "og:description", content: description },
       { property: "og:type", content: "website" },
+      { property: "og:image", content: "https://ltgroup-ci.com/media/og-light-terra.jpg" },
+      { name: "twitter:title", content: title },
+      { name: "twitter:description", content: description },
+      { name: "twitter:image", content: "https://ltgroup-ci.com/media/og-light-terra.jpg" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
+    links: [{ rel: "canonical", href: `https://ltgroup-ci.com${"/actualites"}` }],
   }),
   component: Page,
 });
