@@ -6,9 +6,9 @@ import { PageHero, SiteLayout } from "@/components/site/SiteLayout";
 import { activitiesQuery, companyQuery } from "@/lib/site-data";
 import { OfficeMap } from "@/components/site/OfficeMap";
 
-const title = "À propos — LT GROUP";
+const title = "À propos de LIGHT TERRA GROUP SARL | Entreprise ivoirienne";
 const description =
-  "LT GROUP, groupe ivoirien spécialisé dans l'aménagement foncier, la construction, l'immobilier et les infrastructures électriques.";
+  "Découvrez LIGHT TERRA GROUP SARL, entreprise basée à Abidjan en Côte d’Ivoire, spécialisée dans le foncier, l’aménagement, la construction et les infrastructures.";
 
 export const Route = createFileRoute("/a-propos")({
   head: () => ({
@@ -18,8 +18,13 @@ export const Route = createFileRoute("/a-propos")({
       { property: "og:title", content: title },
       { property: "og:description", content: description },
       { property: "og:type", content: "website" },
+      { property: "og:image", content: "https://ltgroup-ci.com/media/og-light-terra.jpg" },
+      { name: "twitter:title", content: title },
+      { name: "twitter:description", content: description },
+      { name: "twitter:image", content: "https://ltgroup-ci.com/media/og-light-terra.jpg" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
+    links: [{ rel: "canonical", href: `https://ltgroup-ci.com${"/a-propos"}` }],
   }),
   component: Page,
 });
