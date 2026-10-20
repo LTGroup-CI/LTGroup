@@ -10,9 +10,9 @@ import { WHATSAPP_NUMBERS } from "@/lib/media";
 import { submitRequest } from "@/lib/requests.functions";
 import { OfficeMap } from "@/components/site/OfficeMap";
 
-const title = "Contact — LT GROUP";
+const title = "Contact LIGHT TERRA GROUP SARL | Abidjan, Côte d’Ivoire";
 const description =
-  "Contactez LT GROUP à Abidjan : téléphone, WhatsApp, e-mail, adresse du siège social et formulaire de contact.";
+  "Contactez LIGHT TERRA GROUP SARL à Abidjan, Cocody Akouédo, pour vos projets fonciers, immobiliers, BTP, VRD et infrastructures en Côte d’Ivoire.";
 
 export const Route = createFileRoute("/contact")({
   head: () => ({
@@ -22,8 +22,13 @@ export const Route = createFileRoute("/contact")({
       { property: "og:title", content: title },
       { property: "og:description", content: description },
       { property: "og:type", content: "website" },
+      { property: "og:image", content: "https://ltgroup-ci.com/media/og-light-terra.jpg" },
+      { name: "twitter:title", content: title },
+      { name: "twitter:description", content: description },
+      { name: "twitter:image", content: "https://ltgroup-ci.com/media/og-light-terra.jpg" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
+    links: [{ rel: "canonical", href: `https://ltgroup-ci.com${"/contact"}` }],
   }),
   component: Page,
 });
