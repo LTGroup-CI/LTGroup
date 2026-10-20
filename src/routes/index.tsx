@@ -39,8 +39,7 @@ export const Route = createFileRoute("/")({
     try { return await context.queryClient.ensureQueryData(companyQuery); } catch { return null; }
   },
   head: ({ loaderData }) => {
-    const logo = loaderData?.logo_png_url || loaderData?.logo_url || null;
-    const ogImage = getBrandDerivativeUrl(logo, "og");
+    const ogImage = OG_IMAGE_URL;
     return {
     meta: [
       { title },
