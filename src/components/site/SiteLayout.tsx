@@ -139,7 +139,7 @@ export function SiteFooter() {
     <footer className="bg-ink-gradient text-ink-foreground">
       <div className="mx-auto grid max-w-7xl gap-10 px-5 py-12 lg:grid-cols-4 lg:py-14 lg:px-8">
         <div className="lg:col-span-2">
-          <div className="inline-flex rounded-md bg-white p-3 shadow-sm">
+          <div className="inline-flex rounded-md bg-card p-3">
             <img
               src={LOGO_URL}
               alt={LOGO_ALT}
