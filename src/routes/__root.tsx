@@ -86,9 +86,6 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
   },
   head: ({ loaderData }) => {
     const configuredLogo = LOGO_URL;
-    const configuredOg = OG_IMAGE_URL;
-    const configuredLogoAbsolute = configuredLogo.startsWith("http") ? configuredLogo : new URL(configuredLogo, SITE_URL).toString();
-    const configuredOgAbsolute = configuredOg.startsWith("http") ? configuredOg : new URL(configuredOg, SITE_URL).toString();
     return ({
     meta: [
       { charSet: "utf-8" },
@@ -107,23 +104,15 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { property: "og:type", content: "website" },
       { name: "geo.region", content: "CI-AB" },
       { name: "geo.placename", content: "Abidjan, Côte d’Ivoire" },
-      { property: "og:url", content: SITE_URL },
-      { property: "og:image", content: configuredOgAbsolute },
-      { property: "og:image:width", content: "1536" },
-      { property: "og:image:height", content: "1024" },
-      { property: "og:image:alt", content: "Logo officiel LIGHT TERRA GROUP — Bâtir la terre, éclairer l’avenir" },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:title", content: SITE_TITLE },
       { name: "twitter:description", content: SITE_DESCRIPTION },
-      { name: "twitter:image", content: configuredOgAbsolute },
-      { name: "twitter:image:alt", content: "Logo officiel LIGHT TERRA GROUP SARL — Bâtir la terre, éclairer l’avenir" },
     ],
     links: [
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" },
       { rel: "stylesheet", href: appCss },
-      { rel: "canonical", href: SITE_URL },
       { rel: "icon", href: FAVICON_URL, type: "image/png" },
       { rel: "shortcut icon", href: FAVICON_URL, type: "image/png" },
       { rel: "apple-touch-icon", href: FAVICON_URL },
