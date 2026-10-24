@@ -12,7 +12,7 @@ import { useEffect, type ReactNode } from "react";
 import { Toaster } from "@/components/ui/sonner";
 import appCss from "../styles.css?url";
 import { reportRuntimeError } from "../lib/runtime-error-reporting";
-import { LOGO_URL, SITE_URL, FAVICON_URL, OG_IMAGE_URL } from "@/lib/media";
+import { LOGO_URL, SITE_URL, FAVICON_URL } from "@/lib/media";
 import { companyQuery, type CompanyInfo } from "@/lib/site-data";
 
 const SITE_NAME = "LT GROUP";
