@@ -12,8 +12,9 @@ import { Label } from "@/components/ui/label";
 import { supabase } from "@/integrations/supabase/client";
 import { formatDateFr, testimonialsQuery } from "@/lib/site-data";
 
-const title = "Témoignages — LT GROUP";
-const description = "Les retours de nos clients et partenaires sur les projets menés par LT GROUP.";
+const title = "Témoignages clients | Foncier, BTP & immobilier — LT GROUP Côte d’Ivoire";
+const description =
+  "Les retours des clients et partenaires de LIGHT TERRA GROUP SARL sur leurs projets fonciers, immobiliers et d'infrastructures en Côte d’Ivoire.";
 
 export const Route = createFileRoute("/temoignages")({
   head: () => ({
@@ -23,8 +24,14 @@ export const Route = createFileRoute("/temoignages")({
       { property: "og:title", content: title },
       { property: "og:description", content: description },
       { property: "og:type", content: "website" },
+      { property: "og:url", content: "https://ltgroup-ci.com/temoignages" },
+      { property: "og:image", content: "https://ltgroup-ci.com/media/og-light-terra.jpg" },
+      { name: "twitter:title", content: title },
+      { name: "twitter:description", content: description },
+      { name: "twitter:image", content: "https://ltgroup-ci.com/media/og-light-terra.jpg" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
+    links: [{ rel: "canonical", href: "https://ltgroup-ci.com/temoignages" }],
   }),
   component: Page,
 });

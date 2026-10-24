@@ -19,6 +19,7 @@ export const Route = createFileRoute("/services")({
       { property: "og:title", content: title },
       { property: "og:description", content: description },
       { property: "og:type", content: "website" },
+      { property: "og:url", content: "https://ltgroup-ci.com/services" },
       { property: "og:image", content: "https://ltgroup-ci.com/media/og-light-terra.jpg" },
       { name: "twitter:title", content: title },
       { name: "twitter:description", content: description },
