@@ -7,7 +7,27 @@ import { SiteFooter, SiteHeader, PageHero } from "@/components/site/SiteLayout";
 import { AiAssistant } from "@/components/site/AiAssistant";
 import { faqItemsQuery } from "@/lib/site-data";
 
+const title = "FAQ — Achat de terrain, foncier & BTP en Côte d’Ivoire | LT GROUP";
+const description =
+  "Réponses aux questions fréquentes : achat de terrain à Abidjan et en Côte d’Ivoire, sécurité foncière, aménagement, lotissement, BTP, devis et accompagnement par LIGHT TERRA GROUP SARL.";
+
 export const Route = createFileRoute("/faq")({
+  head: () => ({
+    meta: [
+      { title },
+      { name: "description", content: description },
+      { property: "og:title", content: title },
+      { property: "og:description", content: description },
+      { property: "og:type", content: "website" },
+      { property: "og:url", content: "https://ltgroup-ci.com/faq" },
+      { property: "og:image", content: "https://ltgroup-ci.com/media/og-light-terra.jpg" },
+      { name: "twitter:title", content: title },
+      { name: "twitter:description", content: description },
+      { name: "twitter:image", content: "https://ltgroup-ci.com/media/og-light-terra.jpg" },
+      { name: "twitter:card", content: "summary_large_image" },
+    ],
+    links: [{ rel: "canonical", href: "https://ltgroup-ci.com/faq" }],
+  }),
   component: FaqPage,
 });
 

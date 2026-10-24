@@ -5,6 +5,7 @@ import { PageHero, SiteLayout } from "@/components/site/SiteLayout";
 import { DetailMedia } from "@/components/site/DetailMedia";
 import { formatDateFr, companyQuery, newsItemQuery, newsListQuery } from "@/lib/site-data";
 import { StructuredNewsContent } from "@/components/site/StructuredNewsContent";
+import { SITE_URL } from "@/lib/media";
 
 export const Route = createFileRoute("/actualites_/$slug")({
   loader: async ({ context, params }) => {
@@ -17,6 +18,69 @@ export const Route = createFileRoute("/actualites_/$slug")({
     } catch {
       return { item: null, company: null };
     }
+  },
+  head: ({ loaderData, params }) => {
+    const item = loaderData?.item ?? null;
+    const title = item ? `${item.title} | Actualités — LT GROUP` : "Actualité — LT GROUP";
+    const description =
+      item?.excerpt ??
+      "Actualité de LIGHT TERRA GROUP SARL : foncier, BTP, immobilier et infrastructures en Côte d’Ivoire.";
+    const url = `${SITE_URL}/actualites/${params.slug}`;
+    const rawImage = item?.cover_image_url ?? item?.image_url ?? null;
+    const image = rawImage && rawImage.startsWith("http") ? rawImage : null;
+    return {
+      meta: [
+        { title },
+        { name: "description", content: description },
+        { property: "og:title", content: title },
+        { property: "og:description", content: description },
+        { property: "og:type", content: "article" },
+        { property: "og:url", content: url },
+        ...(image
+          ? [
+              { property: "og:image", content: image },
+              { name: "twitter:image", content: image },
+            ]
+          : []),
+        { name: "twitter:card", content: "summary_large_image" },
+        { name: "twitter:title", content: title },
+        { name: "twitter:description", content: description },
+      ],
+      links: [{ rel: "canonical", href: url }],
+      scripts: item
+        ? [
+            {
+              type: "application/ld+json",
+              children: JSON.stringify({
+                "@context": "https://schema.org",
+                "@type": "Article",
+                headline: item.title,
+                description,
+                datePublished: item.published_at ?? item.created_at,
+                author: item.author
+                  ? { "@type": "Person", name: item.author }
+                  : { "@type": "Organization", name: "LIGHT TERRA GROUP SARL" },
+                publisher: { "@type": "Organization", name: "LIGHT TERRA GROUP SARL" },
+                mainEntityOfPage: url,
+                inLanguage: "fr-CI",
+                ...(image ? { image } : {}),
+              }),
+            },
+            {
+              type: "application/ld+json",
+              children: JSON.stringify({
+                "@context": "https://schema.org",
+                "@type": "BreadcrumbList",
+                itemListElement: [
+                  { "@type": "ListItem", position: 1, name: "Accueil", item: SITE_URL },
+                  { "@type": "ListItem", position: 2, name: "Actualités", item: `${SITE_URL}/actualites` },
+                  { "@type": "ListItem", position: 3, name: item.title, item: url },
+                ],
+              }),
+            },
+          ]
+        : [],
+    };
   },
   component: Page,
 });

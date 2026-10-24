@@ -5,6 +5,7 @@ import { ArrowRight } from "lucide-react";
 import { PageHero, SiteLayout } from "@/components/site/SiteLayout";
 import { DetailMedia } from "@/components/site/DetailMedia";
 import { activityItemQuery, activitiesQuery, projectsQuery } from "@/lib/site-data";
+import { SITE_URL } from "@/lib/media";
 
 export const Route = createFileRoute("/activites_/$slug")({
   loader: async ({ context, params }) => {
@@ -13,6 +14,52 @@ export const Route = createFileRoute("/activites_/$slug")({
     } catch {
       return null;
     }
+  },
+  head: ({ loaderData, params }) => {
+    const activity = loaderData ?? null;
+    const title = activity ? `${activity.title} | Pôle d'activité — LT GROUP` : "Pôle d'activité — LT GROUP";
+    const description =
+      activity?.short_description ??
+      "Pôle d'activité de LIGHT TERRA GROUP SARL en Côte d’Ivoire.";
+    const url = `${SITE_URL}/activites/${params.slug}`;
+    const rawImage = activity?.cover_image_url ?? activity?.image_url ?? null;
+    const image = rawImage && rawImage.startsWith("http") ? rawImage : null;
+    return {
+      meta: [
+        { title },
+        { name: "description", content: description },
+        { property: "og:title", content: title },
+        { property: "og:description", content: description },
+        { property: "og:type", content: "website" },
+        { property: "og:url", content: url },
+        ...(image
+          ? [
+              { property: "og:image", content: image },
+              { name: "twitter:image", content: image },
+            ]
+          : []),
+        { name: "twitter:card", content: "summary_large_image" },
+        { name: "twitter:title", content: title },
+        { name: "twitter:description", content: description },
+      ],
+      links: [{ rel: "canonical", href: url }],
+      scripts: activity
+        ? [
+            {
+              type: "application/ld+json",
+              children: JSON.stringify({
+                "@context": "https://schema.org",
+                "@type": "BreadcrumbList",
+                itemListElement: [
+                  { "@type": "ListItem", position: 1, name: "Accueil", item: SITE_URL },
+                  { "@type": "ListItem", position: 2, name: "Activités", item: `${SITE_URL}/activites` },
+                  { "@type": "ListItem", position: 3, name: activity.title, item: url },
+                ],
+              }),
+            },
+          ]
+        : [],
+    };
   },
   component: Page,
 });

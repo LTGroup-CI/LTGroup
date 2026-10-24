@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { PageHero, SiteLayout } from "@/components/site/SiteLayout";
 import { DetailMedia } from "@/components/site/DetailMedia";
 import { companyQuery, projectItemQuery, projectsQuery } from "@/lib/site-data";
+import { SITE_URL } from "@/lib/media";
 
 const STATUS_LABEL: Record<string, string> = {
   en_cours: "En cours",
@@ -21,6 +22,52 @@ export const Route = createFileRoute("/projets_/$slug")({
     } catch {
       return { project: null, company: null };
     }
+  },
+  head: ({ loaderData, params }) => {
+    const project = loaderData?.project ?? null;
+    const title = project ? `${project.title} | Projets — LT GROUP` : "Projet — LT GROUP";
+    const description =
+      project?.summary ??
+      "Projet réalisé par LIGHT TERRA GROUP SARL : aménagement foncier, construction et infrastructures en Côte d’Ivoire.";
+    const url = `${SITE_URL}/projets/${params.slug}`;
+    const rawImage = project?.cover_image_url ?? project?.image_url ?? null;
+    const image = rawImage && rawImage.startsWith("http") ? rawImage : null;
+    return {
+      meta: [
+        { title },
+        { name: "description", content: description },
+        { property: "og:title", content: title },
+        { property: "og:description", content: description },
+        { property: "og:type", content: "article" },
+        { property: "og:url", content: url },
+        ...(image
+          ? [
+              { property: "og:image", content: image },
+              { name: "twitter:image", content: image },
+            ]
+          : []),
+        { name: "twitter:card", content: "summary_large_image" },
+        { name: "twitter:title", content: title },
+        { name: "twitter:description", content: description },
+      ],
+      links: [{ rel: "canonical", href: url }],
+      scripts: project
+        ? [
+            {
+              type: "application/ld+json",
+              children: JSON.stringify({
+                "@context": "https://schema.org",
+                "@type": "BreadcrumbList",
+                itemListElement: [
+                  { "@type": "ListItem", position: 1, name: "Accueil", item: SITE_URL },
+                  { "@type": "ListItem", position: 2, name: "Projets", item: `${SITE_URL}/projets` },
+                  { "@type": "ListItem", position: 3, name: project.title, item: url },
+                ],
+              }),
+            },
+          ]
+        : [],
+    };
   },
   component: Page,
 });
