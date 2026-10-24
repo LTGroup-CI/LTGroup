@@ -3,7 +3,6 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { ArrowRight, ShieldCheck, Users, HardHat, Handshake } from "lucide-react";
 import { activityIcon } from "@/lib/activity-icons";
-import { OfficeMap } from "@/components/site/OfficeMap";
 import heroTerrain from "@/assets/hero-terrain.jpg";
 import heroFoncier from "@/assets/hero-foncier.jpg";
 import heroBtp from "@/assets/hero-btp.jpg";
@@ -288,30 +287,6 @@ function Visuals() {
   );
 }
 
-function HomeMap() {
-  return (
-    <section className="mx-auto grid max-w-[1480px] gap-10 px-5 py-12 sm:px-8 lg:grid-cols-[0.9fr_1.4fr] lg:px-12 lg:py-12 xl:px-16">
-      <div className="min-w-0 self-center">
-        <h2 className="mt-0 text-3xl lg:text-4xl">Nos locaux à Abidjan</h2>
-        <hr className="gold-rule mt-6 w-24" />
-        <p className="mt-6 leading-relaxed text-muted-foreground">
-          <span className="font-semibold text-foreground">Siège social :</span> Cocody Akouédo Extension Sud-Est, Lot 637, Îlot 60, 01 BP 2259 Abidjan 01.
-        </p>
-        <p className="mt-4 leading-relaxed text-muted-foreground">
-          (+225) 07 49 22 47 22 / 07 07 74 14 84<br />contact@ltgroup-ci.com
-        </p>
-        <Button asChild variant="gold" className="mt-8"><Link to="/contact">Prendre rendez-vous</Link></Button>
-      </div>
-      <div className="min-w-0">
-        <div className="mb-4">
-          <p className="eyebrow">Nous trouver</p>
-        </div>
-        <OfficeMap className="h-80 sm:h-96 lg:h-[27rem]" />
-      </div>
-    </section>
-  );
-}
-
 function VideoShowcase() {
   const { data: videos } = useQuery(showcaseVideosQuery);
   const videoList = videos ?? [];
@@ -553,7 +528,6 @@ function Index() {
         <Visuals />
         <FeaturedProjects />
         <LatestNews />
-        <HomeMap />
         <NewsletterSignup />
         <CallToAction />
       </main>

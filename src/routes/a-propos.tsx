@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Eye, Gem, Target, ShieldCheck, Workflow, MapPinned } from "lucide-react";
 
 import { PageHero, SiteLayout } from "@/components/site/SiteLayout";
-import { activitiesQuery, companyQuery } from "@/lib/site-data";
+import { companyQuery } from "@/lib/site-data";
 import { OfficeMap } from "@/components/site/OfficeMap";
 
 const title = "À propos de LIGHT TERRA GROUP SARL | Entreprise ivoirienne";
@@ -49,7 +49,6 @@ const VALUES = [
 
 function Page() {
   const { data: company } = useQuery(companyQuery);
-  const { data: activities } = useQuery(activitiesQuery);
 
   return (
     <SiteLayout>
@@ -114,48 +113,6 @@ function Page() {
           </div>
         </div>
       </section>
-      {activities && activities.length > 0 ? (
-        <section className="bg-muted/50 py-12">
-          <div className="mx-auto max-w-7xl px-5 lg:px-8">
-            <p className="eyebrow">Domaines d'intervention</p>
-            <h2 className="mt-3 text-3xl">Ce que nous faisons</h2>
-            <p className="mt-4 max-w-3xl text-sm leading-relaxed text-muted-foreground">Nos pôles couvrent l’ensemble des étapes d’un projet, de l’identification de l’opportunité et des études jusqu’aux travaux, aux infrastructures et à la mise en valeur des actifs.</p>
-            <hr className="gold-rule mt-6 w-24" />
-            <ul className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {activities.map((activity) => (
-                <li key={activity.id} className="overflow-hidden rounded-lg border border-border bg-card">
-                  <div className="p-5">
-                    <h3 className="text-base">{activity.title}</h3>
-                    <p className="mt-2 text-sm text-muted-foreground">{activity.short_description}</p>
-                    <a href={"/activites/" + activity.slug} className="mt-4 inline-flex text-sm font-semibold underline underline-offset-4">Découvrir →</a>
-                  </div>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </section>
-      ) : null}
-
-      <section className="mx-auto max-w-7xl px-5 py-12 lg:px-8">
-        <p className="eyebrow">Notre démarche</p>
-        <h2 className="mt-3 text-3xl">Comment nous accompagnons chaque projet</h2>
-        <hr className="gold-rule mt-6 w-24" />
-        <ol className="mt-10 grid gap-5 md:grid-cols-4">
-          {[
-            ["Écoute", "Compréhension de votre besoin, de votre budget et de vos délais."],
-            ["Étude", "Analyse du terrain, vérification documentaire et faisabilité."],
-            ["Réalisation", "Coordination des équipes, des travaux et des partenaires."],
-            ["Suivi", "Livraison, accompagnement administratif et service après projet."],
-          ].map(([t, x], i) => (
-            <li key={t} className="rounded-lg border border-border bg-card p-6">
-              <span className="font-display text-3xl text-gold-deep">0{i + 1}</span>
-              <h3 className="mt-3 text-lg">{t}</h3>
-              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{x}</p>
-            </li>
-          ))}
-        </ol>
-      </section>
-
       <section className="bg-muted/50 py-12">
         <div className="mx-auto grid max-w-7xl gap-10 px-5 lg:grid-cols-2 lg:px-8">
           <div className="rounded-lg border border-border bg-card p-8">
