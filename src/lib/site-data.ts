@@ -1,5 +1,47 @@
 import { queryOptions } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import snapshot from "@/content/snapshot.json";
+
+// Copie locale du contenu (textes + chemins de médias servis par le site).
+// Si la base ne répond pas (quota, panne), le site affiche cette copie.
+type SnapTable = keyof typeof snapshot;
+const STORAGE_PREFIX = /https:\/\/[a-z0-9]+\.supabase\.co\/storage\/v1\/object\/public\/site-media\//;
+const LOCAL_MEDIA: Array<[RegExp, string]> = [
+  [/brand\/logo\.jpg/, "/media/logo.jpg"],
+  [/brand\/logo\.png/, "/media/logo.png"],
+  [/dabou/i, "/media/content/lt-group-dabou.jpg"],
+  [/7f347a4e|e6c9f45e|9a07b2c8/, "/media/content/lt-group-assinie.jpg"],
+  [/16-16-22/, "/media/content/lt-group-video-1.mp4"],
+  [/19-56-04|381285/, "/media/content/lt-group-video-2.mp4"],
+];
+function localize<T>(value: T): T {
+  const json = JSON.stringify(value ?? null).replace(/https:\/\/[^"\\]+/g, (url) => {
+    if (!STORAGE_PREFIX.test(url)) return url;
+    for (const [re, local] of LOCAL_MEDIA) if (re.test(url)) return local;
+    return url;
+  });
+  return JSON.parse(json) as T;
+}
+function snap<T>(table: SnapTable, filter: (row: any) => boolean = () => true): T {
+  return localize((snapshot[table] as any[]).filter(filter)) as T;
+}
+async function withFallback<T>(run: () => Promise<T>, fallback: () => T): Promise<T> {
+  try {
+    const result = await Promise.race([
+      run(),
+      new Promise<never>((_, reject) => setTimeout(() => reject(new Error("timeout")), 6000)),
+    ]);
+    if (Array.isArray(result) && result.length === 0) {
+      const fb = fallback();
+      if (Array.isArray(fb) && fb.length > 0) return fb;
+    }
+    if (result === null || result === undefined) return fallback();
+    return localize(result);
+  } catch {
+    return fallback();
+  }
+}
+const byPos = (a: any, b: any) => (a.position ?? 0) - (b.position ?? 0);
 
 export type CompanyInfo = {
   id: string;
