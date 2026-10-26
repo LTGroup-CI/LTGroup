@@ -260,7 +260,7 @@ export const activitiesQuery = queryOptions({
     ),
 });
 
-export const activityItemQuery = (slug: string) =>
+const activityItemQuery = (slug: string) =>
   queryOptions({
     queryKey: ["activities", "public", slug],
     queryFn: async (): Promise<Activity | null> => {
@@ -299,7 +299,7 @@ export const newsListQuery = queryOptions({
     ),
 });
 
-export const newsItemQuery = (slug: string) =>
+const newsItemQuery = (slug: string) =>
   queryOptions({
     queryKey: ["news", "public", slug],
     queryFn: async (): Promise<NewsItem | null> => {
@@ -314,7 +314,7 @@ export const newsItemQuery = (slug: string) =>
     },
   });
 
-export const projectItemQuery = (slug: string) =>
+const projectItemQuery = (slug: string) =>
   queryOptions({
     queryKey: ["projects", "public", slug],
     queryFn: async (): Promise<Project | null> => {
@@ -385,3 +385,46 @@ export const mediaItemsQuery = queryOptions({
         .order("position", { ascending: true }),
     ),
 });
+
+// ---- Bascule automatique sur la copie locale si la base est indisponible ----
+function guard(q: { queryFn?: unknown }, fallback: () => unknown) {
+  const original = q.queryFn as (ctx: unknown) => Promise<unknown>;
+  (q as { queryFn: unknown }).queryFn = (ctx: unknown) => withFallback(() => original(ctx), fallback);
+}
+function guardFactory<A extends unknown[], Q extends { queryFn?: unknown }>(
+  factory: (...args: A) => Q,
+  fallback: (...args: A) => unknown,
+) {
+  return (...args: A): Q => {
+    const q = factory(...args);
+    guard(q, () => fallback(...args));
+    return q;
+  };
+}
+const active = (r: any) => r.is_active === true;
+const published = (r: any) => r.is_published === true;
+
+guard(faqItemsQuery, () => snap<FaqItem[]>("faq_items", active).sort(byPos));
+guard(companyQuery, () => snap<CompanyInfo[]>("company_info")[0] ?? null);
+guard(heroSlidesQuery, () => snap<HeroSlide[]>("hero_slides", active).sort(byPos));
+guard(introVideosQuery, () => snap<IntroVideo[]>("intro_videos", (r) => active(r) && r.placement === "hero_intro").sort(byPos));
+guard(showcaseVideosQuery, () => snap<IntroVideo[]>("intro_videos", (r) => active(r) && r.placement === "home_showcase").sort(byPos));
+guard(activitiesQuery, () => snap<Activity[]>("activities", active).sort(byPos));
+guard(projectsQuery, () => snap<Project[]>("projects", published).sort(byPos));
+guard(newsListQuery, () =>
+  snap<NewsItem[]>("news", published).sort((a, b) => String(b.published_at ?? "").localeCompare(String(a.published_at ?? ""))),
+);
+guard(partnersQuery, () => snap<Partner[]>("partners", active).sort(byPos));
+guard(testimonialsQuery, () => snap<Testimonial[]>("testimonials", (r) => published(r) && r.status === "valide"));
+guard(mediaItemsQuery, () => snap<MediaItem[]>("media_items", active).sort(byPos));
+
+export const safeActivityItemQuery = guardFactory(activityItemQuery, (slug: string) =>
+  snap<Activity[]>("activities", (r) => active(r) && r.slug === slug)[0] ?? null,
+);
+export const safeNewsItemQuery = guardFactory(newsItemQuery, (slug: string) =>
+  snap<NewsItem[]>("news", (r) => published(r) && r.slug === slug)[0] ?? null,
+);
+export const safeProjectItemQuery = guardFactory(projectItemQuery, (slug: string) =>
+  snap<Project[]>("projects", (r) => published(r) && r.slug === slug)[0] ?? null,
+);
+export { safeActivityItemQuery as activityItemQuery, safeNewsItemQuery as newsItemQuery, safeProjectItemQuery as projectItemQuery };
