@@ -2,7 +2,7 @@
 - [x] Logo fond blanc dans les e-mails + lien désabonnement
 - [x] Nouvelle clé Resend (validée)
 - [x] Réorganiser sections/cartes : doublons supprimés (carte accueil, pôles et démarche dans À propos)
-- [ ] Copier vidéos/photos/textes de la DB dans le dépôt, compressés — BLOQUÉ : Supabase renvoie 402 (quota egress dépassé), à refaire dès déblocage
+- [x] Copier vidéos/photos/textes de la DB dans le dépôt, compressés (copie de secours + liens locaux)
 - [ ] Variables serveur sur l'hébergement en ligne (Vercel) : SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, RESEND_API_KEY
 - [ ] Admin : réponses reçues par e-mail visibles
 - [ ] Admin : 2 champs média (principal jusqu'à 5 photos/vidéos + couverture), aperçu avant validation

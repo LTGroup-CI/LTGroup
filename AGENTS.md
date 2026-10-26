@@ -10,3 +10,4 @@ This repository is maintained independently for LT GROUP by Inocent KOFFI.
 
 - Build config uses @lovable.dev/vite-tanstack-config (nitro preset "vercel" only when VERCEL is set) — Lovable publishing requires output in dist/.
 - Detail routes use the `name_.$slug.tsx` form so they are not nested inside the list page (which has no Outlet) — otherwise clicks change the URL but show the list.
+- Public content queries in src/lib/site-data.ts fall back to src/content/snapshot.json and media is served from public/media; keeps the site up when Supabase is unavailable or over quota.
