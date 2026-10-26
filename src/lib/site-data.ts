@@ -1,5 +1,47 @@
 import { queryOptions } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import snapshot from "@/content/snapshot.json";
+
+// Copie locale du contenu (textes + chemins de médias servis par le site).
+// Si la base ne répond pas (quota, panne), le site affiche cette copie.
+type SnapTable = keyof typeof snapshot;
+const STORAGE_PREFIX = /https:\/\/[a-z0-9]+\.supabase\.co\/storage\/v1\/object\/public\/site-media\//;
+const LOCAL_MEDIA: Array<[RegExp, string]> = [
+  [/brand\/logo\.jpg/, "/media/logo.jpg"],
+  [/brand\/logo\.png/, "/media/logo.png"],
+  [/dabou/i, "/media/content/lt-group-dabou.jpg"],
+  [/7f347a4e|e6c9f45e|9a07b2c8/, "/media/content/lt-group-assinie.jpg"],
+  [/16-16-22/, "/media/content/lt-group-video-1.mp4"],
+  [/19-56-04|381285/, "/media/content/lt-group-video-2.mp4"],
+];
+function localize<T>(value: T): T {
+  const json = JSON.stringify(value ?? null).replace(/https:\/\/[^"\\]+/g, (url) => {
+    if (!STORAGE_PREFIX.test(url)) return url;
+    for (const [re, local] of LOCAL_MEDIA) if (re.test(url)) return local;
+    return url;
+  });
+  return JSON.parse(json) as T;
+}
+function snap<T>(table: SnapTable, filter: (row: any) => boolean = () => true): T {
+  return localize((snapshot[table] as any[]).filter(filter)) as T;
+}
+async function withFallback<T>(run: () => Promise<T>, fallback: () => T): Promise<T> {
+  try {
+    const result = await Promise.race([
+      run(),
+      new Promise<never>((_, reject) => setTimeout(() => reject(new Error("timeout")), 6000)),
+    ]);
+    if (Array.isArray(result) && result.length === 0) {
+      const fb = fallback();
+      if (Array.isArray(fb) && fb.length > 0) return fb;
+    }
+    if (result === null || result === undefined) return fallback();
+    return localize(result);
+  } catch {
+    return fallback();
+  }
+}
+const byPos = (a: any, b: any) => (a.position ?? 0) - (b.position ?? 0);
 
 export type CompanyInfo = {
   id: string;
@@ -218,7 +260,7 @@ export const activitiesQuery = queryOptions({
     ),
 });
 
-export const activityItemQuery = (slug: string) =>
+const activityItemQuery = (slug: string) =>
   queryOptions({
     queryKey: ["activities", "public", slug],
     queryFn: async (): Promise<Activity | null> => {
@@ -257,7 +299,7 @@ export const newsListQuery = queryOptions({
     ),
 });
 
-export const newsItemQuery = (slug: string) =>
+const newsItemQuery = (slug: string) =>
   queryOptions({
     queryKey: ["news", "public", slug],
     queryFn: async (): Promise<NewsItem | null> => {
@@ -272,7 +314,7 @@ export const newsItemQuery = (slug: string) =>
     },
   });
 
-export const projectItemQuery = (slug: string) =>
+const projectItemQuery = (slug: string) =>
   queryOptions({
     queryKey: ["projects", "public", slug],
     queryFn: async (): Promise<Project | null> => {
@@ -343,3 +385,46 @@ export const mediaItemsQuery = queryOptions({
         .order("position", { ascending: true }),
     ),
 });
+
+// ---- Bascule automatique sur la copie locale si la base est indisponible ----
+function guard(q: { queryFn?: unknown }, fallback: () => unknown) {
+  const original = q.queryFn as (ctx: unknown) => Promise<unknown>;
+  (q as { queryFn: unknown }).queryFn = (ctx: unknown) => withFallback(() => original(ctx), fallback);
+}
+function guardFactory<A extends unknown[], Q extends { queryFn?: unknown }>(
+  factory: (...args: A) => Q,
+  fallback: (...args: A) => unknown,
+) {
+  return (...args: A): Q => {
+    const q = factory(...args);
+    guard(q, () => fallback(...args));
+    return q;
+  };
+}
+const active = (r: any) => r.is_active === true;
+const published = (r: any) => r.is_published === true;
+
+guard(faqItemsQuery, () => snap<FaqItem[]>("faq_items", active).sort(byPos));
+guard(companyQuery, () => snap<CompanyInfo[]>("company_info")[0] ?? null);
+guard(heroSlidesQuery, () => snap<HeroSlide[]>("hero_slides", active).sort(byPos));
+guard(introVideosQuery, () => snap<IntroVideo[]>("intro_videos", (r) => active(r) && r.placement === "hero_intro").sort(byPos));
+guard(showcaseVideosQuery, () => snap<IntroVideo[]>("intro_videos", (r) => active(r) && r.placement === "home_showcase").sort(byPos));
+guard(activitiesQuery, () => snap<Activity[]>("activities", active).sort(byPos));
+guard(projectsQuery, () => snap<Project[]>("projects", published).sort(byPos));
+guard(newsListQuery, () =>
+  snap<NewsItem[]>("news", published).sort((a, b) => String(b.published_at ?? "").localeCompare(String(a.published_at ?? ""))),
+);
+guard(partnersQuery, () => snap<Partner[]>("partners", active).sort(byPos));
+guard(testimonialsQuery, () => snap<Testimonial[]>("testimonials", (r) => published(r) && r.status === "valide"));
+guard(mediaItemsQuery, () => snap<MediaItem[]>("media_items", active).sort(byPos));
+
+export const safeActivityItemQuery = guardFactory(activityItemQuery, (slug: string) =>
+  snap<Activity[]>("activities", (r) => active(r) && r.slug === slug)[0] ?? null,
+);
+export const safeNewsItemQuery = guardFactory(newsItemQuery, (slug: string) =>
+  snap<NewsItem[]>("news", (r) => published(r) && r.slug === slug)[0] ?? null,
+);
+export const safeProjectItemQuery = guardFactory(projectItemQuery, (slug: string) =>
+  snap<Project[]>("projects", (r) => published(r) && r.slug === slug)[0] ?? null,
+);
+export { safeActivityItemQuery as activityItemQuery, safeNewsItemQuery as newsItemQuery, safeProjectItemQuery as projectItemQuery };

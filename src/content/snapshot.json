@@ -1,0 +1,498 @@
+{
+ "company_info": [
+  {
+   "id": "0d6e8f87-28a6-4154-a869-295a7092a161",
+   "name": "LT GROUP",
+   "slogan": "Bâtir la terre, éclairer l’avenir",
+   "description": "LT GROUP valorise la terre et transforme les opportunités foncières en projets d’avenir, avec des expertises en aménagement foncier, BTP & VRD, immobilier, hydraulique, électrification, vente de terrain et divers.",
+   "phone_primary": "+225 07 49 22 47 22",
+   "phone_secondary": "+225 07 07 74 14 84",
+   "whatsapp": "+225 07 49 22 47 22",
+   "email": "contact@ltgroup-ci.com",
+   "address": "Cocody Akouédo extension sud-est, Lot 637, îlot 60",
+   "city": "Abidjan",
+   "country": "Côte d'Ivoire",
+   "latitude": 5.355498,
+   "longitude": -3.925192,
+   "opening_hours": null,
+   "website": "www.ltgroup-ci.com",
+   "facebook_url": null,
+   "linkedin_url": null,
+   "instagram_url": null,
+   "updated_at": "2026-09-26T12:18:14.126772+00:00",
+   "logo_url": "/media/logo.png",
+   "logo_png_url": "/media/logo.png",
+   "logo_jpg_url": "/media/logo.jpg",
+   "postal_box": "01 BP 2259 Abidjan 01"
+  }
+ ],
+ "hero_slides": [
+  {
+   "id": "b14ce934-13f2-4bc7-a357-b76470ea4ded",
+   "title": "Vente de terrains",
+   "subtitle": "Opportunités foncières en Côte d’Ivoire",
+   "image_url": "/media/hero/hero-terrain.jpg",
+   "cta_label": "Vente de terrains",
+   "cta_url": "/contact",
+   "duration_ms": 6000,
+   "position": 0,
+   "is_active": true
+  },
+  {
+   "id": "06df9e4a-85ef-4415-8212-851fafdee6bc",
+   "title": "Aménagement foncier & lotissement",
+   "subtitle": "Études et aménagement de projets fonciers",
+   "image_url": "/media/hero/hero-foncier.jpg",
+   "cta_label": "Aménagement foncier",
+   "cta_url": "/activites/amenagement-foncier",
+   "duration_ms": 6000,
+   "position": 1,
+   "is_active": true
+  },
+  {
+   "id": "d1c6951e-4b48-4d74-99cd-59f0b3416af7",
+   "title": "BTP & VRD",
+   "subtitle": "Construction, voirie et réseaux divers",
+   "image_url": "/media/hero/hero-btp.jpg",
+   "cta_label": "BTP & VRD",
+   "cta_url": "/activites/btp-vrd",
+   "duration_ms": 6000,
+   "position": 2,
+   "is_active": true
+  },
+  {
+   "id": "3ea13047-c781-4f4a-b788-63d566e24ea4",
+   "title": "Construction immobilière",
+   "subtitle": "Des projets pensés pour durer",
+   "image_url": "/media/hero/hero-immobilier.jpg",
+   "cta_label": "Construction immobilière",
+   "cta_url": "/activites/construction-immobiliere",
+   "duration_ms": 6000,
+   "position": 3,
+   "is_active": true
+  },
+  {
+   "id": "965db7d6-e6d3-4f0e-a41e-b6936c63f02e",
+   "title": "Hydraulique & infrastructures",
+   "subtitle": "Des solutions adaptées aux territoires",
+   "image_url": "/media/hero/hero-infra.jpg",
+   "cta_label": "Hydraulique & infrastructures",
+   "cta_url": "/activites/hydraulique-et-adduction-deau-potable",
+   "duration_ms": 6000,
+   "position": 4,
+   "is_active": true
+  },
+  {
+   "id": "8a16eb88-521a-4b13-bc79-1de0356cf8ac",
+   "title": "Électrification",
+   "subtitle": "Infrastructures et réseaux électriques",
+   "image_url": "/media/hero/hero-energie.jpg",
+   "cta_label": "Électrification",
+   "cta_url": "/activites/electrification-et-infrastructures",
+   "duration_ms": 6000,
+   "position": 5,
+   "is_active": true
+  },
+  {
+   "id": "2b72f343-b7e8-42cf-bce0-b163f2f93563",
+   "title": "Topographie & études",
+   "subtitle": "Mesurer, étudier et sécuriser les projets",
+   "image_url": "/media/hero/hero-conseil.jpg",
+   "cta_label": "Topographie & études",
+   "cta_url": "/activites/topographie-et-etudes",
+   "duration_ms": 6000,
+   "position": 6,
+   "is_active": true
+  }
+ ],
+ "intro_videos": [
+  {
+   "id": "a123b5ac-3763-47b9-87bd-677d3a57eb9e",
+   "label": "Présentation",
+   "video_url": "/media/intro-1.mp4",
+   "position": 1,
+   "is_active": true,
+   "created_at": "2026-09-24T20:58:38.907218+00:00",
+   "placement": "hero_intro",
+   "title": "Découvrez nos projets, nos services et notre vision",
+   "description": null,
+   "cta_label": null,
+   "cta_url": null
+  },
+  {
+   "id": "a8f9a07b-83a9-4f3a-aed0-b372a9088373",
+   "label": "Identité",
+   "video_url": "/media/intro-2.mp4",
+   "position": 2,
+   "is_active": true,
+   "created_at": "2026-09-24T20:58:38.907218+00:00",
+   "placement": "hero_intro",
+   "title": "LT GROUP",
+   "description": null,
+   "cta_label": null,
+   "cta_url": null
+  }
+ ],
+ "activities": [
+  {
+   "id": "61fe1c91-1c13-493f-bf8e-714c47339414",
+   "slug": "amenagement-foncier",
+   "title": "Aménagement foncier & lotissement",
+   "short_description": "Du terrain identifié à l’opération structurée : nous organisons les bases foncières, techniques et documentaires nécessaires au projet.",
+   "description": "LT GROUP intervient en amont des opérations pour identifier et structurer les opportunités foncières. Nous analysons l’environnement du site, organisons les informations disponibles, coordonnons les intervenants et préparons les conditions nécessaires à une opération cohérente. L’objectif est de transformer une opportunité foncière en projet lisible, avec une meilleure maîtrise du terrain, des accès, des contraintes et des étapes à engager.",
+   "icon": "compass",
+   "image_url": null,
+   "position": 1,
+   "is_active": true,
+   "cover_image_url": null,
+   "media_urls": []
+  },
+  {
+   "id": "c6836c55-1d99-499d-812e-edb25a3a9f3a",
+   "slug": "immobilier",
+   "title": "Construction immobilière",
+   "short_description": "Nous transformons les opportunités foncières en programmes immobiliers pensés pour les usages et le marché ivoirien.",
+   "description": "LT GROUP accompagne le développement de projets immobiliers depuis la réflexion foncière jusqu’à la réalisation et la valorisation. Nous tenons compte de l’environnement urbain, des usages, des contraintes techniques, des accès et des équipements nécessaires. Cette approche permet de relier le foncier, la conception, les travaux et la mise en valeur du projet dans une même logique.",
+   "icon": "building",
+   "image_url": null,
+   "position": 3,
+   "is_active": true,
+   "cover_image_url": null,
+   "media_urls": []
+  },
+  {
+   "id": "de5bf6be-c5ed-42b3-bb75-0ea84fc32f36",
+   "slug": "hydraulique",
+   "title": "Hydraulique & adduction d’eau potable",
+   "short_description": "Eau, réseaux et équipements : nous intégrons les solutions hydrauliques indispensables au fonctionnement des sites.",
+   "description": "LT GROUP prend en compte les besoins en eau dès la préparation des opérations. Selon le projet, cela peut intégrer l’étude des besoins, l’adduction, les réseaux, les ouvrages et les équipements nécessaires à la distribution. Nous recherchons des solutions fonctionnelles, durables et adaptées aux réalités du terrain et aux conditions d’exploitation.",
+   "icon": "droplets",
+   "image_url": null,
+   "position": 4,
+   "is_active": true,
+   "cover_image_url": null,
+   "media_urls": []
+  },
+  {
+   "id": "4c8b670f-faa8-4da9-989f-fef3cff94170",
+   "slug": "topographie-et-etudes",
+   "title": "Topographie & études",
+   "short_description": "Mesurer, comprendre et documenter le terrain pour décider avec des données techniques fiables.",
+   "description": "La topographie et les études préparatoires constituent la base technique de nombreuses opérations. LT GROUP mobilise les relevés et données nécessaires pour mieux comprendre le terrain, positionner les ouvrages, préparer les aménagements et suivre l’évolution des travaux. Ces informations permettent de réduire les incertitudes et d’améliorer la cohérence des choix techniques.",
+   "icon": "ruler",
+   "image_url": null,
+   "position": 6,
+   "is_active": true,
+   "cover_image_url": null,
+   "media_urls": []
+  },
+  {
+   "id": "9cd3f801-9c50-4f5c-99c1-852c8d33a62d",
+   "slug": "btp-vrd",
+   "title": "BTP & VRD",
+   "short_description": "Bâtiments, voiries et réseaux : nous coordonnons les travaux essentiels à des sites fonctionnels et durables.",
+   "description": "De la préparation du site aux ouvrages de bâtiment, voirie et réseaux divers, LT GROUP coordonne les composantes techniques d’un projet. Nous intégrons terrassements, accès, drainage, réseaux et travaux de bâtiment selon les besoins de l’opération. Notre démarche privilégie le suivi du chantier, la qualité d’exécution, la coordination des intervenants et la maîtrise des interfaces techniques.",
+   "icon": "hard-hat",
+   "image_url": null,
+   "position": 2,
+   "is_active": true,
+   "cover_image_url": null,
+   "media_urls": []
+  },
+  {
+   "id": "79cf6e18-051c-4536-b8e3-45790056166d",
+   "slug": "electrification",
+   "title": "Électrification & infrastructures",
+   "short_description": "Nous intégrons les infrastructures électriques nécessaires à la viabilité et au développement des sites.",
+   "description": "LT GROUP accompagne les projets dans leurs besoins d’électrification et d’infrastructures électriques. Nous partons des besoins réels du site pour organiser les études, la préparation et la coordination des interventions. L’objectif est d’intégrer l’énergie comme une composante structurante du projet, en cohérence avec son développement et ses usages.",
+   "icon": "zap",
+   "image_url": null,
+   "position": 5,
+   "is_active": true,
+   "cover_image_url": null,
+   "media_urls": []
+  },
+  {
+   "id": "6c8fd497-3f29-4260-950a-69336edd5a6b",
+   "slug": "vente-de-terrain",
+   "title": "Vente de terrains",
+   "short_description": "Nous proposons des terrains à la vente et accompagnons aussi les propriétaires qui souhaitent nous confier la commercialisation de leur parcelle.",
+   "description": "LT GROUP propose à la vente des terrains sélectionnés et accompagne également les propriétaires qui souhaitent nous confier la commercialisation de leur parcelle. Pour les acquéreurs, nous présentons les opportunités disponibles, leur localisation, les informations communiquées et les pièces disponibles, puis nous facilitons les échanges jusqu’aux prochaines étapes. Pour les propriétaires, nous pouvons prendre en charge la présentation de leur terrain, sa mise en relation avec des prospects et le suivi commercial des demandes. Notre rôle est de rendre la rencontre entre vendeur et acquéreur plus simple, lisible et professionnelle, sans nous substituer aux vérifications et formalités qui relèvent des parties et des professionnels compétents.",
+   "icon": "map",
+   "image_url": null,
+   "position": 0,
+   "is_active": true,
+   "cover_image_url": null,
+   "media_urls": []
+  }
+ ],
+ "projects": [
+  {
+   "id": "9d41f7bf-ac98-4fff-8999-42c9e2c918d0",
+   "slug": "assinie-opportunite-ile",
+   "title": "Assinie — une opportunité au cœur de l’île",
+   "summary": "Présentation d’une opportunité située au cœur de l’île d’Assinie.",
+   "content": "Une présentation immersive de l’opportunité à Assinie. Contactez LIGHT TERRA GROUP pour obtenir les informations disponibles et organiser un échange.",
+   "image_url": "/media/content/lt-group-video-2.mp4",
+   "category": "Vente de terrains",
+   "location": "Assinie",
+   "status": "en_cours",
+   "is_featured": true,
+   "is_published": true,
+   "position": 2,
+   "created_at": "2026-09-24T21:13:45.227022+00:00",
+   "cover_image_url": "/media/content/lt-group-assinie.jpg",
+   "media_urls": []
+  },
+  {
+   "id": "b946f201-51e3-401d-b227-58b971cf139b",
+   "slug": "dabou-20-lots-titre-foncier",
+   "title": "Dabou — 20 lots avec titre foncier",
+   "summary": "Opportunité foncière présentée par LIGHT TERRA GROUP : 20 lots avec titre foncier.",
+   "content": "Découvrez en vidéo cette opportunité à Dabou. Les informations détaillées, la disponibilité et les conditions sont à confirmer avec LIGHT TERRA GROUP.",
+   "image_url": "/media/content/lt-group-video-1.mp4",
+   "category": "Vente de terrains",
+   "location": "Dabou",
+   "status": "en_cours",
+   "is_featured": true,
+   "is_published": true,
+   "position": 1,
+   "created_at": "2026-09-24T21:13:45.227022+00:00",
+   "cover_image_url": "/media/content/lt-group-dabou.jpg",
+   "media_urls": [
+    {
+     "url": "/media/content/lt-group-video-1.mp4",
+     "kind": "video"
+    }
+   ]
+  }
+ ],
+ "news": [
+  {
+   "id": "704c4d7b-9406-4f17-8307-a864a5af03b4",
+   "slug": "assinie-opportunite-ile",
+   "title": "Assinie : une opportunité au cœur de l’île",
+   "excerpt": "À Assinie, LT GROUP présente une opportunité au cœur de l’île. Une présentation immersive pour découvrir le site et préparer un échange avec notre équipe.",
+   "content": "À Assinie, LT GROUP met en avant une opportunité située au cœur de l’île. La présentation vidéo permet d’obtenir un premier aperçu du site, de son environnement et de l’atmosphère du lieu.Cette publication constitue une présentation initiale. Les informations disponibles, les conditions d’accès, la disponibilité et les modalités liées à l’opportunité doivent être confirmées directement auprès de LIGHT TERRA GROUP.Notre équipe reste disponible pour répondre aux questions, préciser le besoin et organiser les prochaines étapes avec les personnes intéressées.",
+   "image_url": "/media/content/lt-group-video-2.mp4",
+   "author": "LT Group",
+   "published_at": "2026-09-24T21:15:30.112496+00:00",
+   "is_published": true,
+   "view_count": 0,
+   "created_at": "2026-09-24T21:13:45.227022+00:00",
+   "video_url": "/media/content/lt-group-video-2.mp4",
+   "video_poster_url": null,
+   "cover_image_url": "/media/content/lt-group-assinie.jpg",
+   "media_urls": [
+    {
+     "url": "/media/content/lt-group-video-2.mp4",
+     "kind": "video"
+    }
+   ]
+  },
+  {
+   "id": "9227ee7f-31da-452a-8e89-8683cb5925c8",
+   "slug": "dabou-20-lots-titre-foncier",
+   "title": "Dabou : 20 lots avec titre foncier — une opportunité foncière à découvrir",
+   "excerpt": "À Dabou, LIGHT TERRA GROUP présente une opportunité foncière de 20 lots avec titre foncier. Découvrez le site, son environnement et les premières informations utiles avant de prendre contact avec notre équipe.",
+   "content": "OPPORTUNITÉ FONCIÈRE À DABOU – GBOUGBO 2\n\nLIGHT TERRA GROUP vous présente une opportunité foncière située à Gbougbo 2, à Dabou, derrière la Cité Caïman.\n\nLe site est composé de 20 lots bénéficiant d’un titre foncier. Cette présentation constitue un premier niveau d’information permettant de découvrir le site, sa localisation et son environnement à travers notre présentation vidéo.\n\nLocalisation : Gbougbo 2, Dabou – derrière la Cité Caïman\nSuperficie annoncée : 400 m²\nRéférence foncière communiquée : TF n°5277-5278\nPrix annoncé : 4 000 000 FCFA\n\nCette opportunité peut intéresser les personnes à la recherche d’un terrain pour un projet de construction ou un investissement immobilier.\n\nLes disponibilités, les conditions commerciales, les documents et les modalités de visite doivent être confirmés directement auprès de LIGHT TERRA GROUP avant toute décision.\n\nInformations et visites :\n0749 224 722\n\nNotre équipe reste disponible pour vous présenter l’opportunité, préciser votre besoin et vous communiquer les informations actualisées relatives au dossier.\n\nDes opportunités foncières à découvrir, avec les informations essentielles pour avancer en toute connaissance.",
+   "image_url": "/media/content/lt-group-video-1.mp4",
+   "author": "LT Group",
+   "published_at": "2026-09-24T21:15:30.112496+00:00",
+   "is_published": true,
+   "view_count": 0,
+   "created_at": "2026-09-24T21:13:45.227022+00:00",
+   "video_url": "/media/content/lt-group-video-1.mp4",
+   "video_poster_url": null,
+   "cover_image_url": "/media/content/lt-group-dabou.jpg",
+   "media_urls": [
+    {
+     "url": "/media/content/lt-group-video-1.mp4",
+     "kind": "video"
+    }
+   ]
+  }
+ ],
+ "partners": [],
+ "testimonials": [],
+ "media_items": [
+  {
+   "id": "f540c4d9-ff69-479e-8919-1ff5c063171d",
+   "kind": "video",
+   "title": "Opportunité à Assinie",
+   "description": "Terrain d’exception à Assinie",
+   "url": "/media/content/lt-group-video-2.mp4",
+   "poster_url": "/media/content/lt-group-assinie.jpg",
+   "position": 1,
+   "is_active": true,
+   "created_at": "2026-09-26T12:24:49.36218+00:00"
+  },
+  {
+   "id": "ce156466-e851-48b6-b633-a51840b04dd9",
+   "kind": "video",
+   "title": "20 lots à Dabou",
+   "description": "Opportunité foncière à Dabou",
+   "url": "/media/content/lt-group-video-1.mp4",
+   "poster_url": "/media/content/lt-group-dabou.jpg",
+   "position": 2,
+   "is_active": true,
+   "created_at": "2026-09-26T12:24:49.36218+00:00"
+  }
+ ],
+ "faq_items": [
+  {
+   "id": "5e9c3dab-fd61-40a9-ac7f-0660c3b40002",
+   "question": "Quels sont les principaux domaines d’intervention de LT GROUP ?",
+   "answer": "LT GROUP intervient dans six pôles d’expertise : aménagement foncier & lotissement, BTP & VRD, construction immobilière, hydraulique & adduction d’eau potable, électrification & infrastructures, et topographie & études.",
+   "category": "Nos expertises",
+   "position": 0,
+   "is_active": true,
+   "created_at": "2026-09-27T22:17:54.555811+00:00",
+   "updated_at": "2026-09-27T22:17:54.555811+00:00"
+  },
+  {
+   "id": "77877101-e1a2-4620-b882-4f41d112abd3",
+   "question": "LT GROUP vend-il des terrains ?",
+   "answer": "Oui. La vente et la commercialisation de terrains constituent une activité complémentaire du groupe. Les informations disponibles sur chaque opportunité sont publiées sur le site ou peuvent être précisées par l’équipe.",
+   "category": "Terrains & foncier",
+   "position": 1,
+   "is_active": true,
+   "created_at": "2026-09-27T22:17:54.555811+00:00",
+   "updated_at": "2026-09-27T22:17:54.555811+00:00"
+  },
+  {
+   "id": "18d4c790-8be7-475a-b78b-a43bc19036f6",
+   "question": "Comment demander un devis ?",
+   "answer": "Vous pouvez utiliser la page « Services & devis » ou contacter directement LT GROUP. Décrivez votre besoin, la localisation souhaitée et, lorsque cela est pertinent, votre budget ou votre échéance afin de permettre une première qualification de la demande.",
+   "category": "Devis & contact",
+   "position": 2,
+   "is_active": true,
+   "created_at": "2026-09-27T22:17:54.555811+00:00",
+   "updated_at": "2026-09-27T22:17:54.555811+00:00"
+  },
+  {
+   "id": "c55d13e2-74f2-438e-a122-7601788edf23",
+   "question": "Où se trouve le siège de LT GROUP ?",
+   "answer": "Le siège est situé à Abidjan, Cocody Akouédo extension sud-est, Lot 637, îlot 60 ; 01 BP 2259 Abidjan 01.",
+   "category": "Contact",
+   "position": 3,
+   "is_active": true,
+   "created_at": "2026-09-27T22:17:54.555811+00:00",
+   "updated_at": "2026-09-27T22:17:54.555811+00:00"
+  },
+  {
+   "id": "57e33fcf-9b38-4588-a4f2-164eb8f0ceec",
+   "question": "Comment contacter LT GROUP ?",
+   "answer": "Vous pouvez joindre LT GROUP au +225 07 49 22 47 22 ou au +225 07 07 74 14 84. Le WhatsApp indiqué sur le site est le +225 07 49 22 47 22 et l’adresse e-mail est contact@ltgroup-ci.com.",
+   "category": "Contact",
+   "position": 4,
+   "is_active": true,
+   "created_at": "2026-09-27T22:17:54.555811+00:00",
+   "updated_at": "2026-09-27T22:17:54.555811+00:00"
+  },
+  {
+   "id": "4a99d93f-a7f6-400f-a93d-da915612dc7c",
+   "question": "LT GROUP intervient-il uniquement à Abidjan ?",
+   "answer": "Le groupe est basé à Abidjan et intervient en Côte d’Ivoire selon la nature des projets et des prestations. La disponibilité d’une intervention dépend du besoin concerné.",
+   "category": "Implantation",
+   "position": 5,
+   "is_active": true,
+   "created_at": "2026-09-27T22:17:54.555811+00:00",
+   "updated_at": "2026-09-27T22:17:54.555811+00:00"
+  },
+  {
+   "id": "1f001e6a-8a2c-4684-ac9f-02526f760a4e",
+   "question": "Que comprend l’accompagnement foncier ?",
+   "answer": "Selon le projet, l’accompagnement peut concerner l’étude, la topographie, l’aménagement foncier, le lotissement et les différentes étapes nécessaires à la réalisation du projet. Les prestations exactes sont précisées selon le dossier.",
+   "category": "Foncier",
+   "position": 6,
+   "is_active": true,
+   "created_at": "2026-09-27T22:17:54.555811+00:00",
+   "updated_at": "2026-09-27T22:17:54.555811+00:00"
+  },
+  {
+   "id": "29fc73b6-d279-468f-a6be-0bc8836c6cd0",
+   "question": "LT GROUP réalise-t-il des travaux de BTP et de VRD ?",
+   "answer": "Oui. Le pôle BTP & VRD couvre les prestations liées aux travaux de bâtiment, voirie et réseaux divers, selon la nature et les caractéristiques du projet.",
+   "category": "BTP & VRD",
+   "position": 7,
+   "is_active": true,
+   "created_at": "2026-09-27T22:17:54.555811+00:00",
+   "updated_at": "2026-09-27T22:17:54.555811+00:00"
+  },
+  {
+   "id": "649fd934-6055-450d-9c43-2dfafebbd3f4",
+   "question": "LT GROUP réalise-t-il des travaux d’hydraulique ?",
+   "answer": "Oui. Le groupe dispose d’un pôle dédié à l’hydraulique et à l’adduction d’eau potable. Les solutions sont étudiées en fonction du site, du besoin et des caractéristiques techniques du projet.",
+   "category": "Hydraulique",
+   "position": 8,
+   "is_active": true,
+   "created_at": "2026-09-27T22:17:54.555811+00:00",
+   "updated_at": "2026-09-27T22:17:54.555811+00:00"
+  },
+  {
+   "id": "72758294-e393-4539-8490-5e5f1dca203c",
+   "question": "LT GROUP intervient-il dans l’électrification ?",
+   "answer": "Oui. L’électrification et les infrastructures constituent l’un des six pôles d’expertise du groupe. Une étude du besoin permet de déterminer les prestations adaptées.",
+   "category": "Électrification",
+   "position": 9,
+   "is_active": true,
+   "created_at": "2026-09-27T22:17:54.555811+00:00",
+   "updated_at": "2026-09-27T22:17:54.555811+00:00"
+  },
+  {
+   "id": "e0a1de76-1462-4975-9716-751699b0acdd",
+   "question": "Puis-je demander des informations sur un projet publié ?",
+   "answer": "Oui. Chaque projet publié dispose d’une page détaillée. Vous pouvez également contacter LT GROUP pour demander des précisions sur les informations disponibles.",
+   "category": "Projets",
+   "position": 10,
+   "is_active": true,
+   "created_at": "2026-09-27T22:17:54.555811+00:00",
+   "updated_at": "2026-09-27T22:17:54.555811+00:00"
+  },
+  {
+   "id": "fa06c7ba-d81e-42e7-b110-458aab1480ed",
+   "question": "Comment Raï peut-elle m’aider ?",
+   "answer": "Raï peut vous orienter sur les activités, les projets, les actualités et les coordonnées de LT GROUP. Pour une demande commerciale, elle peut aussi recueillir progressivement les informations utiles avant de vous orienter vers l’équipe.",
+   "category": "Assistant Raï",
+   "position": 11,
+   "is_active": true,
+   "created_at": "2026-09-27T22:17:54.555811+00:00",
+   "updated_at": "2026-09-27T22:17:54.555811+00:00"
+  }
+ ],
+ "ai_knowledge": [
+  {
+   "id": "4493741f-17bf-4887-8688-d3654897ae0a",
+   "question": "Comment demander un devis ?",
+   "answer": "Vous pouvez utiliser la page Services & devis ou le formulaire de contact du site pour transmettre votre besoin.",
+   "is_active": true,
+   "position": 2,
+   "created_at": "2026-09-24T19:57:10.677927+00:00"
+  },
+  {
+   "id": "bfd7be11-6259-4fdf-b613-2174c064650f",
+   "question": "Comment contacter LT GROUP ?",
+   "answer": "Les coordonnées disponibles sur le site permettent de contacter LT GROUP par téléphone, WhatsApp ou e-mail.",
+   "is_active": true,
+   "position": 3,
+   "created_at": "2026-09-24T19:57:10.677927+00:00"
+  },
+  {
+   "id": "d2baf37f-d88c-41a1-87f0-5ecce3653a24",
+   "question": "Que fait LT GROUP ?",
+   "answer": "LT GROUP est un groupe ivoirien structuré autour de 6 pôles : aménagement foncier & lotissement, BTP & VRD, construction immobilière, hydraulique & adduction d’eau potable, électrification & infrastructures, topographie & études. La vente et la commercialisation de terrains est une offre complémentaire, et non un 7e pôle.",
+   "is_active": true,
+   "position": 1,
+   "created_at": "2026-09-24T19:57:10.677927+00:00"
+  },
+  {
+   "id": "b3c6c97c-b69a-4399-9197-240a86d4b035",
+   "question": "Quels partenariats propose LT GROUP ?",
+   "answer": "LT GROUP peut étudier des partenariats techniques, commerciaux, institutionnels, financiers et autres collaborations selon le besoin et les modalités réellement convenues.",
+   "is_active": true,
+   "position": 4,
+   "created_at": "2026-09-25T15:07:26.817178+00:00"
+  }
+ ]
+}
