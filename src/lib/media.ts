@@ -1,10 +1,10 @@
 // Médias de marque servis directement avec le site.
 export const SITE_URL = "https://ltgroup-ci.com";
-export const LOGO_URL = "/media/logo-light-terra-transparent.png?v=4";
+export const LOGO_URL = "/media/logo.png?v=5";
 // Tous les emplacements de marque utilisent exclusivement le logo maître fourni.
-export const LOGO_EMAIL_URL = `${SITE_URL}${LOGO_URL}`;
-export const FAVICON_URL = LOGO_URL;
-export const OG_IMAGE_URL = `${SITE_URL}${LOGO_URL}`;
+export const LOGO_EMAIL_URL = `${SITE_URL}/media/logo.jpg?v=5`;
+export const FAVICON_URL = "/favicon.png?v=5";
+export const OG_IMAGE_URL = `${SITE_URL}/media/og-light-terra.jpg?v=5`;
 
 export function getBrandDerivativeUrl(
   logoUrl: string | null | undefined,
