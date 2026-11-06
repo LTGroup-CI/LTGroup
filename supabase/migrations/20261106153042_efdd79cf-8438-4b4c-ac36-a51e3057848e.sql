@@ -1,0 +1,4 @@
+UPDATE public.projects SET
+summary = '20 lots avec titre foncier à Gbougbo 2, Dabou — 400 m² à 4 000 000 FCFA.',
+content = E'OPPORTUNITÉ FONCIÈRE À DABOU – GBOUGBO 2\n\nLIGHT TERRA GROUP présente 20 lots bénéficiant d’un titre foncier, situés à Gbougbo 2, à Dabou, derrière la Cité Caïman.\n\nLocalisation : Gbougbo 2, Dabou – derrière la Cité Caïman\nNombre de lots : 20\nSuperficie par lot : 400 m²\nRéférence foncière : TF n°5277-5278\nPrix : 4 000 000 FCFA\n\nIdéal pour un projet de construction ou un investissement immobilier.\n\nLes disponibilités, conditions, documents et modalités de visite sont à confirmer directement auprès de LIGHT TERRA GROUP.\n\nInformations et visites : (+225) 07 49 22 47 22 / 07 07 74 14 84 — WhatsApp : +225 07 49 22 47 22'
+WHERE slug = 'dabou-20-lots-titre-foncier';
