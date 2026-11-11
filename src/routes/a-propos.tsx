@@ -1,10 +1,9 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { Eye, Gem, Target, ShieldCheck, Workflow, MapPinned } from "lucide-react";
+import { Eye, Gem, Target } from "lucide-react";
 
 import { PageHero, SiteLayout } from "@/components/site/SiteLayout";
 import { companyQuery } from "@/lib/site-data";
-import { OfficeMap } from "@/components/site/OfficeMap";
 
 const title = "À propos de LIGHT TERRA GROUP SARL | Entreprise ivoirienne";
 const description =
@@ -65,16 +64,10 @@ function Page() {
             <p className="eyebrow">Qui sommes-nous</p>
             <h2 className="mt-3 text-3xl">Un groupe pluridisciplinaire</h2>
             <hr className="gold-rule mt-6 w-24" />
-            <p className="mt-6 leading-relaxed text-muted-foreground">
+            <p className="mt-6 text-justify leading-relaxed text-muted-foreground">
               {company?.description ??
                 "LT GROUP intervient sur toute la chaîne de valeur : identification et sécurisation du foncier, viabilisation, construction, promotion immobilière et infrastructures électriques."}
             </p>
-            {company?.address ? (
-              <p className="mt-6 text-sm text-muted-foreground">
-                <span className="font-semibold text-foreground">Siège social : </span>
-                {[company.address, company.city, company.country].filter(Boolean).join(", ")}
-              </p>
-            ) : null}
           </div>
 
           <div className="grid gap-5">
@@ -93,56 +86,34 @@ function Page() {
 
 
 
-      <section className="bg-ink-gradient py-12 text-ink-foreground">
-        <div className="mx-auto grid max-w-7xl gap-8 px-5 lg:grid-cols-3 lg:px-8">
-          <div className="lg:col-span-2">
-            <p className="eyebrow text-gold">Notre manière de travailler</p>
-            <h2 className="mt-3 max-w-3xl text-3xl lg:text-4xl">Une approche structurée, du terrain à la réalisation</h2>
-            <p className="mt-6 max-w-3xl leading-8 text-ink-foreground/70">
-              LT GROUP intervient dans un environnement où la qualité d’un projet dépend autant de la pertinence de l’opportunité que de la rigueur de sa préparation. Nous mettons donc l’accent sur l’identification du besoin, la lecture du terrain, la structuration des informations, la coordination des intervenants et le suivi des étapes clés.
-            </p>
-          </div>
-          <div className="grid gap-4 sm:grid-cols-3 lg:grid-cols-1">
-            {[
-              [ShieldCheck, "Clarté documentaire", "Présenter les informations disponibles de façon organisée et compréhensible."],
-              [Workflow, "Coordination", "Faire dialoguer foncier, études, travaux et partenaires autour d’un même objectif."],
-              [MapPinned, "Ancrage local", "Concevoir des réponses adaptées aux réalités des territoires ivoiriens."]
-            ].map(([Icon, title, text]) => {
-              const I = Icon as typeof ShieldCheck;
-              return <div key={String(title)} className="rounded-xl border border-white/10 bg-white/5 p-5"><I className="h-6 w-6 text-gold" /><h3 className="mt-3 font-semibold">{String(title)}</h3><p className="mt-2 text-sm leading-relaxed text-ink-foreground/60">{String(text)}</p></div>;
-            })}
-          </div>
-        </div>
-      </section>
       <section className="bg-muted/50 py-12">
-        <div className="mx-auto grid max-w-7xl gap-10 px-5 lg:grid-cols-2 lg:px-8">
-          <div className="rounded-lg border border-border bg-card p-8">
-            <p className="eyebrow">Fiche entreprise</p>
+        <div className="mx-auto grid max-w-7xl gap-8 px-5 lg:grid-cols-[1.2fr_1fr] lg:px-8">
+          <div className="min-w-0 rounded-lg border border-border bg-card p-6 sm:p-8">
+            <p className="eyebrow">Identité de l'entreprise</p>
             <h2 className="mt-3 text-2xl">LIGHT TERRA GROUP SARL</h2>
             <dl className="mt-6 space-y-3 text-sm">
               {[
-                ["Activité", "Aménagement foncier, BTP, immobilier, énergie"],
-                ["Siège social", [company?.address, company?.city, company?.country].filter(Boolean).join(", ")],
-                ["Boîte postale", company?.postal_box],
-                ["Téléphone", [company?.phone_primary, company?.phone_secondary].filter(Boolean).join(" / ")],
-                ["WhatsApp", company?.whatsapp],
-                ["E-mail", company?.email],
-                ["Horaires", company?.opening_hours],
-                ["Site web", company?.website],
-              ]
-                .filter(([, v]) => v)
-                .map(([k, v]) => (
-                  <div key={k} className="grid grid-cols-[130px_1fr] gap-3 border-b border-border pb-3">
-                    <dt className="font-semibold">{k}</dt>
-                    <dd className="text-muted-foreground">{v}</dd>
-                  </div>
-                ))}
+                ["Raison sociale", "LIGHT TERRA GROUP SARL"],
+                ["Nom commercial", "LT GROUP"],
+                ["Forme juridique", "Société à responsabilité limitée (SARL)"],
+                ["Implantation", [company?.city, company?.country].filter(Boolean).join(", ") || "Abidjan, Côte d'Ivoire"],
+                ["Domaines", "9 services, des études à la sécurité électronique"],
+              ].map(([k, v]) => (
+                <div key={k} className="grid gap-1 border-b border-border pb-3 sm:grid-cols-[150px_1fr] sm:gap-3">
+                  <dt className="font-semibold">{k}</dt>
+                  <dd className="text-muted-foreground">{v}</dd>
+                </div>
+              ))}
             </dl>
-            <Link to="/contact" className="mt-6 inline-flex font-semibold underline">Nous contacter →</Link>
           </div>
-          <div>
-            <p className="eyebrow">Nous trouver</p>
-            <OfficeMap className="h-96" />
+          <div className="flex min-w-0 flex-col justify-center rounded-lg bg-ink-gradient p-6 text-ink-foreground sm:p-8">
+            <p className="eyebrow text-gold">Aller plus loin</p>
+            <h2 className="mt-3 text-2xl">Découvrez ce que nous faisons et où nous trouver</h2>
+            <div className="mt-6 flex flex-wrap gap-3">
+              <Link to="/services" className="rounded-md bg-gold px-5 py-2.5 text-sm font-semibold text-ink">Nos 9 services</Link>
+              <Link to="/projets" className="rounded-md border border-gold/50 px-5 py-2.5 text-sm font-semibold">Nos projets</Link>
+              <Link to="/contact" className="rounded-md border border-gold/50 px-5 py-2.5 text-sm font-semibold">Coordonnées et plan</Link>
+            </div>
           </div>
         </div>
       </section>
