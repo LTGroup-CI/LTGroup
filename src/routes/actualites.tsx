@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 
+import { serviceFor } from "@/content/services";
 import { PageHero, SiteLayout } from "@/components/site/SiteLayout";
 import { formatDateFr, newsListQuery } from "@/lib/site-data";
 import { MediaPreview } from "@/components/site/MediaPreview";
@@ -65,13 +66,14 @@ function Page() {
                     className="h-full min-h-48 w-full object-cover transition duration-500 group-hover:scale-[1.02]"
                   />
                 ) : null}
-                <div className="p-6">
+                <div className="min-w-0 p-6">
+                  {serviceFor(item.title, item.excerpt) ? <p className="eyebrow mb-2">{serviceFor(item.title, item.excerpt)!.n} · {serviceFor(item.title, item.excerpt)!.title}</p> : null}
                   <p className="text-xs uppercase tracking-[0.16em] text-muted-foreground">
                     {formatDateFr(item.published_at ?? item.created_at)}
                     {item.author ? ` — ${item.author}` : ""}
                   </p>
                   <h2 className="mt-3 text-2xl">{item.title}</h2>
-                  <p className="mt-3 leading-relaxed text-muted-foreground">{item.excerpt}</p>
+                  <p className="mt-3 text-justify leading-relaxed text-muted-foreground">{item.excerpt}</p>
                   <span className="mt-5 inline-flex text-sm font-semibold underline underline-offset-4">Lire l’actualité →</span>
                 </div>
               </Link>
