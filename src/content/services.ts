@@ -14,3 +14,22 @@ export const SERVICES: Service[] = [
   { n: "08", title: "Réseau télécom", icon: RadioTower, text: "Déploiement de fibre optique, génie civil télécom et infrastructures de communication.", points: ["Fibre optique", "Génie civil télécom", "Pylônes et liaisons"] },
   { n: "09", title: "Sécurité et électronique", icon: Cctv, text: "Vidéosurveillance, contrôle d'accès, alarmes et systèmes électroniques pour protéger vos sites.", points: ["Vidéosurveillance", "Contrôle d'accès", "Alarmes et détection"] },
 ];
+
+const KEYWORDS: [string, RegExp][] = [
+  ["01", /étude|topo|géotech/i],
+  ["02", /foncier|lotis|terrain|bornage|viabil/i],
+  ["03", /immobili|villa|logement|résidence/i],
+  ["04", /eau|hydraul|forage|AEP/i],
+  ["05", /électri|HTA|énergie|éclairage/i],
+  ["07", /VRD|voirie|assainiss|drainage/i],
+  ["06", /BTP|construct|bâtiment/i],
+  ["08", /télécom|fibre/i],
+  ["09", /sécurité|vidéo|surveillance|électronique/i],
+];
+
+/** Retrouve le service officiel correspondant à un texte (catégorie, titre…). */
+export function serviceFor(...texts: (string | null | undefined)[]): Service | undefined {
+  const t = texts.filter(Boolean).join(" ");
+  const hit = KEYWORDS.find(([, re]) => re.test(t));
+  return hit ? SERVICES.find((s) => s.n === hit[0]) : undefined;
+}

@@ -6,6 +6,7 @@ import { MapPin } from "lucide-react";
 import { PageHero, SiteLayout } from "@/components/site/SiteLayout";
 import { MediaPreview } from "@/components/site/MediaPreview";
 import { projectsQuery } from "@/lib/site-data";
+import { SERVICES, serviceFor } from "@/content/services";
 
 const title = "Projets & réalisations en Côte d’Ivoire | LIGHT TERRA GROUP";
 const description =
@@ -41,12 +42,14 @@ function Page() {
   const { data: projects, isLoading } = useQuery(projectsQuery);
   const [filter, setFilter] = useState<string>("tous");
 
-  const categories = Array.from(new Set((projects ?? []).map((p) => p.category).filter(Boolean) as string[]));
-  const list = (projects ?? []).filter((p) => filter === "tous" || p.category === filter);
+  const all = (projects ?? []).map((p) => ({ ...p, service: serviceFor(p.category, p.title) }));
+  const used = SERVICES.filter((s) => all.some((p) => p.service?.n === s.n));
+  const categories = used.map((s) => s.n);
+  const list = all.filter((p) => filter === "tous" || p.service?.n === filter);
 
   return (
     <SiteLayout>
-      <PageHero eyebrow="Réalisations" title="Nos projets" description={description} />
+      <PageHero eyebrow="Réalisations" title="Nos projets" description="Chaque projet est classé selon l'un de nos 9 services. Filtrez pour voir nos réalisations par domaine." />
       <section className="mx-auto max-w-7xl px-5 py-12 lg:px-8">
         {categories.length > 0 ? (
           <div className="mb-10 flex flex-wrap gap-2">
@@ -61,7 +64,7 @@ function Page() {
                     : "rounded-sm border border-border px-4 py-2 text-xs uppercase tracking-[0.14em] text-muted-foreground transition hover:border-gold hover:text-foreground"
                 }
               >
-                {cat === "tous" ? "Tous" : cat}
+                {cat === "tous" ? "Tous" : `${cat} · ${SERVICES.find((s) => s.n === cat)?.title}`}
               </button>
             ))}
           </div>
@@ -81,8 +84,8 @@ function Page() {
               {project.cover_image_url || project.image_url ? <MediaPreview url={project.cover_image_url || project.image_url || ""} alt={project.title} className="aspect-[4/3] w-full object-cover" /> : null}
               <div className="p-6">
                 <div className="flex items-center justify-between gap-3">
-                  <p className="eyebrow">{project.category ?? "Projet"}</p>
-                  <span className="rounded-full bg-accent px-3 py-1 text-[0.65rem] uppercase tracking-[0.12em] text-gold-deep">
+                  <p className="eyebrow min-w-0 truncate">{project.service ? `${project.service.n} · ${project.service.title}` : project.category ?? "Projet"}</p>
+                  <span className="shrink-0 rounded-full bg-accent px-3 py-1 text-[0.65rem] uppercase tracking-[0.12em] text-gold-deep">
                     {STATUS_LABEL[project.status] ?? project.status}
                   </span>
                 </div>
