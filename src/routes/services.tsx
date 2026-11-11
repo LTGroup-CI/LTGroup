@@ -4,6 +4,8 @@ import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
 
 import { PageHero, SiteLayout } from "@/components/site/SiteLayout";
+import { ServicesGrid } from "@/components/site/ServicesGrid";
+import { SERVICES } from "@/content/services";
 import { Button } from "@/components/ui/button";
 import { submitRequest } from "@/lib/requests.functions";
 
@@ -31,16 +33,7 @@ export const Route = createFileRoute("/services")({
   component: Page,
 });
 
-const PROJECT_TYPES = [
-  "Vente & commercialisation de terrains",
-  "Aménagement foncier / lotissement",
-  "BTP & VRD",
-  "Construction immobilière",
-  "Hydraulique & adduction d'eau potable",
-  "Électrification & infrastructures",
-  "Topographie & études",
-  "Autre",
-];
+const PROJECT_TYPES = [...SERVICES.map((s) => `${s.n} — ${s.title}`), "Vente de terrains", "Autre"];
 
 const BUDGETS = [
   "Moins de 5 000 000 FCFA",
@@ -96,24 +89,22 @@ function Page() {
 
   return (
     <SiteLayout>
-      <PageHero eyebrow="Services & devis" title="Demandez votre devis" description={description} />
+      <PageHero eyebrow="Nos services" title="Nos 9 services" description="Des études à la remise des clés : LIGHT TERRA GROUP SARL réunit toutes les expertises foncières, techniques et immobilières dont votre projet a besoin." />
 
-      <section className="mx-auto grid max-w-7xl gap-12 px-5 py-12 lg:grid-cols-[1fr_1.2fr] lg:px-8 lg:py-12">
-        <div>
-          <h2 className="text-2xl">Nos prestations</h2>
+      <section className="mx-auto max-w-7xl px-5 py-12 lg:px-8">
+        <ServicesGrid detailed />
+      </section>
+
+      <section className="mx-auto grid max-w-7xl gap-12 px-5 py-12 lg:grid-cols-[1fr_1.4fr] lg:px-8 lg:py-12 border-t border-border">
+        <div id="devis" className="min-w-0">
+          <p className="eyebrow">Devis gratuit</p>
+          <h2 className="mt-3 text-2xl lg:text-3xl">Demandez votre devis</h2>
           <hr className="gold-rule mt-4 w-16" />
-          <ul className="mt-6 space-y-3 text-sm leading-relaxed text-muted-foreground">
-            {PROJECT_TYPES.map((p) => (
-              <li key={p} className="border-b border-border pb-3">
-                {p}
-              </li>
-            ))}
-          </ul>
-          <p className="mt-6 text-sm leading-relaxed text-muted-foreground">
-            <strong className="text-foreground">Vente de terrains :</strong> nous proposons des terrains sélectionnés à la vente et accompagnons les acquéreurs dans leur démarche. Les propriétaires peuvent également nous confier la commercialisation de leurs terrains, selon les modalités convenues avec eux.
+          <p className="mt-6 text-justify text-sm leading-relaxed text-muted-foreground">
+            Décrivez votre projet en quelques lignes. Nos équipes l'étudient et vous répondent rapidement avec une proposition adaptée à votre besoin, votre budget et vos délais.
           </p>
-          <p className="mt-4 text-sm text-muted-foreground">
-            Chaque demande est étudiée par nos équipes. Vous recevez un accompagnement adapté à votre projet, votre budget et vos délais.
+          <p className="mt-4 text-justify text-sm leading-relaxed text-muted-foreground">
+            <strong className="text-foreground">Vente de terrains :</strong> terrains vérifiés à la vente, accompagnement des acquéreurs et commercialisation pour les propriétaires.
           </p>
         </div>
 
