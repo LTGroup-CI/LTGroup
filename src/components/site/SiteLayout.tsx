@@ -12,9 +12,8 @@ import { MediaPreview } from "@/components/site/MediaPreview";
 const NAV = [
   { to: "/", label: "Accueil" },
   { to: "/a-propos", label: "À propos" },
-  { to: "/activites", label: "Nos activités" },
   { to: "/projets", label: "Projets" },
-  { to: "/services", label: "Services & devis" },
+  { to: "/services", label: "Nos services" },
   { to: "/actualites", label: "Actualités" },
   { to: "/temoignages", label: "Témoignages" },
   { to: "/faq", label: "FAQ" },

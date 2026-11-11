@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { ArrowRight, ShieldCheck, Users, HardHat, Handshake } from "lucide-react";
-import { activityIcon } from "@/lib/activity-icons";
+import { ServicesGrid, ServicesCta } from "@/components/site/ServicesGrid";
 import heroTerrain from "@/assets/hero-terrain.jpg";
 import heroFoncier from "@/assets/hero-foncier.jpg";
 import heroBtp from "@/assets/hero-btp.jpg";
@@ -19,7 +19,6 @@ import { NewsletterSignup } from "@/components/site/NewsletterSignup";
 import { Button } from "@/components/ui/button";
 import { SITE_URL, OG_IMAGE_URL } from "@/lib/media";
 import {
-  activitiesQuery,
   companyQuery,
   formatDateFr,
   heroSlidesQuery,
@@ -371,28 +370,13 @@ function VideoShowcase() {
 }
 
 function Activities() {
-  const { data: activities } = useQuery(activitiesQuery);
-  if (!activities || activities.length === 0) return null;
-
   return (
-    <section className="mx-auto max-w-7xl px-5 py-12 lg:px-8 lg:py-12">
-      <p className="eyebrow">Nos pôles d'activité</p>
-      <h2 className="mt-3 text-3xl lg:text-4xl">Un groupe, plusieurs expertises</h2>
+    <section className="mx-auto max-w-7xl px-5 py-12 lg:px-8 lg:py-14">
+      <p className="eyebrow">Nos services</p>
+      <h2 className="mt-3 text-3xl lg:text-4xl">Neuf expertises, un seul interlocuteur</h2>
       <hr className="gold-rule mt-6 w-24" />
-      <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        {activities.map((activity) => {
-          const Icon = activityIcon(activity.icon);
-          return (
-            <Link key={activity.id} to="/activites/$slug" params={{ slug: activity.slug }} className="group relative overflow-hidden rounded-2xl border border-border bg-card p-8 shadow-soft transition duration-300 hover:-translate-y-1 hover:border-gold/60 hover:shadow-elevated">
-              <span className="inline-flex h-14 w-14 items-center justify-center rounded-xl bg-accent text-gold-deep transition group-hover:bg-gold group-hover:text-ink"><Icon className="h-7 w-7" /></span>
-              <h3 className="mt-5 text-xl">{activity.title}</h3>
-              <p className="mt-3 leading-relaxed text-muted-foreground">{activity.short_description}</p>
-              <span className="mt-6 inline-flex items-center text-sm font-semibold text-gold-deep">En savoir plus <ArrowRight className="ml-1 h-4 w-4 transition group-hover:translate-x-1" /></span>
-            </Link>
-          );
-        })}
-      </div>
-      <div className="mt-10"><Button asChild variant="outline"><Link to="/activites">Découvrir nos activités <ArrowRight className="ml-2 h-4 w-4" /></Link></Button></div>
+      <div className="mt-8"><ServicesGrid /></div>
+      <ServicesCta />
     </section>
   );
 }
