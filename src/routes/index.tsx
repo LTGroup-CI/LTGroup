@@ -19,7 +19,6 @@ import { NewsletterSignup } from "@/components/site/NewsletterSignup";
 import { Button } from "@/components/ui/button";
 import { SITE_URL, OG_IMAGE_URL } from "@/lib/media";
 import {
-  activitiesQuery,
   companyQuery,
   formatDateFr,
   heroSlidesQuery,
