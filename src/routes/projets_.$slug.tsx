@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
+import { Breadcrumb } from "@/components/site/Breadcrumb";
 import { PageHero, SiteLayout } from "@/components/site/SiteLayout";
 import { DetailMedia } from "@/components/site/DetailMedia";
 import { companyQuery, projectItemQuery, projectsQuery } from "@/lib/site-data";
@@ -92,6 +93,7 @@ function Page() {
 
   return (
     <SiteLayout>
+      <Breadcrumb section="Projets" to="/projets" current={project.title} />
       <PageHero eyebrow={project.category ?? "Projet"} title={project.title} description={project.summary ?? ""} />
 
       <article className="mx-auto max-w-7xl px-5 py-12 lg:px-8 lg:py-12">

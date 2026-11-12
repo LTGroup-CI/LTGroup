@@ -14,10 +14,12 @@ import { Route as AProposRouteImport } from './routes/a-propos'
 import { Route as ActivitesRouteImport } from './routes/activites'
 import { Route as ActualitesRouteImport } from './routes/actualites'
 import { Route as AdminRouteImport } from './routes/admin'
+import { Route as ConfidentialiteRouteImport } from './routes/confidentialite'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as DesabonnementRouteImport } from './routes/desabonnement'
 import { Route as FaqRouteImport } from './routes/faq'
 import { Route as MeRouteImport } from './routes/me'
+import { Route as MentionsLegalesRouteImport } from './routes/mentions-legales'
 import { Route as ProjetsRouteImport } from './routes/projets'
 import { Route as ServicesRouteImport } from './routes/services'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
@@ -51,6 +53,11 @@ const AdminRoute = AdminRouteImport.update({
   path: '/admin',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ConfidentialiteRoute = ConfidentialiteRouteImport.update({
+  id: '/confidentialite',
+  path: '/confidentialite',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ContactRoute = ContactRouteImport.update({
   id: '/contact',
   path: '/contact',
@@ -69,6 +76,11 @@ const FaqRoute = FaqRouteImport.update({
 const MeRoute = MeRouteImport.update({
   id: '/me',
   path: '/me',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MentionsLegalesRoute = MentionsLegalesRouteImport.update({
+  id: '/mentions-legales',
+  path: '/mentions-legales',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ProjetsRoute = ProjetsRouteImport.update({
@@ -113,10 +125,12 @@ export interface FileRoutesByFullPath {
   '/activites': typeof ActivitesRoute
   '/actualites': typeof ActualitesRoute
   '/admin': typeof AdminRoute
+  '/confidentialite': typeof ConfidentialiteRoute
   '/contact': typeof ContactRoute
   '/desabonnement': typeof DesabonnementRoute
   '/faq': typeof FaqRoute
   '/me': typeof MeRoute
+  '/mentions-legales': typeof MentionsLegalesRoute
   '/projets': typeof ProjetsRoute
   '/services': typeof ServicesRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
@@ -131,10 +145,12 @@ export interface FileRoutesByTo {
   '/activites': typeof ActivitesRoute
   '/actualites': typeof ActualitesRoute
   '/admin': typeof AdminRoute
+  '/confidentialite': typeof ConfidentialiteRoute
   '/contact': typeof ContactRoute
   '/desabonnement': typeof DesabonnementRoute
   '/faq': typeof FaqRoute
   '/me': typeof MeRoute
+  '/mentions-legales': typeof MentionsLegalesRoute
   '/projets': typeof ProjetsRoute
   '/services': typeof ServicesRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
@@ -150,10 +166,12 @@ export interface FileRoutesById {
   '/activites': typeof ActivitesRoute
   '/actualites': typeof ActualitesRoute
   '/admin': typeof AdminRoute
+  '/confidentialite': typeof ConfidentialiteRoute
   '/contact': typeof ContactRoute
   '/desabonnement': typeof DesabonnementRoute
   '/faq': typeof FaqRoute
   '/me': typeof MeRoute
+  '/mentions-legales': typeof MentionsLegalesRoute
   '/projets': typeof ProjetsRoute
   '/services': typeof ServicesRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
@@ -170,10 +188,12 @@ export interface FileRouteTypes {
     | '/activites'
     | '/actualites'
     | '/admin'
+    | '/confidentialite'
     | '/contact'
     | '/desabonnement'
     | '/faq'
     | '/me'
+    | '/mentions-legales'
     | '/projets'
     | '/services'
     | '/sitemap.xml'
@@ -188,10 +208,12 @@ export interface FileRouteTypes {
     | '/activites'
     | '/actualites'
     | '/admin'
+    | '/confidentialite'
     | '/contact'
     | '/desabonnement'
     | '/faq'
     | '/me'
+    | '/mentions-legales'
     | '/projets'
     | '/services'
     | '/sitemap.xml'
@@ -206,10 +228,12 @@ export interface FileRouteTypes {
     | '/activites'
     | '/actualites'
     | '/admin'
+    | '/confidentialite'
     | '/contact'
     | '/desabonnement'
     | '/faq'
     | '/me'
+    | '/mentions-legales'
     | '/projets'
     | '/services'
     | '/sitemap.xml'
@@ -225,10 +249,12 @@ export interface RootRouteChildren {
   ActivitesRoute: typeof ActivitesRoute
   ActualitesRoute: typeof ActualitesRoute
   AdminRoute: typeof AdminRoute
+  ConfidentialiteRoute: typeof ConfidentialiteRoute
   ContactRoute: typeof ContactRoute
   DesabonnementRoute: typeof DesabonnementRoute
   FaqRoute: typeof FaqRoute
   MeRoute: typeof MeRoute
+  MentionsLegalesRoute: typeof MentionsLegalesRoute
   ProjetsRoute: typeof ProjetsRoute
   ServicesRoute: typeof ServicesRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
@@ -275,6 +301,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/confidentialite': {
+      id: '/confidentialite'
+      path: '/confidentialite'
+      fullPath: '/confidentialite'
+      preLoaderRoute: typeof ConfidentialiteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/contact': {
       id: '/contact'
       path: '/contact'
@@ -301,6 +334,13 @@ declare module '@tanstack/react-router' {
       path: '/me'
       fullPath: '/me'
       preLoaderRoute: typeof MeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/mentions-legales': {
+      id: '/mentions-legales'
+      path: '/mentions-legales'
+      fullPath: '/mentions-legales'
+      preLoaderRoute: typeof MentionsLegalesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/projets': {
@@ -361,10 +401,12 @@ const rootRouteChildren: RootRouteChildren = {
   ActivitesRoute: ActivitesRoute,
   ActualitesRoute: ActualitesRoute,
   AdminRoute: AdminRoute,
+  ConfidentialiteRoute: ConfidentialiteRoute,
   ContactRoute: ContactRoute,
   DesabonnementRoute: DesabonnementRoute,
   FaqRoute: FaqRoute,
   MeRoute: MeRoute,
+  MentionsLegalesRoute: MentionsLegalesRoute,
   ProjetsRoute: ProjetsRoute,
   ServicesRoute: ServicesRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,

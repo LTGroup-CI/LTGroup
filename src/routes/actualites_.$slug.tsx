@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 
+import { Breadcrumb } from "@/components/site/Breadcrumb";
 import { PageHero, SiteLayout } from "@/components/site/SiteLayout";
 import { DetailMedia } from "@/components/site/DetailMedia";
 import { formatDateFr, companyQuery, newsItemQuery, newsListQuery } from "@/lib/site-data";
@@ -106,12 +107,13 @@ function Page() {
 
   return (
     <SiteLayout>
+      <Breadcrumb section="Actualités" to="/actualites" current={item.title} />
       <PageHero eyebrow="Actualité" title={item.title} description={item.excerpt ?? ""} />
 
       <article className="mx-auto max-w-7xl px-5 py-12 lg:px-8 lg:py-12">
         <div className="mb-8 flex flex-wrap items-center gap-x-4 gap-y-2 text-xs uppercase tracking-[0.16em] text-muted-foreground">
           <span>{formatDateFr(item.published_at ?? item.created_at)}</span>
-          {item.author ? <span>— {item.author}</span> : null}
+          <span>— Par {item.author || "LT GROUP"}</span><span>Éditeur : LIGHT TERRA GROUP SARL</span>
         </div>
 
         <DetailMedia

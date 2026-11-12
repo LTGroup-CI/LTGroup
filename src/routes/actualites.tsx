@@ -70,7 +70,7 @@ function Page() {
                   {serviceFor(item.title, item.excerpt) ? <p className="eyebrow mb-2">{serviceFor(item.title, item.excerpt)!.n} · {serviceFor(item.title, item.excerpt)!.title}</p> : null}
                   <p className="text-xs uppercase tracking-[0.16em] text-muted-foreground">
                     {formatDateFr(item.published_at ?? item.created_at)}
-                    {item.author ? ` — ${item.author}` : ""}
+                    {` — Par ${item.author || "LT GROUP"} · Éditeur : LIGHT TERRA GROUP SARL`}
                   </p>
                   <h2 className="mt-3 text-2xl">{item.title}</h2>
                   <p className="mt-3 text-justify leading-relaxed text-muted-foreground">{item.excerpt}</p>

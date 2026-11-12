@@ -148,10 +148,10 @@ export function SiteFooter() {
               height={400}
             />
           </div>
-          <p className="mt-5 max-w-md text-sm leading-relaxed text-ink-foreground/70">
-            {company?.description ??
-              "LT GROUP valorise la terre et transforme les opportunités foncières en projets d'avenir."}
+          <p className="mt-5 max-w-md text-justify text-sm leading-relaxed text-ink-foreground/70">
+            LIGHT TERRA GROUP SARL accompagne particuliers, entreprises et institutions en Côte d'Ivoire à travers 9 services : des études à la sécurité électronique, en passant par le foncier, l'eau, l'énergie et le BTP.
           </p>
+          <p className="mt-3 text-xs uppercase tracking-[0.2em] text-gold/80">Bâtir la terre, éclairer l'avenir</p>
         </div>
 
         <div>
@@ -193,37 +193,21 @@ export function SiteFooter() {
               </span>
             </li>
           </ul>
+          <Link to="/contact" className="mt-5 inline-flex rounded-md bg-gold px-4 py-2 text-sm font-semibold text-ink">Nous écrire</Link>
         </div>
       </div>
 
       <div className="border-t border-white/10">
-        <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-2 px-5 py-6 text-xs text-ink-foreground/50 sm:flex-row lg:px-8">
-          <p>
-            © {year} {company?.name ?? "LT GROUP"} — Tous droits réservés.
-          </p>
-          <p className="uppercase tracking-[0.2em] text-gold/80">
-            {company?.slogan ?? "Bâtir la terre, éclairer l'avenir"}
-          </p>
+        <div className="mx-auto flex max-w-7xl flex-col gap-3 px-5 py-6 text-xs text-ink-foreground/60 sm:flex-row sm:items-center sm:justify-between lg:px-8">
+          <p>© {year} LIGHT TERRA GROUP SARL — Tous droits réservés.</p>
+          <nav aria-label="Liens légaux" className="flex flex-wrap gap-x-5 gap-y-2">
+            <Link to="/mentions-legales" className="hover:text-gold">Mentions légales</Link>
+            <Link to="/confidentialite" className="hover:text-gold">Politique de confidentialité</Link>
+            <Link to="/contact" className="hover:text-gold">Contact</Link>
+          </nav>
         </div>
-        <div className="mx-auto max-w-7xl px-5 pb-6 text-center text-xs text-ink-foreground/50 lg:px-8">
-          Développé par{" "}
-          <a
-            href={DEVELOPER.site}
-            target="_blank"
-            rel="noreferrer noopener"
-            className="text-gold transition hover:underline"
-          >
-            {DEVELOPER.name}
-          </a>{" "}
-          -{" "}
-          <a
-            href={DEVELOPER.whatsapp}
-            target="_blank"
-            rel="noreferrer noopener"
-            className="text-gold transition hover:underline"
-          >
-            {DEVELOPER.phone}
-          </a>
+        <div className="mx-auto max-w-7xl px-5 pb-6 text-xs text-ink-foreground/40 lg:px-8">
+          Développé par <a href={DEVELOPER.site} target="_blank" rel="noreferrer noopener" className="text-gold/80 hover:underline">{DEVELOPER.name}</a> - <a href={DEVELOPER.whatsapp} target="_blank" rel="noreferrer noopener" className="text-gold/80 hover:underline">{DEVELOPER.phone}</a>
         </div>
       </div>
     </footer>
