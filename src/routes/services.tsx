@@ -89,7 +89,7 @@ function Page() {
 
   return (
     <SiteLayout>
-      <PageHero eyebrow="Nos services" title="Nos 9 services" description="Des études à la remise des clés : LIGHT TERRA GROUP SARL réunit toutes les expertises foncières, techniques et immobilières dont votre projet a besoin." />
+      <PageHero eyebrow="Nos services" title="Nos 10 services" description="Des études à la remise des clés : LIGHT TERRA GROUP SARL réunit toutes les expertises foncières, techniques et immobilières dont votre projet a besoin." />
 
       <section className="mx-auto max-w-7xl px-5 py-12 lg:px-8">
         <ServicesGrid detailed />

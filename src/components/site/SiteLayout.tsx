@@ -149,7 +149,7 @@ export function SiteFooter() {
             />
           </div>
           <p className="mt-5 max-w-md text-justify text-sm leading-relaxed text-ink-foreground/70">
-            LIGHT TERRA GROUP SARL accompagne particuliers, entreprises et institutions en Côte d'Ivoire à travers 9 services : des études à la sécurité électronique, en passant par le foncier, l'eau, l'énergie et le BTP.
+            LIGHT TERRA GROUP SARL accompagne particuliers, entreprises et institutions en Côte d'Ivoire à travers 10 services : des études à la sécurité électronique, en passant par le foncier, l'eau, l'énergie et le BTP.
           </p>
           <p className="mt-3 text-xs uppercase tracking-[0.2em] text-gold/80">Bâtir la terre, éclairer l'avenir</p>
         </div>
@@ -172,7 +172,7 @@ export function SiteFooter() {
           <ul className="mt-4 space-y-3 text-sm text-ink-foreground/70">
             <li className="flex items-start gap-2">
               <Phone className="mt-0.5 h-4 w-4 shrink-0 text-gold" />
-              <span><a href="tel:+2250749224722">(+225) 07 49 22 47 22</a> / <a href="tel:+2250707741484">07 07 74 14 84</a></span>
+              <span><a href="tel:+2250749224722">(+225) 07 49 22 47 22</a> / <a href="tel:+2250707741484">07 07 74 14 84</a> / Fixe : <a href="tel:+2252722422627">27 22 42 26 27</a></span>
             </li>
             {WHATSAPP_NUMBERS.map((w) => (
               <li key={w.link} className="flex items-start gap-2">
@@ -189,7 +189,7 @@ export function SiteFooter() {
             <li className="flex items-start gap-2">
               <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-gold" />
               <span>
-                Siège social : {[company?.city, company?.address].filter(Boolean).join(" ") || "Abidjan Cocody Akouédo extension sud-est, Lot 637, îlot 60"}{company?.postal_box ? ` ; ${company.postal_box}` : ""}
+                Siège social : {[company?.city, company?.address].filter(Boolean).join(" ") || "Abidjan Cocody Akouédo extension sud-est, Lot 640, îlot 60"}{company?.postal_box ? ` ; ${company.postal_box}` : ""}
               </span>
             </li>
           </ul>

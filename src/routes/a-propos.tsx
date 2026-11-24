@@ -97,7 +97,7 @@ function Page() {
                 ["Nom commercial", "LT GROUP"],
                 ["Forme juridique", "Société à responsabilité limitée (SARL)"],
                 ["Implantation", [company?.city, company?.country].filter(Boolean).join(", ") || "Abidjan, Côte d'Ivoire"],
-                ["Domaines", "9 services, des études à la sécurité électronique"],
+                ["Domaines", "10 services, des études à la gestion immobilière"],
               ].map(([k, v]) => (
                 <div key={k} className="grid gap-1 border-b border-border pb-3 sm:grid-cols-[150px_1fr] sm:gap-3">
                   <dt className="font-semibold">{k}</dt>
@@ -110,7 +110,7 @@ function Page() {
             <p className="eyebrow text-gold">Aller plus loin</p>
             <h2 className="mt-3 text-2xl">Découvrez ce que nous faisons et où nous trouver</h2>
             <div className="mt-6 flex flex-wrap gap-3">
-              <Link to="/services" className="rounded-md bg-gold px-5 py-2.5 text-sm font-semibold text-ink">Nos 9 services</Link>
+              <Link to="/services" className="rounded-md bg-gold px-5 py-2.5 text-sm font-semibold text-ink">Nos 10 services</Link>
               <Link to="/projets" className="rounded-md border border-gold/50 px-5 py-2.5 text-sm font-semibold">Nos projets</Link>
               <Link to="/contact" className="rounded-md border border-gold/50 px-5 py-2.5 text-sm font-semibold">Coordonnées et plan</Link>
             </div>

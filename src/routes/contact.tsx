@@ -91,6 +91,8 @@ function Page() {
               </a>
               <span className="mx-1">/</span>
               <a href="tel:+2250707741484" className="hover:text-foreground">07 07 74 14 84</a>
+              <span className="mx-1">/</span>
+              <a href="tel:+2252722422627" className="hover:text-foreground">Fixe : 27 22 42 26 27</a>
             </li>
             {WHATSAPP_NUMBERS.map((w) => (
               <li key={w.link} className="flex gap-3">
@@ -114,7 +116,7 @@ function Page() {
             <li className="flex gap-3">
               <MapPin className="mt-0.5 h-5 w-5 shrink-0 text-gold-deep" />
               <span>
-                Siège social : Cocody Akouédo Extension Sud-Est, Lot 637, Îlot 60, 01 BP 2259 Abidjan 01
+                Siège social : Cocody Akouédo Extension Sud-Est, Lot 640, Îlot 60, 01 BP 2259 Abidjan 01
               </span>
             </li>
           </ul>

@@ -49,7 +49,7 @@ function Page() {
 
   return (
     <SiteLayout>
-      <PageHero eyebrow="Réalisations" title="Nos projets" description="Chaque projet est classé selon l'un de nos 9 services. Filtrez pour voir nos réalisations par domaine." />
+      <PageHero eyebrow="Réalisations" title="Nos projets" description="Chaque projet est classé selon l'un de nos 10 services. Filtrez pour voir nos réalisations par domaine." />
       <section className="mx-auto max-w-7xl px-5 py-12 lg:px-8">
         {categories.length > 0 ? (
           <div className="mb-10 flex flex-wrap gap-2">

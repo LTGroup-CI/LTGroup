@@ -4,7 +4,7 @@ import { SERVICES } from "@/content/services";
 
 export function ServicesGrid({ detailed = false }: { detailed?: boolean }) {
   return (
-    <div className="grid gap-px overflow-hidden rounded-2xl border border-border bg-border sm:grid-cols-2 lg:grid-cols-3">
+    <div className="grid gap-px overflow-hidden rounded-2xl border border-border bg-border sm:grid-cols-2 xl:grid-cols-5">
       {SERVICES.map((s) => (
         <article key={s.n} className="group relative flex min-w-0 flex-col bg-card p-6 transition duration-300 hover:bg-accent/40 sm:p-8">
           <div className="flex items-start justify-between gap-4">

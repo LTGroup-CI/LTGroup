@@ -208,7 +208,7 @@ function Hero() {
                 Bâtir la terre, <span className="text-gold-gradient">éclairer l’avenir</span>
               </h1>
               <p className="mt-7 max-w-2xl text-base leading-7 text-white/75 sm:text-lg sm:leading-8">
-                {company?.description ?? "LT GROUP accompagne particuliers, entreprises et institutions en Côte d’Ivoire : vente de terrains, aménagement foncier, BTP, immobilier, hydraulique et électrification."}
+                {company?.description ?? "LT GROUP accompagne particuliers, entreprises et institutions en Côte d’Ivoire : études, aménagement foncier, promotion immobilière, hydraulique, électrification, BTP, VRD, réseau télécom, gestion immobilière et divers."}
               </p>
               {current.subtitle ? (
                 <p className="mt-5 max-w-xl text-sm leading-7 text-white/65 sm:text-base">
@@ -254,7 +254,7 @@ function Hero() {
 
 function KeyFigures() {
   const items = [
-    { value: "6", label: "pôles d'expertise" },
+    { value: "10", label: "pôles d'expertise" },
     { value: "100 %", label: "documents fonciers vérifiés" },
     { value: "Étude → livraison", label: "un seul interlocuteur" },
     { value: "Abidjan", label: "et tout le territoire ivoirien" },
@@ -373,7 +373,7 @@ function Activities() {
   return (
     <section className="mx-auto max-w-7xl px-5 py-12 lg:px-8 lg:py-14">
       <p className="eyebrow">Nos services</p>
-      <h2 className="mt-3 text-3xl lg:text-4xl">Neuf expertises, un seul interlocuteur</h2>
+      <h2 className="mt-3 text-3xl lg:text-4xl">Dix expertises, un seul interlocuteur</h2>
       <hr className="gold-rule mt-6 w-24" />
       <div className="mt-8"><ServicesGrid /></div>
       <ServicesCta />
