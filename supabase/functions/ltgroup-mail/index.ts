@@ -278,6 +278,11 @@ export default {
       }
 
       if (action === "admin_reply") {
+        if (ctx.authMode !== "user" || !ctx.userClaims?.sub) {
+          return Response.json({ ok: false, message: "Session administrateur requise." }, { status: 401 });
+        }
+        const { data: replyRole } = await ctx.supabaseAdmin.from("user_roles").select("role").eq("user_id", ctx.userClaims.sub).in("role", ["admin", "super_admin"]).maybeSingle();
+        if (!replyRole) return Response.json({ ok: false, message: "Accès administrateur requis." }, { status: 403 });
         const email = String(body.email || "").trim().toLowerCase();
         const fullName = String(body.full_name || "Visiteur").trim();
         const subject = String(body.subject || "LIGHT TERRA GROUP").trim();

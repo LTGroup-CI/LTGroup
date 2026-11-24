@@ -36,9 +36,7 @@ export const subscribeNewsletter = createServerFn({ method: "POST" })
         alreadySubscribed: false,
         welcomeSent: false,
         message:
-          error instanceof Error
-            ? error.message
-            : "Service e-mail momentanément indisponible. Merci de réessayer plus tard.",
+          "Service e-mail momentanément indisponible. Merci de réessayer plus tard.",
       };
     }
   });

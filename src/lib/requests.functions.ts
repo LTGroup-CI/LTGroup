@@ -43,9 +43,7 @@ export const submitRequest = createServerFn({ method: "POST" })
       return {
         ok: false as const,
         message:
-          error instanceof Error
-            ? error.message
-            : "L'envoi a échoué. Merci de réessayer.",
+          "L'envoi a échoué. Merci de réessayer.",
       };
     }
   });

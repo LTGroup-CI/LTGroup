@@ -136,10 +136,10 @@ async function persistConversation(
   let { data: existing } = await client.from("ai_visitors").select("*").eq("visitor_key", input.visitorKey).maybeSingle();
   if (visitor.email || visitor.phone) {
     const filters = [
-      visitor.email ? `email.ilike.${visitor.email.replace(/[,()]/g, "")}` : "",
-      visitor.phone ? `phone.eq.${visitor.phone.replace(/[,()]/g, "")}` : "",
+      visitor.email && /^[a-z0-9._+-]+@[a-z0-9.-]+\.[a-z]{2,}$/i.test(visitor.email) ? `email.eq.${visitor.email.toLowerCase()}` : "",
+      visitor.phone && /^[0-9+ ]{6,40}$/.test(visitor.phone) ? `phone.eq.${visitor.phone}` : "",
     ].filter(Boolean).join(",");
-    const { data: known } = await client.from("ai_visitors").select("*").or(filters).order("created_at", { ascending: true }).limit(1).maybeSingle();
+    const { data: known } = !filters ? { data: null } : await client.from("ai_visitors").select("*").or(filters).order("created_at", { ascending: true }).limit(1).maybeSingle();
     if (known) {
       if (existing && existing.id !== known.id && !existing.email && !existing.phone) {
         await client.from("ai_conversations").update({ visitor_id: known.id }).eq("visitor_id", existing.id);
