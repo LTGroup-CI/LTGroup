@@ -1,0 +1,4 @@
+UPDATE public.company_info SET description = 'LT GROUP valorise la terre et transforme les opportunités foncières en projets d’avenir, avec des expertises en études, aménagement foncier, promotion immobilière, hydraulique, électrification, BTP, VRD, réseau télécom, gestion immobilière et divers.', address = replace(address, 'Lot 637', 'Lot 640');
+UPDATE public.projects SET summary = replace(summary, ' — 400 m² à 4 000 000 FCFA.', ' — lots de 400 m².'), content = regexp_replace(content, E'\\nPrix( annoncé)? : 4 000 000 FCFA', '', 'g') WHERE content LIKE '%FCFA%' OR summary LIKE '%FCFA%';
+UPDATE public.news SET content = regexp_replace(content, E'\\nPrix( annoncé)? : 4 000 000 FCFA', '', 'g') WHERE content LIKE '%FCFA%';
+UPDATE public.faq_items SET answer = replace(answer, 'Lot 637', 'Lot 640');
