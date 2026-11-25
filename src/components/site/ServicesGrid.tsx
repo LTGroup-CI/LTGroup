@@ -3,6 +3,30 @@ import { ArrowRight } from "lucide-react";
 import { SERVICES } from "@/content/services";
 
 export function ServicesGrid({ detailed = false, compact = false }: { detailed?: boolean; compact?: boolean }) {
+  if (compact) {
+    return (
+      <div className="grid gap-x-10 md:grid-cols-2 md:gap-x-12">
+        {SERVICES.map((s) => (
+          <Link
+            key={s.n}
+            to="/services"
+            className="group flex min-w-0 items-center gap-4 border-b border-border/80 py-5 transition-colors hover:border-gold/70 sm:gap-5 sm:py-6"
+          >
+            <span className="w-8 shrink-0 font-display text-sm tracking-[0.12em] text-gold-deep/80 sm:w-9">{s.n}</span>
+            <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-border bg-card text-gold-deep transition duration-300 group-hover:border-gold/50 group-hover:bg-accent sm:h-12 sm:w-12">
+              <s.icon className="h-5 w-5 sm:h-[1.35rem] sm:w-[1.35rem]" />
+            </span>
+            <span className="min-w-0 flex-1 py-1">
+              <span className="block text-base font-semibold leading-snug text-foreground transition-colors group-hover:text-gold-deep sm:text-lg">{s.title}</span>
+              <span className="mt-1 block text-xs leading-relaxed text-muted-foreground sm:text-sm">{s.text}</span>
+            </span>
+            <ArrowRight className="h-4 w-4 shrink-0 text-muted-foreground/60 transition duration-300 group-hover:translate-x-1 group-hover:text-gold-deep" />
+          </Link>
+        ))}
+      </div>
+    );
+  }
+
   return (
     <div className="grid gap-px overflow-hidden rounded-2xl border border-border bg-border sm:grid-cols-2 xl:grid-cols-5">
       {SERVICES.map((s) => (
@@ -31,9 +55,9 @@ export function ServicesGrid({ detailed = false, compact = false }: { detailed?:
 
 export function ServicesCta() {
   return (
-    <div className="mt-8 flex flex-wrap gap-3">
-      <Link to="/services" className="inline-flex items-center rounded-md border border-border px-5 py-2.5 text-sm font-semibold hover:border-gold">
-        Voir tous nos services <ArrowRight className="ml-2 h-4 w-4" />
+    <div className="mt-9 flex justify-center sm:justify-start">
+      <Link to="/services" className="inline-flex min-h-11 items-center gap-2 rounded-md border border-border px-5 py-2.5 text-sm font-semibold transition-colors hover:border-gold hover:bg-accent">
+        Explorer nos expertises <ArrowRight className="h-4 w-4" />
       </Link>
     </div>
   );
