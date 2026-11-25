@@ -1,3 +1,4 @@
+import heroInfra from "@/assets/hero-infra.jpg";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { ArrowRight } from "lucide-react";
@@ -24,7 +25,7 @@ function Page() {
 
   return (
     <SiteLayout>
-      <PageHero eyebrow="Nos domaines d’intervention" title="Nos pôles d’activité" description="Des expertises complémentaires réunies pour accompagner vos projets, de l’étude à la réalisation." />
+      <PageHero eyebrow="Nos domaines d’intervention" title="Nos pôles d’activité" description="Des expertises complémentaires réunies pour accompagner vos projets, de l’étude à la réalisation." image={heroInfra} />
       <section className="mx-auto max-w-7xl px-5 py-12 lg:px-8">
         {isLoading ? <p className="text-muted-foreground">Chargement des pôles d’activité…</p> : null}
         {!isLoading && list.length === 0 ? (
