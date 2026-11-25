@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { ShieldCheck, Users, HardHat, Handshake } from "lucide-react";
@@ -19,6 +19,7 @@ import { SITE_URL, OG_IMAGE_URL } from "@/lib/media";
 import {
   companyQuery,
   heroSlidesQuery,
+  introVideosQuery,
 } from "@/lib/site-data";
 
 const title = "LT GROUP — Bâtir la terre, éclairer l'avenir";
@@ -51,6 +52,79 @@ export const Route = createFileRoute("/")({
   },
   component: Index,
 });
+
+/** Lecture en boucle continue des séquences vidéo, sans coupure visible. */
+function IntroVideoLoop() {
+  const { data: videos } = useQuery(introVideosQuery);
+  const list = useMemo(() => videos ?? [], [videos]);
+  const [active, setActive] = useState(0);
+  const [front, setFront] = useState(0);
+  const frontRef = useRef<HTMLVideoElement>(null);
+  const backRef = useRef<HTMLVideoElement>(null);
+
+  useEffect(() => {
+    if (!list.length) return;
+    const current = frontRef.current;
+    const firstUrl = list[0]?.video_url;
+    if (!current || !firstUrl) return;
+    current.src = firstUrl;
+    current.load();
+    void current.play().catch(() => undefined);
+  }, [list]);
+
+  useEffect(() => {
+    if (list.length < 2) return;
+    const hidden = front === 0 ? backRef.current : frontRef.current;
+    const nextIndex = (active + 1) % list.length;
+    const nextUrl = list[nextIndex]?.video_url;
+    if (!hidden || !nextUrl) return;
+    hidden.src = nextUrl;
+    hidden.load();
+  }, [active, front, list]);
+
+  if (!list.length) {
+    return (
+      <div className="relative aspect-video overflow-hidden rounded-lg border border-gold/25 bg-ink shadow-elevated">
+        <div className="flex h-full items-center justify-center p-6 text-center">
+          <div>
+            <p className="eyebrow text-gold">LT GROUP</p>
+            <p className="mt-3 font-display text-xl text-white sm:text-2xl">Notre savoir-faire en mouvement</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  const handleEnded = () => {
+    if (list.length < 2) {
+      const current = front === 0 ? frontRef.current : backRef.current;
+      if (current) { current.currentTime = 0; void current.play().catch(() => undefined); }
+      return;
+    }
+    const hidden = front === 0 ? backRef.current : frontRef.current;
+    if (!hidden) return;
+    void hidden.play().catch(() => undefined);
+    setFront((slot) => 1 - slot);
+    setActive((index) => (index + 1) % list.length);
+  };
+
+  return (
+    <div className="relative aspect-video overflow-hidden rounded-lg border border-gold/25 bg-black shadow-elevated">
+      {[0, 1].map((slot) => (
+        <video
+          key={slot}
+          ref={slot === 0 ? frontRef : backRef}
+          className={"absolute inset-0 h-full w-full object-cover transition-opacity duration-500 " + (slot === front ? "opacity-100" : "opacity-0")}
+          muted
+          playsInline
+          preload="metadata"
+          onEnded={slot === front ? handleEnded : undefined}
+          aria-hidden={slot !== front}
+        />
+      ))}
+    </div>
+  );
+}
 
 const FALLBACK_HERO_SLIDES = [
   { id: "fallback-terrain", image_url: heroTerrain, title: "Vente de terrains", subtitle: null, cta_label: null, cta_url: null, duration_ms: 6000, position: 0, is_active: true },
@@ -96,8 +170,8 @@ function Hero() {
       </div>
 
       <div className="relative mx-auto max-w-[1480px] px-5 sm:px-8 lg:px-12 xl:px-16">
-        <div className="mx-auto flex min-h-[68vh] max-w-5xl items-center py-24 sm:py-28 lg:min-h-[72vh] lg:py-32">
-          <div className="w-full max-w-4xl">
+        <div className="mx-auto grid min-h-[68vh] max-w-7xl items-center gap-10 py-24 sm:py-28 lg:min-h-[78vh] lg:grid-cols-[1.05fr_0.95fr] lg:gap-14 lg:py-20">
+          <div className="w-full max-w-3xl">
               <p className="eyebrow text-gold">LT GROUP · Côte d’Ivoire</p>
               <h1 className="mt-4 max-w-[12ch] text-balance text-4xl leading-[1.02] text-white sm:text-5xl lg:text-6xl xl:text-[4.5rem]">
                 Bâtir la terre, <span className="text-gold-gradient">éclairer l’avenir</span>
@@ -139,6 +213,10 @@ function Hero() {
                   ))}
                 </div>
               </div>
+          </div>
+          <div className="relative overflow-hidden rounded-2xl border border-gold/30 bg-black/60 p-1 shadow-elevated ring-1 ring-white/10">
+            <IntroVideoLoop />
+            <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
           </div>
         </div>
       </div>
