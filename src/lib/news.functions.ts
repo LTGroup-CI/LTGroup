@@ -76,7 +76,7 @@ const outputSchema = z.object({
 });
 
 export const optimizeNewsForPublication = createServerFn({ method: "POST" })
-  .inputValidator((data: unknown) => schema.parse(data))
+  .validator((data: unknown) => schema.parse(data))
   .handler(async ({ data }) => {
     const basic = fallback(data);
     const key = process.env["LOVABLE_API_KEY"];
