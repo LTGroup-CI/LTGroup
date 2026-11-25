@@ -18,10 +18,7 @@ import { Button } from "@/components/ui/button";
 import { SITE_URL, OG_IMAGE_URL } from "@/lib/media";
 import {
   companyQuery,
-  formatDateFr,
   heroSlidesQuery,
-  newsListQuery,
-  projectsQuery,
 } from "@/lib/site-data";
 
 const title = "LT GROUP — Bâtir la terre, éclairer l'avenir";
