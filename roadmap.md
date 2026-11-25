@@ -19,7 +19,7 @@ Dernière mise à jour : 25 novembre 2026. Dépôt officiel : LTGroup-CI/LTGroup
 - [x] Sections visuelles existantes remontées sur l'accueil, overlays du hero éclaircis et zoom lent activé (commit 890c2aa).
 
 ## À terminer — priorité haute
-- [ ] Refonte immersive cohérente de toutes les pages publiques, desktop/tablette/mobile, sans casser les fonctions existantes. Première tranche codée et déployée : PageHero partagé, animation discrète, cartes projets/actualités/activités/expertises, galerie détaillée et hero d'accueil ; validation visuelle réelle encore nécessaire.
+- [ ] Refonte immersive cohérente de toutes les pages publiques, desktop/tablette/mobile, sans casser les fonctions existantes. Première tranche codée et déployée (commit 6225675 READY) : PageHero partagé avec images contextuelles différentes par page et médias réels sur les fiches, animation discrète, cartes projets/actualités/activités/expertises, galerie détaillée, accueil, panneaux contact/FAQ/témoignages/devis ; validation visuelle réelle de toutes les routes encore nécessaire.
 - [ ] Vérifier images, diaporama, vidéos d'introduction et section vidéo « Découvrez nos opportunités et réalisations » sur le domaine officiel.
 - [ ] Vérifier qualité, pertinence ivoirienne, droits et absence de doublons des visuels ; ne pas présenter une image illustrative comme un chantier réel.
 - [ ] Vérifier les liens de toutes les cartes vers leurs fiches, y compris les nouveaux enregistrements créés depuis l'admin.
