@@ -79,9 +79,19 @@ function Page() {
           {list.map((project) => (
             <Link to="/projets/$slug" params={{ slug: project.slug }}
               key={project.id}
-              className="overflow-hidden rounded-lg border border-border bg-card transition hover:-translate-y-1 hover:shadow-elevated"
+              className="group overflow-hidden rounded-xl border border-border/80 bg-card shadow-soft transition duration-500 hover:-translate-y-1.5 hover:border-gold/40 hover:shadow-elevated"
             >
-              {project.cover_image_url || project.image_url ? <MediaPreview url={project.cover_image_url || project.image_url || ""} alt={project.title} className="aspect-[4/3] w-full object-cover" /> : null}
+              <div className="relative aspect-[4/3] overflow-hidden bg-ink-gradient">
+                {project.cover_image_url || project.image_url ? (
+                  <MediaPreview url={project.cover_image_url || project.image_url || ""} alt={project.title} className="h-full w-full object-cover transition duration-700 group-hover:scale-105" />
+                ) : (
+                  <div className="flex h-full items-end p-6">
+                    <span className="text-xs font-semibold uppercase tracking-[0.24em] text-gold/80">LIGHT TERRA GROUP · PROJET</span>
+                  </div>
+                )}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-transparent to-transparent" />
+                <span className="absolute bottom-4 left-5 text-[0.65rem] font-semibold uppercase tracking-[0.2em] text-white/90">Découvrir le projet ↗</span>
+              </div>
               <div className="p-6">
                 <div className="flex items-center justify-between gap-3">
                   <p className="eyebrow min-w-0 truncate">{project.service ? `${project.service.n} · ${project.service.title}` : project.category ?? "Projet"}</p>
@@ -89,7 +99,7 @@ function Page() {
                     {STATUS_LABEL[project.status] ?? project.status}
                   </span>
                 </div>
-                <h2 className="mt-2 text-lg">{project.title}</h2>
+                <h2 className="mt-2 text-xl transition-colors group-hover:text-gold-deep">{project.title}</h2>
                 {project.location ? (
                   <p className="mt-2 flex items-center gap-1.5 text-xs text-muted-foreground">
                     <MapPin className="h-3.5 w-3.5 text-gold" /> {project.location}
