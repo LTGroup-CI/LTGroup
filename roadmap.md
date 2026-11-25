@@ -19,7 +19,7 @@ Dernière mise à jour : 25 novembre 2026. Dépôt officiel : LTGroup-CI/LTGroup
 - [x] Sections visuelles existantes remontées sur l'accueil, overlays du hero éclaircis et zoom lent activé (commit 890c2aa).
 
 ## À terminer — priorité haute
-- [ ] Refonte immersive cohérente de toutes les pages publiques, desktop/tablette/mobile, sans casser les fonctions existantes. Première tranche codée : PageHero partagé, animation discrète, cartes projets/actualités/activités/expertises et galerie détaillée ; validation visuelle production encore nécessaire.
+- [ ] Refonte immersive cohérente de toutes les pages publiques, desktop/tablette/mobile, sans casser les fonctions existantes. Première tranche codée et déployée : PageHero partagé, animation discrète, cartes projets/actualités/activités/expertises, galerie détaillée et hero d'accueil ; validation visuelle réelle encore nécessaire.
 - [ ] Vérifier images, diaporama, vidéos d'introduction et section vidéo « Découvrez nos opportunités et réalisations » sur le domaine officiel.
 - [ ] Vérifier qualité, pertinence ivoirienne, droits et absence de doublons des visuels ; ne pas présenter une image illustrative comme un chantier réel.
 - [ ] Vérifier les liens de toutes les cartes vers leurs fiches, y compris les nouveaux enregistrements créés depuis l'admin.
@@ -32,6 +32,7 @@ Dernière mise à jour : 25 novembre 2026. Dépôt officiel : LTGroup-CI/LTGroup
 - [ ] Moderniser l'admin et corriger les débordements sur mobile.
 - [ ] Harmoniser les textes : largeur utile, alignement/justification lisible, titres non confinés dans une petite colonne.
 - [ ] Contrôler SEO : métadonnées par page, canonical, sitemap, robots, données structurées, partage social et indexation.
+- [x] Migrer les appels TanStack Start createServerFn().inputValidator() vers .validator() dans newsletter.functions.ts, news.functions.ts, requests.functions.ts, admin.functions.ts et assistant.functions.ts ; le build de production ne signale plus ces dépréciations.
 
 ## À confirmer avec le client — ne pas inventer
 - [ ] Adresse exacte : deux versions existent dans l'historique (Lot 637, îlot 60 et Lot 640, îlot 60). Demander confirmation avant modification.
