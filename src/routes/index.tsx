@@ -166,10 +166,11 @@ function Hero() {
           src={current.image_url}
           alt=""
           aria-hidden
-          className="h-full w-full object-cover opacity-35 transition-opacity duration-700"
+          className="h-full w-full object-cover opacity-100 transition-transform duration-[9000ms] ease-out scale-[1.04]"
         />
-        <div className="absolute inset-0 bg-black/75" />
-        <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/70 to-black/85" />
+        <div className="absolute inset-0 bg-black/25" />
+        <div className="absolute inset-0 bg-gradient-to-r from-black/75 via-black/40 to-black/15" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-black/10" />
       </div>
 
       <div className="relative mx-auto max-w-[1480px] px-5 sm:px-8 lg:px-12 xl:px-16">
@@ -506,9 +507,12 @@ function Index() {
       <main className="flex-1">
         <Hero />
         <KeyFigures />
+        <Visuals />
         <Activities />
+        <VideoShowcase />
         <WhyUs />
         <FeaturedProjects />
+        <LatestNews />
         <NewsletterSignup />
         <CallToAction />
       </main>
