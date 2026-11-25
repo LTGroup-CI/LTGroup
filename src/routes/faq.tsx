@@ -65,7 +65,7 @@ function FaqPage() {
         />
 
         <section className="mx-auto w-full max-w-[1180px] px-5 py-14 sm:px-8 lg:py-12">
-          <div className="rounded-3xl border border-border bg-card p-5 shadow-soft sm:p-7">
+          <div className="rounded-3xl border border-border/80 bg-card p-5 shadow-elevated sm:p-7">
             <div className="grid gap-4 lg:grid-cols-[1fr_auto]">
               <label className="relative block">
                 <span className="sr-only">Rechercher une question</span>
@@ -104,7 +104,7 @@ function FaqPage() {
                 {filtered.map((item) => {
                   const open = openId === item.id;
                   return (
-                    <article key={item.id} className="overflow-hidden rounded-2xl border border-border bg-card shadow-soft">
+                    <article key={item.id} className="group overflow-hidden rounded-2xl border border-border/80 bg-card shadow-soft transition duration-300 hover:border-gold/40">
                       <button
                         type="button"
                         onClick={() => setOpenId(open ? null : item.id)}
@@ -140,7 +140,7 @@ function FaqPage() {
             )}
           </div>
 
-          <div className="mt-14 rounded-3xl bg-ink p-7 text-ink-foreground sm:p-10">
+          <div className="relative mt-14 overflow-hidden rounded-3xl border border-gold/20 bg-ink-gradient p-7 text-ink-foreground shadow-elevated sm:p-10">
             <p className="eyebrow text-gold">Besoin d'une réponse personnalisée ?</p>
             <h2 className="mt-3 text-2xl text-white sm:text-3xl">Raï peut vous orienter</h2>
             <p className="mt-3 max-w-2xl text-sm leading-7 text-white/70 sm:text-base">
