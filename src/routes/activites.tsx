@@ -1,8 +1,54 @@
-import { createFileRoute, redirect } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { useQuery } from "@tanstack/react-query";
+import { ArrowRight } from "lucide-react";
+import { MediaPreview } from "@/components/site/MediaPreview";
+import { PageHero, SiteLayout } from "@/components/site/SiteLayout";
+import { activitiesQuery } from "@/lib/site-data";
 
-// Ancienne page remplacée par /services (refonte nov. 2026).
 export const Route = createFileRoute("/activites")({
-  beforeLoad: () => {
-    throw redirect({ to: "/services", statusCode: 301 });
-  },
+  head: () => ({
+    meta: [
+      { title: "Pôles d’activité | LIGHT TERRA GROUP SARL" },
+      { name: "description", content: "Découvrez les pôles d’activité et expertises de LIGHT TERRA GROUP SARL en Côte d’Ivoire." },
+      { property: "og:title", content: "Pôles d’activité | LIGHT TERRA GROUP SARL" },
+      { property: "og:description", content: "Les domaines d’intervention de LIGHT TERRA GROUP SARL." },
+    ],
+    links: [{ rel: "canonical", href: "https://ltgroup-ci.com/activites" }],
+  }),
+  component: Page,
 });
+
+function Page() {
+  const { data: activities, isLoading } = useQuery(activitiesQuery);
+  const list = activities ?? [];
+
+  return (
+    <SiteLayout>
+      <PageHero eyebrow="Nos domaines d’intervention" title="Nos pôles d’activité" description="Des expertises complémentaires réunies pour accompagner vos projets, de l’étude à la réalisation." />
+      <section className="mx-auto max-w-7xl px-5 py-12 lg:px-8">
+        {isLoading ? <p className="text-muted-foreground">Chargement des pôles d’activité…</p> : null}
+        {!isLoading && list.length === 0 ? (
+          <div className="rounded-2xl border border-dashed border-border p-8 text-center">
+            <p className="text-muted-foreground">Les présentations de nos pôles d’activité seront publiées prochainement.</p>
+            <Link to="/services" className="mt-5 inline-flex items-center gap-2 font-semibold text-gold-deep">Consulter nos expertises <ArrowRight className="h-4 w-4" /></Link>
+          </div>
+        ) : null}
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {list.map((activity) => {
+            const image = activity.cover_image_url ?? activity.image_url;
+            return (
+              <Link key={activity.id} to="/activites/$slug" params={{ slug: activity.slug }} className="group overflow-hidden rounded-2xl border border-border bg-card transition hover:-translate-y-1 hover:border-gold/50 hover:shadow-elevated">
+                {image ? <MediaPreview url={image} alt={activity.title} className="aspect-[16/10] w-full object-cover" /> : <div className="aspect-[16/10] bg-ink-gradient" />}
+                <div className="p-6">
+                  <h2 className="text-xl">{activity.title}</h2>
+                  <p className="mt-3 text-sm leading-7 text-muted-foreground">{activity.short_description}</p>
+                  <span className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-gold-deep">Découvrir ce pôle <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" /></span>
+                </div>
+              </Link>
+            );
+          })}
+        </div>
+      </section>
+    </SiteLayout>
+  );
+}
