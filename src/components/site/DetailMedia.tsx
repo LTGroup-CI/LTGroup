@@ -50,7 +50,7 @@ export function DetailMedia({
 
   return (
     <div className="space-y-4">
-      <div className="relative overflow-hidden rounded-2xl border border-border bg-black shadow-elevated">
+      <div className="relative isolate overflow-hidden rounded-2xl border border-gold/20 bg-black shadow-elevated">
         {isVideoMedia(current.url) || current.kind === "video" ? (
           <video
             key={current.url}
@@ -68,7 +68,7 @@ export function DetailMedia({
             key={current.url}
             src={current.url}
             alt={alt}
-            className="aspect-video w-full object-cover"
+            className="aspect-[16/9] w-full object-cover transition duration-700"
             loading="eager"
           />
         )}
@@ -96,7 +96,7 @@ export function DetailMedia({
       </div>
 
       {media.length > 1 ? (
-        <div className="flex gap-3 overflow-x-auto pb-1">
+        <div className="flex snap-x snap-mandatory gap-3 overflow-x-auto pb-2">
           {media.map((item, itemIndex) => {
             const video = isVideoMedia(item.url) || item.kind === "video";
             return (
@@ -105,7 +105,7 @@ export function DetailMedia({
                 type="button"
                 onClick={() => setIndex(itemIndex)}
                 aria-label={`Afficher le média ${itemIndex + 1}`}
-                className={`relative h-20 w-28 shrink-0 overflow-hidden rounded-lg border-2 transition ${itemIndex === index ? "border-gold" : "border-border opacity-75 hover:opacity-100"}`}
+                className={`relative h-20 w-28 shrink-0 snap-start overflow-hidden rounded-lg border-2 transition duration-300 ${itemIndex === index ? "border-gold shadow-gold" : "border-border opacity-70 hover:opacity-100"}`}
               >
                 {video ? (
                   item.poster ? (
