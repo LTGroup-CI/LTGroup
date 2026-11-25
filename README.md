@@ -21,6 +21,8 @@ Mainteneur : Inocent KOFFI.
 
 ## Refonte architecture (novembre 2026) — suivi pour toute IA ou développeur
 
+> **Reprise obligatoire :** lire [LOVABLE_HANDOFF.md](./LOVABLE_HANDOFF.md) avant toute intervention avec Lovable ou une autre IA. Ce dossier décrit l'état vérifié, les décisions du client, les limites connues et le plan restant. Les tâches cochées ci-dessous ne valident pas à elles seules la refonte visuelle complète.
+
 Objectif : chaque page traite un sujet unique, l'accueil n'est qu'une vitrine qui aiguille. Aucune information ne doit être recopiée d'une page à l'autre.
 
 Règles validées par LT GROUP (Raïssa Amon valide les contenus) :
@@ -45,3 +47,7 @@ Répartition des contenus :
 - [ ] Témoignages réels (nom, fonction, entreprise, photo) — en attente des vrais témoignages du client.
 - [ ] Photos HD et texte concret par chantier — en attente des éléments du client.
 - [ ] Numéro RCCM dans les mentions légales — en attente du client.
+
+### Publication vérifiée — 25 novembre 2026
+- Le commit `890c2aa` est déployé en production Vercel (statut READY). Cette publication réactive les sections visuelles déjà codées sur l'accueil, rend le visuel du hero visible et applique un zoom lent. Elle **ne signifie pas** que toute la refonte immersive du site est terminée.
+- Mettre à jour `LOVABLE_HANDOFF.md`, `roadmap.md` et cette liste après chaque tâche réellement vérifiée.
