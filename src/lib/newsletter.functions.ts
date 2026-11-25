@@ -14,7 +14,7 @@ const notifySchema = z.object({
 });
 
 export const subscribeNewsletter = createServerFn({ method: "POST" })
-  .inputValidator((data: unknown) => signupSchema.parse(data))
+  .validator((data: unknown) => signupSchema.parse(data))
   .handler(async ({ data }) => {
     try {
       const result = await invokeLtgroupMail("newsletter_subscribe", {
@@ -42,7 +42,7 @@ export const subscribeNewsletter = createServerFn({ method: "POST" })
   });
 
 export const notifyNewsSubscribers = createServerFn({ method: "POST" })
-  .inputValidator((data: unknown) => notifySchema.parse(data))
+  .validator((data: unknown) => notifySchema.parse(data))
   .handler(async ({ data }) => {
     try {
       const result = await invokeLtgroupMail(
@@ -66,7 +66,7 @@ export const notifyNewsSubscribers = createServerFn({ method: "POST" })
   });
 
 export const unsubscribeNewsletter = createServerFn({ method: "POST" })
-  .inputValidator((data: unknown) => z.object({ id: z.string().uuid() }).parse(data))
+  .validator((data: unknown) => z.object({ id: z.string().uuid() }).parse(data))
   .handler(async ({ data }) => {
     // Désabonnement public : on conserve ce flux côté serveur avec la table
     // exposée uniquement selon ses politiques RLS.
