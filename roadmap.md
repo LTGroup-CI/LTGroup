@@ -10,3 +10,4 @@
 - [ ] Accueil : bannière en deux colonnes (vidéo + textes)
 - [ ] À propos : LIGHT TERRA GROUP SARL
 - [ ] Mise en page des textes justifiés, titres pleine largeur sur pages détail
+- [x] Refonte architecture en pages séparées (voir README « Refonte architecture »)

@@ -375,7 +375,7 @@ function Activities() {
       <p className="eyebrow">Nos services</p>
       <h2 className="mt-3 text-3xl lg:text-4xl">Dix expertises, un seul interlocuteur</h2>
       <hr className="gold-rule mt-6 w-24" />
-      <div className="mt-8"><ServicesGrid /></div>
+      <div className="mt-8"><ServicesGrid compact /></div>
       <ServicesCta />
     </section>
   );
@@ -387,25 +387,16 @@ const WHY = [
   { icon: HardHat, title: "Maîtrise des chantiers", text: "Études, VRD, construction et réseaux réalisés dans le respect des normes." },
   { icon: Handshake, title: "Suivi transparent", text: "Un interlocuteur unique, des comptes rendus réguliers et des délais tenus." },
 ];
-const STEPS = ["Écoute et étude du besoin", "Visite et vérifications", "Proposition et devis", "Réalisation et remise"];
 
 function WhyUs() {
   return (
     <section className="bg-secondary py-12 lg:py-16">
       <div className="mx-auto grid max-w-7xl gap-10 px-5 lg:grid-cols-[1fr_1.3fr] lg:px-8">
         <div>
-          <p className="eyebrow">Pourquoi LT GROUP</p>
+          <p className="eyebrow">Nos engagements</p>
           <h2 className="mt-3 text-3xl lg:text-4xl">Un accompagnement sérieux, de A à Z</h2>
           <hr className="gold-rule mt-5 w-24" />
           <p className="mt-5 text-justify leading-relaxed text-muted-foreground">LIGHT TERRA GROUP SARL accompagne particuliers, entreprises et institutions dans leurs projets fonciers, immobiliers et d'infrastructures en Côte d'Ivoire, avec rigueur, transparence et proximité.</p>
-          <ol className="mt-6 space-y-3">
-            {STEPS.map((s, i) => (
-              <li key={s} className="flex items-center gap-3">
-                <span className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gold font-semibold text-ink">{i + 1}</span>
-                <span className="font-medium">{s}</span>
-              </li>
-            ))}
-          </ol>
         </div>
         <div className="grid gap-4 sm:grid-cols-2">
           {WHY.map(({ icon: Icon, title, text }) => (
@@ -423,18 +414,19 @@ function WhyUs() {
 
 function FeaturedProjects() {
   const { data: projects } = useQuery(projectsQuery);
-  const list = (projects ?? []).slice(0, 3);
+  const list = (projects ?? []).filter((p) => p.is_featured).slice(0, 1).concat([]);
+  if (list.length === 0 && projects?.[0]) list.push(projects[0]);
   if (list.length === 0) return null;
 
   return (
     <section className="bg-muted/50 py-12 lg:py-12">
       <div className="mx-auto max-w-7xl px-5 lg:px-8">
-        <p className="eyebrow">Réalisations</p>
-        <h2 className="mt-3 text-3xl lg:text-4xl">Des projets qui transforment le territoire</h2>
+        <p className="eyebrow">Opportunité du moment</p>
+        <h2 className="mt-3 text-3xl lg:text-4xl">Notre projet phare</h2>
         <hr className="gold-rule mt-6 w-24" />
-        <div className="mt-8 grid gap-6 md:grid-cols-3">
+        <div className="mt-8">
           {list.map((project) => (
-            <Link to="/projets/$slug" params={{ slug: project.slug }} key={project.id} className="overflow-hidden rounded-lg border border-border bg-card transition hover:-translate-y-1 hover:shadow-elevated">
+            <Link to="/projets/$slug" params={{ slug: project.slug }} key={project.id} className="grid overflow-hidden rounded-lg border border-border bg-card transition hover:shadow-elevated md:grid-cols-2">
               {project.cover_image_url || project.image_url ? <MediaPreview url={project.cover_image_url || project.image_url || ""} alt={project.title} className="aspect-[4/3] w-full object-cover" /> : null}
               <div className="p-6">
                 <p className="eyebrow">{project.category ?? "Projet"}</p>
@@ -444,7 +436,7 @@ function FeaturedProjects() {
             </Link>
           ))}
         </div>
-        <div className="mt-10"><Button asChild variant="gold"><Link to="/projets">Tous nos projets</Link></Button></div>
+        <div className="mt-10"><Button asChild variant="gold"><Link to="/projets">Voir tous nos projets & terrains</Link></Button></div>
       </div>
     </section>
   );
@@ -507,9 +499,7 @@ function Index() {
         <KeyFigures />
         <Activities />
         <WhyUs />
-        <Visuals />
         <FeaturedProjects />
-        <LatestNews />
         <NewsletterSignup />
         <CallToAction />
       </main>

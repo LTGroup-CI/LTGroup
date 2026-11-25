@@ -11,13 +11,17 @@ import { MediaPreview } from "@/components/site/MediaPreview";
 
 const NAV = [
   { to: "/", label: "Accueil" },
-  { to: "/a-propos", label: "À propos" },
-  { to: "/projets", label: "Projets" },
-  { to: "/services", label: "Nos services" },
+  { to: "/services", label: "Expertises" },
+  { to: "/projets", label: "Projets & Terrains" },
+  { to: "/a-propos", label: "Le Groupe" },
+  { to: "/contact", label: "Contact" },
+];
+
+const FOOTER_NAV = [
+  ...NAV.slice(1),
   { to: "/actualites", label: "Actualités" },
   { to: "/temoignages", label: "Témoignages" },
   { to: "/faq", label: "FAQ" },
-  { to: "/contact", label: "Contact" },
 ];
 
 /** Hauteur réservée sous le menu fixe. */
@@ -43,7 +47,7 @@ export function SiteHeader() {
           />
         </Link>
 
-        <nav className="hidden items-center gap-5 xl:flex">
+        <nav className="hidden items-center gap-7 lg:flex">
           {NAV.map((item) => (
             <Link
               key={item.to}
@@ -64,7 +68,7 @@ export function SiteHeader() {
           <button
             type="button"
             onClick={() => setOpen((v) => !v)}
-            className="inline-flex h-10 w-10 items-center justify-center rounded-sm border border-gold/50 text-gold-deep xl:hidden"
+            className="inline-flex h-10 w-10 items-center justify-center rounded-sm border border-gold/50 text-gold-deep lg:hidden"
             aria-label={open ? "Fermer le menu" : "Ouvrir le menu"}
             aria-expanded={open}
           >
@@ -74,7 +78,7 @@ export function SiteHeader() {
       </div>
 
       {open ? (
-        <div className="max-h-[70vh] overflow-y-auto border-t border-border bg-background xl:hidden">
+        <div className="max-h-[70vh] overflow-y-auto border-t border-border bg-background lg:hidden">
           <nav className="mx-auto flex max-w-7xl flex-col px-5 py-3">
             {NAV.map((item) => (
               <Link
@@ -157,7 +161,7 @@ export function SiteFooter() {
         <div>
           <h3 className="font-display text-lg text-gold">Navigation</h3>
           <ul className="mt-4 space-y-2 text-sm text-ink-foreground/70">
-            {NAV.slice(1).map((item) => (
+            {FOOTER_NAV.map((item) => (
               <li key={item.to}>
                 <Link to={item.to} className="transition-colors hover:text-gold">
                   {item.label}

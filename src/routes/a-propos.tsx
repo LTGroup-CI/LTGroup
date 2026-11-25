@@ -84,7 +84,19 @@ function Page() {
         </div>
       </section>
 
-
+      <section className="mx-auto max-w-7xl px-5 pb-12 lg:px-8">
+        <p className="eyebrow">Notre méthode</p>
+        <h2 className="mt-3 text-3xl">Quatre étapes, de l'étude à la remise</h2>
+        <hr className="gold-rule mt-6 w-24" />
+        <ol className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          {["Écoute et étude du besoin", "Visite et vérifications", "Proposition et devis", "Réalisation et remise"].map((step, i) => (
+            <li key={step} className="flex items-center gap-3 rounded-lg border border-border bg-card p-5">
+              <span className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-gold font-semibold text-ink">{i + 1}</span>
+              <span className="font-medium">{step}</span>
+            </li>
+          ))}
+        </ol>
+      </section>
 
       <section className="bg-muted/50 py-12">
         <div className="mx-auto grid max-w-7xl gap-8 px-5 lg:grid-cols-[1.2fr_1fr] lg:px-8">

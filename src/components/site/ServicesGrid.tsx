@@ -2,7 +2,7 @@ import { Link } from "@tanstack/react-router";
 import { ArrowRight } from "lucide-react";
 import { SERVICES } from "@/content/services";
 
-export function ServicesGrid({ detailed = false }: { detailed?: boolean }) {
+export function ServicesGrid({ detailed = false, compact = false }: { detailed?: boolean; compact?: boolean }) {
   return (
     <div className="grid gap-px overflow-hidden rounded-2xl border border-border bg-border sm:grid-cols-2 xl:grid-cols-5">
       {SERVICES.map((s) => (
@@ -14,7 +14,7 @@ export function ServicesGrid({ detailed = false }: { detailed?: boolean }) {
             </span>
           </div>
           <h3 className="mt-5 text-lg sm:text-xl">{s.title}</h3>
-          <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{s.text}</p>
+          {!compact && <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{s.text}</p>}
           {detailed && (
             <ul className="mt-4 space-y-1.5 text-sm">
               {s.points.map((p) => (
