@@ -108,7 +108,7 @@ function Page() {
   return (
     <SiteLayout>
       <Breadcrumb section="Actualités" to="/actualites" current={item.title} />
-      <PageHero eyebrow="Actualité" title={item.title} description={item.excerpt ?? ""} />
+      <PageHero eyebrow="Actualité" title={item.title} description={item.excerpt ?? ""} image={item.cover_image_url ?? item.image_url ?? undefined} />
 
       <article className="mx-auto max-w-7xl px-5 py-12 lg:px-8 lg:py-12">
         <div className="mb-8 flex flex-wrap items-center gap-x-4 gap-y-2 text-xs uppercase tracking-[0.16em] text-muted-foreground">
