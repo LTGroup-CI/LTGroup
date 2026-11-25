@@ -265,9 +265,9 @@ export function PageHero({
         <circle cx="50" cy="60" r="3" fill="currentColor" />
       </svg>
       <div className="relative mx-auto max-w-7xl px-5 lg:px-8">
-        <div className="max-w-5xl animate-fade-up">
+        <div className="max-w-6xl animate-fade-up">
           <p className="eyebrow text-gold">{eyebrow}</p>
-          <h1 className="mt-4 w-full text-balance text-4xl leading-[1.08] text-white sm:text-5xl lg:text-7xl">{title}</h1>
+          <h1 className="mt-4 w-full text-pretty text-4xl leading-[1.08] text-white sm:text-5xl lg:text-7xl">{title}</h1>
           <div className="mt-7 flex items-center gap-4">
             <span className="h-px w-16 bg-gold" />
             <span className="h-1.5 w-1.5 rotate-45 bg-gold" />
