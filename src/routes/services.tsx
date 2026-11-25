@@ -108,7 +108,7 @@ function Page() {
           </p>
         </div>
 
-        <div className="rounded-lg border border-border bg-card p-6 shadow-sm lg:p-8">
+        <div className="rounded-2xl border border-border/80 bg-card p-6 shadow-soft lg:p-8">
           {done ? (
             <div className="rounded-md border border-gold/40 bg-muted p-6">
               <h3 className="font-display text-xl">Demande envoyée</h3>
