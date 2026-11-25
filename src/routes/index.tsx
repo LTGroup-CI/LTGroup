@@ -160,7 +160,7 @@ function Hero() {
   const current = slides[index % slides.length]!;
 
   return (
-    <section className="relative overflow-hidden border-b border-border bg-ink">
+    <section className="relative isolate overflow-hidden border-b border-gold/20 bg-ink">
       <div className="absolute inset-0">
         <img
           src={current.image_url}
@@ -170,11 +170,12 @@ function Hero() {
         />
         <div className="absolute inset-0 bg-black/25" />
         <div className="absolute inset-0 bg-gradient-to-r from-black/75 via-black/40 to-black/15" />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-black/10" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-transparent to-black/20" />
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_80%_35%,rgba(212,175,55,0.12),transparent_38%)]" />
       </div>
 
       <div className="relative mx-auto max-w-[1480px] px-5 sm:px-8 lg:px-12 xl:px-16">
-        <div className="grid min-h-[70vh] gap-8 py-8 lg:grid-cols-[1.05fr_0.95fr] lg:items-center lg:gap-14 lg:py-14">
+        <div className="grid min-h-[78vh] gap-10 pb-10 pt-24 sm:pt-28 lg:grid-cols-[1.05fr_0.95fr] lg:items-center lg:gap-14 lg:py-16">
           <div className="order-2 min-w-0 lg:order-1">
             <div className="mb-6">
               <p className="eyebrow text-gold">Qui sommes-nous</p>
@@ -196,7 +197,7 @@ function Hero() {
               </div>
             </div>
 
-            <div className="relative overflow-hidden rounded-xl border border-gold/25 bg-black/60 shadow-elevated">
+            <div className="relative overflow-hidden rounded-2xl border border-gold/30 bg-black/60 p-1 shadow-elevated ring-1 ring-white/10">
               <IntroVideoLoop />
               <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/55 via-transparent to-transparent" />
             </div>
@@ -205,10 +206,10 @@ function Hero() {
           <div className="order-1 flex min-w-0 items-center lg:order-2">
             <div className="w-full">
               <p className="eyebrow text-gold">LT GROUP · Côte d’Ivoire</p>
-              <h1 className="mt-4 text-4xl leading-[1.05] text-white sm:text-5xl lg:text-6xl xl:text-[4.5rem]">
+              <h1 className="mt-4 max-w-[12ch] text-balance text-4xl leading-[1.02] text-white sm:text-5xl lg:text-6xl xl:text-[4.5rem]">
                 Bâtir la terre, <span className="text-gold-gradient">éclairer l’avenir</span>
               </h1>
-              <p className="mt-7 max-w-2xl text-base leading-7 text-white/75 sm:text-lg sm:leading-8">
+              <p className="mt-7 max-w-2xl text-pretty text-base leading-7 text-white/75 sm:text-lg sm:leading-8">
                 {company?.description ?? "LT GROUP accompagne particuliers, entreprises et institutions en Côte d’Ivoire : études, aménagement foncier, promotion immobilière, hydraulique, électrification, BTP, VRD, réseau télécom, gestion immobilière et divers."}
               </p>
               {current.subtitle ? (
@@ -262,10 +263,10 @@ function KeyFigures() {
   ];
   return (
     <section className="relative z-20 mx-auto -mt-8 max-w-[1480px] px-5 sm:px-8 lg:px-12 xl:px-16">
-      <div className="grid gap-px overflow-hidden rounded-2xl border border-border bg-border shadow-elevated sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-px overflow-hidden rounded-2xl border border-border/80 bg-border shadow-elevated sm:grid-cols-2 lg:grid-cols-4">
         {items.map((it) => (
-          <div key={it.label} className="bg-card p-6 lg:p-8">
-            <p className="font-display text-2xl text-gold-deep lg:text-3xl">{it.value}</p>
+          <div key={it.label} className="group bg-card p-6 transition-colors duration-300 hover:bg-accent/40 lg:p-8">
+            <p className="font-display text-2xl text-gold-deep transition-transform duration-300 group-hover:-translate-y-0.5 lg:text-3xl">{it.value}</p>
             <p className="mt-2 text-sm text-muted-foreground">{it.label}</p>
           </div>
         ))}
@@ -410,8 +411,8 @@ function WhyUs() {
         </div>
         <div className="grid gap-4 sm:grid-cols-2">
           {WHY.map(({ icon: Icon, title, text }) => (
-            <div key={title} className="rounded-xl border border-border bg-card p-6 shadow-soft">
-              <span className="inline-flex h-11 w-11 items-center justify-center rounded-lg bg-accent text-gold-deep"><Icon className="h-5 w-5" /></span>
+            <div key={title} className="group rounded-xl border border-border/80 bg-card p-6 shadow-soft transition duration-500 hover:-translate-y-1 hover:border-gold/40 hover:shadow-elevated">
+              <span className="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-accent text-gold-deep transition duration-300 group-hover:bg-gold group-hover:text-ink"><Icon className="h-5 w-5" /></span>
               <h3 className="mt-4 text-lg">{title}</h3>
               <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{text}</p>
             </div>
@@ -436,11 +437,11 @@ function FeaturedProjects() {
         <hr className="gold-rule mt-6 w-24" />
         <div className="mt-8">
           {list.map((project) => (
-            <Link to="/projets/$slug" params={{ slug: project.slug }} key={project.id} className="grid overflow-hidden rounded-lg border border-border bg-card transition hover:shadow-elevated md:grid-cols-2">
-              {project.cover_image_url || project.image_url ? <MediaPreview url={project.cover_image_url || project.image_url || ""} alt={project.title} className="aspect-[4/3] w-full object-cover" /> : null}
+            <Link to="/projets/$slug" params={{ slug: project.slug }} key={project.id} className="group grid overflow-hidden rounded-2xl border border-border/80 bg-card shadow-soft transition duration-500 hover:-translate-y-1 hover:border-gold/40 hover:shadow-elevated md:grid-cols-2">
+              <div className="relative min-h-56 overflow-hidden bg-ink-gradient">{project.cover_image_url || project.image_url ? <MediaPreview url={project.cover_image_url || project.image_url || ""} alt={project.title} className="h-full min-h-56 w-full object-cover transition duration-700 group-hover:scale-105" /> : <div className="flex min-h-56 items-end p-6"><span className="text-xs uppercase tracking-[0.22em] text-gold/80">LIGHT TERRA GROUP · PROJET</span></div>}<div className="absolute inset-0 bg-gradient-to-t from-black/45 via-transparent to-transparent" /></div>
               <div className="p-6">
                 <p className="eyebrow">{project.category ?? "Projet"}</p>
-                <h3 className="mt-2 text-lg">{project.title}</h3>
+                <h3 className="mt-2 text-xl transition-colors group-hover:text-gold-deep">{project.title}</h3>
                 <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{project.summary}</p>
               </div>
             </Link>
@@ -464,11 +465,11 @@ function LatestNews() {
       <hr className="gold-rule mt-6 w-24" />
       <div className="mt-8 grid gap-6 md:grid-cols-3">
         {list.map((item) => (
-          <Link key={item.id} to="/actualites/$slug" params={{ slug: item.slug }} className="group overflow-hidden rounded-lg border border-border bg-card transition hover:-translate-y-1 hover:shadow-elevated">
-            {item.cover_image_url || item.image_url || item.video_url ? <MediaPreview url={item.cover_image_url ?? item.image_url ?? item.video_url ?? ""} alt={item.title} poster={item.video_poster_url} className="aspect-[16/9] w-full object-cover transition duration-500 group-hover:scale-[1.02]" /> : null}
+          <Link key={item.id} to="/actualites/$slug" params={{ slug: item.slug }} className="group overflow-hidden rounded-xl border border-border/80 bg-card shadow-soft transition duration-500 hover:-translate-y-1 hover:border-gold/40 hover:shadow-elevated">
+            <div className="relative aspect-[16/9] overflow-hidden bg-ink-gradient">{item.cover_image_url || item.image_url || item.video_url ? <MediaPreview url={item.cover_image_url ?? item.image_url ?? item.video_url ?? ""} alt={item.title} poster={item.video_poster_url} className="h-full w-full object-cover transition duration-700 group-hover:scale-105" /> : <div className="flex h-full items-end p-5"><span className="text-xs uppercase tracking-[0.22em] text-gold/80">LIGHT TERRA GROUP · ACTUALITÉ</span></div>}<div className="absolute inset-0 bg-gradient-to-t from-black/35 via-transparent to-transparent" /></div>
             <div className="p-6">
               <p className="text-xs uppercase tracking-[0.16em] text-muted-foreground">{formatDateFr(item.published_at ?? item.created_at)}</p>
-              <h3 className="mt-3 text-lg">{item.title}</h3>
+              <h3 className="mt-3 text-lg transition-colors group-hover:text-gold-deep">{item.title}</h3>
               <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{item.excerpt}</p>
               <span className="mt-5 inline-flex text-sm font-semibold underline underline-offset-4">Lire l’actualité →</span>
             </div>
