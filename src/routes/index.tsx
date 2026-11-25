@@ -371,11 +371,22 @@ function VideoShowcase() {
 
 function Activities() {
   return (
-    <section className="mx-auto max-w-7xl px-5 py-12 lg:px-8 lg:py-14">
-      <p className="eyebrow">Nos services</p>
-      <h2 className="mt-3 text-3xl lg:text-4xl">Dix expertises, un seul interlocuteur</h2>
-      <hr className="gold-rule mt-6 w-24" />
-      <div className="mt-8"><ServicesGrid compact /></div>
+    <section className="mx-auto max-w-7xl px-5 py-16 sm:py-20 lg:px-8 lg:py-24">
+      <div className="grid gap-7 lg:grid-cols-[0.8fr_1.2fr] lg:items-end lg:gap-12">
+        <div>
+          <p className="eyebrow">Nos domaines d’expertise</p>
+          <h2 className="mt-3 max-w-xl text-3xl leading-tight sm:text-4xl lg:text-[2.65rem]">
+            Des compétences au service de vos projets
+          </h2>
+          <hr className="gold-rule mt-6 w-24" />
+        </div>
+        <p className="max-w-2xl text-sm leading-7 text-muted-foreground sm:text-base lg:justify-self-end">
+          De l’étude à la réalisation, nos équipes mobilisent des savoir-faire complémentaires dans les domaines foncier, immobilier et des infrastructures.
+        </p>
+      </div>
+      <div className="mt-8 border-t border-border/80 sm:mt-10">
+        <ServicesGrid compact />
+      </div>
       <ServicesCta />
     </section>
   );
