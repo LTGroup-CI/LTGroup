@@ -16,7 +16,7 @@ const schema = z.object({
 });
 
 export const submitRequest = createServerFn({ method: "POST" })
-  .inputValidator((data: unknown) => schema.parse(data))
+  .validator((data: unknown) => schema.parse(data))
   .handler(async ({ data }) => {
     try {
       const result = await invokeLtgroupMail("contact", {
