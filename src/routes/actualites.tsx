@@ -56,23 +56,25 @@ function Page() {
             return (
               <Link
                 key={item.id} to="/actualites/$slug" params={{ slug: item.slug }}
-                className="group grid gap-6 overflow-hidden rounded-lg border border-border bg-card transition hover:-translate-y-1 hover:shadow-elevated md:grid-cols-[280px_1fr]"
+                className="group grid gap-0 overflow-hidden rounded-xl border border-border/80 bg-card shadow-soft transition duration-500 hover:-translate-y-1 hover:border-gold/40 hover:shadow-elevated md:grid-cols-[minmax(260px,0.72fr)_1.28fr]"
               >
                 {mediaUrl ? (
                   <MediaPreview
                     url={mediaUrl}
                     alt={item.title}
                     poster={item.video_poster_url}
-                    className="h-full min-h-48 w-full object-cover transition duration-500 group-hover:scale-[1.02]"
+                    className="h-full min-h-56 w-full object-cover transition duration-700 group-hover:scale-105"
                   />
-                ) : null}
-                <div className="min-w-0 p-6">
+                ) : (
+                  <div className="flex min-h-56 items-end bg-ink-gradient p-6"><span className="text-xs font-semibold uppercase tracking-[0.22em] text-gold/80">LIGHT TERRA GROUP · ACTUALITÉ</span></div>
+                )}
+                <div className="min-w-0 p-6 sm:p-8">
                   {serviceFor(item.title, item.excerpt) ? <p className="eyebrow mb-2">{serviceFor(item.title, item.excerpt)!.n} · {serviceFor(item.title, item.excerpt)!.title}</p> : null}
                   <p className="text-xs uppercase tracking-[0.16em] text-muted-foreground">
                     {formatDateFr(item.published_at ?? item.created_at)}
                     {` — Par ${item.author || "LT GROUP"} · Éditeur : LIGHT TERRA GROUP SARL`}
                   </p>
-                  <h2 className="mt-3 text-2xl">{item.title}</h2>
+                  <h2 className="mt-3 text-2xl transition-colors group-hover:text-gold-deep">{item.title}</h2>
                   <p className="mt-3 text-justify leading-relaxed text-muted-foreground">{item.excerpt}</p>
                   <span className="mt-5 inline-flex text-sm font-semibold underline underline-offset-4">Lire l’actualité →</span>
                 </div>
