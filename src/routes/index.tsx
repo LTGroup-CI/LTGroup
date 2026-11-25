@@ -1,7 +1,7 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { ArrowRight, ShieldCheck, Users, HardHat, Handshake } from "lucide-react";
+import { ShieldCheck, Users, HardHat, Handshake } from "lucide-react";
 import { ServicesGrid, ServicesCta } from "@/components/site/ServicesGrid";
 import heroTerrain from "@/assets/hero-terrain.jpg";
 import heroFoncier from "@/assets/hero-foncier.jpg";
@@ -13,8 +13,6 @@ import heroConseil from "@/assets/hero-conseil.jpg";
 
 import { PartnersStrip, SiteFooter, SiteHeader } from "@/components/site/SiteLayout";
 import { AiAssistant } from "@/components/site/AiAssistant";
-import { MediaGallery } from "@/components/site/MediaGallery";
-import { MediaPreview } from "@/components/site/MediaPreview";
 import { NewsletterSignup } from "@/components/site/NewsletterSignup";
 import { Button } from "@/components/ui/button";
 import { SITE_URL, OG_IMAGE_URL } from "@/lib/media";
@@ -22,8 +20,6 @@ import {
   companyQuery,
   formatDateFr,
   heroSlidesQuery,
-  introVideosQuery,
-  showcaseVideosQuery,
   newsListQuery,
   projectsQuery,
 } from "@/lib/site-data";
@@ -59,78 +55,6 @@ export const Route = createFileRoute("/")({
   component: Index,
 });
 
-/** Lecture en boucle continue des séquences vidéo, sans coupure visible. */
-function IntroVideoLoop() {
-  const { data: videos } = useQuery(introVideosQuery);
-  const list = useMemo(() => videos ?? [], [videos]);
-  const [active, setActive] = useState(0);
-  const [front, setFront] = useState(0);
-  const frontRef = useRef<HTMLVideoElement>(null);
-  const backRef = useRef<HTMLVideoElement>(null);
-
-  useEffect(() => {
-    if (!list.length) return;
-    const current = frontRef.current;
-    const firstUrl = list[0]?.video_url;
-    if (!current || !firstUrl) return;
-    current.src = firstUrl;
-    current.load();
-    void current.play().catch(() => undefined);
-  }, [list]);
-
-  useEffect(() => {
-    if (list.length < 2) return;
-    const hidden = front === 0 ? backRef.current : frontRef.current;
-    const nextIndex = (active + 1) % list.length;
-    const nextUrl = list[nextIndex]?.video_url;
-    if (!hidden || !nextUrl) return;
-    hidden.src = nextUrl;
-    hidden.load();
-  }, [active, front, list]);
-
-  if (!list.length) {
-    return (
-      <div className="relative aspect-video overflow-hidden rounded-lg border border-gold/25 bg-ink shadow-elevated">
-        <div className="flex h-full items-center justify-center p-6 text-center">
-          <div>
-            <p className="eyebrow text-gold">LT GROUP</p>
-            <p className="mt-3 font-display text-xl text-white sm:text-2xl">Notre savoir-faire en mouvement</p>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  const handleEnded = () => {
-    if (list.length < 2) {
-      const current = front === 0 ? frontRef.current : backRef.current;
-      if (current) { current.currentTime = 0; void current.play().catch(() => undefined); }
-      return;
-    }
-    const hidden = front === 0 ? backRef.current : frontRef.current;
-    if (!hidden) return;
-    void hidden.play().catch(() => undefined);
-    setFront((slot) => 1 - slot);
-    setActive((index) => (index + 1) % list.length);
-  };
-
-  return (
-    <div className="relative aspect-video overflow-hidden rounded-lg border border-gold/25 bg-black shadow-elevated">
-      {[0, 1].map((slot) => (
-        <video
-          key={slot}
-          ref={slot === 0 ? frontRef : backRef}
-          className={"absolute inset-0 h-full w-full object-cover transition-opacity duration-500 " + (slot === front ? "opacity-100" : "opacity-0")}
-          muted
-          playsInline
-          preload="metadata"
-          onEnded={slot === front ? handleEnded : undefined}
-          aria-hidden={slot !== front}
-        />
-      ))}
-    </div>
-  );
-}
 const FALLBACK_HERO_SLIDES = [
   { id: "fallback-terrain", image_url: heroTerrain, title: "Vente de terrains", subtitle: null, cta_label: null, cta_url: null, duration_ms: 6000, position: 0, is_active: true },
   { id: "fallback-foncier", image_url: heroFoncier, title: "Aménagement foncier & lotissement", subtitle: null, cta_label: null, cta_url: null, duration_ms: 6000, position: 1, is_active: true },
@@ -175,36 +99,8 @@ function Hero() {
       </div>
 
       <div className="relative mx-auto max-w-[1480px] px-5 sm:px-8 lg:px-12 xl:px-16">
-        <div className="grid min-h-[78vh] gap-10 pb-10 pt-24 sm:pt-28 lg:grid-cols-[1.05fr_0.95fr] lg:items-center lg:gap-14 lg:py-16">
-          <div className="order-2 min-w-0 lg:order-1">
-            <div className="mb-6">
-              <p className="eyebrow text-gold">Qui sommes-nous</p>
-              <h2 className="mt-3 text-2xl leading-tight text-white sm:text-3xl lg:text-[1.75rem] xl:text-[2.05rem]">
-                <span className="lg:block lg:whitespace-nowrap">Un partenaire solide pour vos projets </span>
-                <span className="lg:block lg:whitespace-nowrap">fonciers et immobiliers</span>
-              </h2>
-              <hr className="gold-rule mt-5 w-24" />
-              <p className="mt-5 max-w-2xl text-base leading-7 text-white/75 sm:text-lg">
-                De la recherche du terrain à la remise des clés, LT GROUP réunit topographes, ingénieurs et bâtisseurs pour sécuriser chaque étape de votre investissement.
-              </p>
-              <div className="mt-6 flex flex-wrap gap-3">
-                <Button asChild variant="gold">
-                  <Link to="/a-propos">Découvrir le groupe</Link>
-                </Button>
-                <Button asChild variant="outline" className="border-white/40 bg-transparent text-white hover:bg-white hover:text-foreground">
-                  <Link to="/contact">Nous rencontrer</Link>
-                </Button>
-              </div>
-            </div>
-
-            <div className="relative overflow-hidden rounded-2xl border border-gold/30 bg-black/60 p-1 shadow-elevated ring-1 ring-white/10">
-              <IntroVideoLoop />
-              <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/55 via-transparent to-transparent" />
-            </div>
-          </div>
-
-          <div className="order-1 flex min-w-0 items-center lg:order-2">
-            <div className="w-full">
+        <div className="mx-auto flex min-h-[68vh] max-w-5xl items-center py-24 sm:py-28 lg:min-h-[72vh] lg:py-32">
+          <div className="w-full max-w-4xl">
               <p className="eyebrow text-gold">LT GROUP · Côte d’Ivoire</p>
               <h1 className="mt-4 max-w-[12ch] text-balance text-4xl leading-[1.02] text-white sm:text-5xl lg:text-6xl xl:text-[4.5rem]">
                 Bâtir la terre, <span className="text-gold-gradient">éclairer l’avenir</span>
@@ -246,7 +142,6 @@ function Hero() {
                   ))}
                 </div>
               </div>
-            </div>
           </div>
         </div>
       </div>
@@ -270,102 +165,6 @@ function KeyFigures() {
             <p className="mt-2 text-sm text-muted-foreground">{it.label}</p>
           </div>
         ))}
-      </div>
-    </section>
-  );
-}
-
-function Visuals() {
-  return (
-    <section className="bg-secondary py-12 lg:py-12">
-      <div className="mx-auto max-w-7xl px-5 lg:px-8">
-        <p className="eyebrow">Opportunités du moment</p>
-        <h2 className="mt-3 text-3xl lg:text-4xl">Nos terrains disponibles</h2>
-        <hr className="gold-rule mt-6 w-24" />
-        <div className="mt-10"><MediaGallery /></div>
-      </div>
-    </section>
-  );
-}
-
-function VideoShowcase() {
-  const { data: videos } = useQuery(showcaseVideosQuery);
-  const videoList = videos ?? [];
-  const [index, setIndex] = useState(0);
-
-  useEffect(() => {
-    if (videoList.length < 2) return;
-    const timer = window.setInterval(
-      () => setIndex((i) => (i + 1) % videoList.length),
-      8500,
-    );
-    return () => window.clearInterval(timer);
-  }, [videoList.length]);
-
-  if (!videoList.length) return null;
-
-  const safeIndex = index % videoList.length;
-  const current = videoList[safeIndex]!;
-
-  return (
-    <section className="bg-muted/40 py-12 sm:py-12 lg:py-12">
-      <div className="mx-auto max-w-7xl px-5 lg:px-8">
-        <div className="max-w-3xl">
-          <p className="eyebrow">Projets en images</p>
-          <h2 className="mt-3 text-3xl lg:text-4xl">
-            Découvrez nos opportunités et réalisations
-          </h2>
-          <p className="mt-4 text-sm leading-relaxed text-muted-foreground">
-            Présentations immersives, vues aériennes et contenus vidéo publiés depuis l’administration.
-          </p>
-        </div>
-
-        <div className="relative mt-10 overflow-hidden rounded-2xl border border-border bg-ink shadow-elevated">
-          <div className="relative aspect-video sm:aspect-[16/8]">
-            <video
-              key={current.id}
-              src={current.video_url}
-              className="absolute inset-0 h-full w-full object-cover"
-              muted
-              playsInline
-              autoPlay
-              controls
-              preload="metadata"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/15 to-transparent pointer-events-none" />
-            <div className="absolute inset-x-0 bottom-0 p-5 pointer-events-none sm:p-8 lg:p-10">
-              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-gold">
-                {current.label}
-              </p>
-              <h3 className="mt-2 max-w-2xl text-2xl text-white sm:text-3xl lg:text-4xl">
-                {current.title || current.label}
-              </h3>
-              {current.description ? (
-                <p className="mt-3 max-w-2xl text-sm leading-relaxed text-white/80 sm:text-base">
-                  {current.description}
-                </p>
-              ) : null}
-            </div>
-          </div>
-
-          {videoList.length > 1 ? (
-            <div className="absolute bottom-4 right-5 flex gap-2">
-              {videoList.map((video, i) => (
-                <button
-                  key={video.id}
-                  type="button"
-                  onClick={() => setIndex(i)}
-                  aria-label={`Afficher la vidéo ${i + 1}`}
-                  className={
-                    i === safeIndex
-                      ? "h-1.5 w-10 rounded-full bg-gold"
-                      : "h-1.5 w-4 rounded-full bg-white/45 hover:bg-white/75"
-                  }
-                />
-              ))}
-            </div>
-          ) : null}
-        </div>
       </div>
     </section>
   );
@@ -423,64 +222,6 @@ function WhyUs() {
   );
 }
 
-function FeaturedProjects() {
-  const { data: projects } = useQuery(projectsQuery);
-  const list = (projects ?? []).filter((p) => p.is_featured).slice(0, 1).concat([]);
-  if (list.length === 0 && projects?.[0]) list.push(projects[0]);
-  if (list.length === 0) return null;
-
-  return (
-    <section className="bg-muted/50 py-12 lg:py-12">
-      <div className="mx-auto max-w-7xl px-5 lg:px-8">
-        <p className="eyebrow">Opportunité du moment</p>
-        <h2 className="mt-3 text-3xl lg:text-4xl">Notre projet phare</h2>
-        <hr className="gold-rule mt-6 w-24" />
-        <div className="mt-8">
-          {list.map((project) => (
-            <Link to="/projets/$slug" params={{ slug: project.slug }} key={project.id} className="group grid overflow-hidden rounded-2xl border border-border/80 bg-card shadow-soft transition duration-500 hover:-translate-y-1 hover:border-gold/40 hover:shadow-elevated md:grid-cols-2">
-              <div className="relative min-h-56 overflow-hidden bg-ink-gradient">{project.cover_image_url || project.image_url ? <MediaPreview url={project.cover_image_url || project.image_url || ""} alt={project.title} className="h-full min-h-56 w-full object-cover transition duration-700 group-hover:scale-105" /> : <div className="flex min-h-56 items-end p-6"><span className="text-xs uppercase tracking-[0.22em] text-gold/80">LIGHT TERRA GROUP · PROJET</span></div>}<div className="absolute inset-0 bg-gradient-to-t from-black/45 via-transparent to-transparent" /></div>
-              <div className="p-6">
-                <p className="eyebrow">{project.category ?? "Projet"}</p>
-                <h3 className="mt-2 text-xl transition-colors group-hover:text-gold-deep">{project.title}</h3>
-                <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{project.summary}</p>
-              </div>
-            </Link>
-          ))}
-        </div>
-        <div className="mt-10"><Button asChild variant="gold"><Link to="/projets">Voir tous nos projets & terrains</Link></Button></div>
-      </div>
-    </section>
-  );
-}
-
-function LatestNews() {
-  const { data: news } = useQuery(newsListQuery);
-  const list = (news ?? []).slice(0, 3);
-  if (list.length === 0) return null;
-
-  return (
-    <section className="mx-auto max-w-7xl px-5 py-12 lg:px-8 lg:py-12">
-      <p className="eyebrow">Actualités</p>
-      <h2 className="mt-3 text-3xl lg:text-4xl">La vie du groupe</h2>
-      <hr className="gold-rule mt-6 w-24" />
-      <div className="mt-8 grid gap-6 md:grid-cols-3">
-        {list.map((item) => (
-          <Link key={item.id} to="/actualites/$slug" params={{ slug: item.slug }} className="group overflow-hidden rounded-xl border border-border/80 bg-card shadow-soft transition duration-500 hover:-translate-y-1 hover:border-gold/40 hover:shadow-elevated">
-            <div className="relative aspect-[16/9] overflow-hidden bg-ink-gradient">{item.cover_image_url || item.image_url || item.video_url ? <MediaPreview url={item.cover_image_url ?? item.image_url ?? item.video_url ?? ""} alt={item.title} poster={item.video_poster_url} className="h-full w-full object-cover transition duration-700 group-hover:scale-105" /> : <div className="flex h-full items-end p-5"><span className="text-xs uppercase tracking-[0.22em] text-gold/80">LIGHT TERRA GROUP · ACTUALITÉ</span></div>}<div className="absolute inset-0 bg-gradient-to-t from-black/35 via-transparent to-transparent" /></div>
-            <div className="p-6">
-              <p className="text-xs uppercase tracking-[0.16em] text-muted-foreground">{formatDateFr(item.published_at ?? item.created_at)}</p>
-              <h3 className="mt-3 text-lg transition-colors group-hover:text-gold-deep">{item.title}</h3>
-              <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{item.excerpt}</p>
-              <span className="mt-5 inline-flex text-sm font-semibold underline underline-offset-4">Lire l’actualité →</span>
-            </div>
-          </Link>
-        ))}
-      </div>
-      <div className="mt-10"><Button asChild variant="outline"><Link to="/actualites">Toutes les actualités</Link></Button></div>
-    </section>
-  );
-}
-
 function CallToAction() {
   const { data: company } = useQuery(companyQuery);
   return (
@@ -508,12 +249,8 @@ function Index() {
       <main className="flex-1">
         <Hero />
         <KeyFigures />
-        <Visuals />
         <Activities />
-        <VideoShowcase />
         <WhyUs />
-        <FeaturedProjects />
-        <LatestNews />
         <NewsletterSignup />
         <CallToAction />
       </main>
