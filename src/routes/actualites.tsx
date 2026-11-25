@@ -1,3 +1,4 @@
+import heroConseil from "@/assets/hero-conseil.jpg";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 
@@ -36,7 +37,7 @@ function Page() {
 
   return (
     <SiteLayout>
-      <PageHero eyebrow="Actualités" title="La vie du groupe" description={description} />
+      <PageHero eyebrow="Actualités" title="La vie du groupe" description={description} image={heroConseil} />
       <section className="mx-auto max-w-7xl px-5 py-12 lg:px-8">
         {isLoading ? <p className="text-muted-foreground">Chargement…</p> : null}
         {isError ? (
