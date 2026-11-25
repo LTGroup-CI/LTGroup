@@ -59,7 +59,7 @@ function Page() {
   return (
     <SiteLayout>
       <Breadcrumb section="Expertises" to="/services" current={activity.title} />
-      <PageHero eyebrow="Nos expertises" title={activity.title} description={activity.short_description} />
+      <PageHero eyebrow="Nos expertises" title={activity.title} description={activity.short_description} image={activity.cover_image_url ?? activity.image_url ?? undefined} />
       <article className="mx-auto max-w-7xl px-5 py-12 lg:px-8">
         <div className="grid gap-10 lg:grid-cols-[minmax(0,1.2fr)_minmax(280px,.8fr)] lg:items-start">
           <div className="min-w-0">
