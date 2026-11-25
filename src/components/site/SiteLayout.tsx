@@ -244,9 +244,12 @@ export function PageHero({
   eyebrow: string;
   title: string;
   description?: string;
+  image?: string;
+  imageAlt?: string;
 }) {
   return (
     <section className="page-hero relative isolate overflow-hidden border-b border-gold/20 bg-ink-gradient pb-14 pt-28 text-ink-foreground sm:pb-16 lg:pb-20 lg:pt-40">
+      {image ? <img src={image} alt={imageAlt ?? ""} aria-hidden={!imageAlt} className="absolute inset-0 h-full w-full object-cover opacity-35" /> : null}
       <div aria-hidden className="page-hero-glow pointer-events-none absolute inset-0" />
       <div aria-hidden className="pointer-events-none absolute -right-24 -top-28 h-[360px] w-[360px] rounded-full border border-gold/20 sm:h-[520px] sm:w-[520px] lg:-right-10 lg:h-[680px] lg:w-[680px]">
         <div className="absolute inset-8 rounded-full border border-gold/10" />
