@@ -1,3 +1,4 @@
+import heroImmobilier from "@/assets/hero-immobilier.jpg";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { Eye, Gem, Target } from "lucide-react";
@@ -56,6 +57,7 @@ function Page() {
         eyebrow="À propos"
         title="LIGHT TERRA GROUP SARL"
         description={company?.slogan ?? "Bâtir la terre, éclairer l'avenir"}
+        image={heroImmobilier}
       />
 
       <section className="mx-auto max-w-7xl px-5 py-12 lg:px-8">
