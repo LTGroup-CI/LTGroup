@@ -94,7 +94,7 @@ function Page() {
   return (
     <SiteLayout>
       <Breadcrumb section="Projets" to="/projets" current={project.title} />
-      <PageHero eyebrow={project.category ?? "Projet"} title={project.title} description={project.summary ?? ""} />
+      <PageHero eyebrow={project.category ?? "Projet"} title={project.title} description={project.summary ?? ""} image={project.cover_image_url ?? project.image_url ?? undefined} />
 
       <article className="mx-auto max-w-7xl px-5 py-12 lg:px-8 lg:py-12">
         <div className="min-w-0">
