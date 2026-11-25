@@ -1,3 +1,4 @@
+import heroEnergie from "@/assets/hero-energie.jpg";
 import { useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
@@ -77,7 +78,7 @@ function Page() {
 
   return (
     <SiteLayout>
-      <PageHero eyebrow="Contact" title="Nous contacter" description={description} />
+      <PageHero eyebrow="Contact" title="Nous contacter" description={description} image={heroEnergie} />
 
       <section className="mx-auto grid max-w-7xl gap-12 px-5 py-12 lg:grid-cols-2 lg:px-8 lg:py-12">
         <div>
