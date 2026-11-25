@@ -72,8 +72,8 @@ function Page() {
 
           <div className="grid gap-5">
             {VALUES.map((value) => (
-              <article key={value.title} className="rounded-lg border border-border bg-card p-6">
-                <span className="inline-flex h-11 w-11 items-center justify-center rounded-sm bg-accent text-gold-deep">
+              <article key={value.title} className="group rounded-xl border border-border/80 bg-card p-6 shadow-soft transition duration-500 hover:-translate-y-1 hover:border-gold/40 hover:shadow-elevated">
+                <span className="inline-flex h-12 w-12 items-center justify-center rounded-xl bg-accent text-gold-deep transition duration-300 group-hover:bg-gold group-hover:text-ink">
                   <value.icon className="h-5 w-5" />
                 </span>
                 <h3 className="mt-4 text-xl">{value.title}</h3>
@@ -90,8 +90,8 @@ function Page() {
         <hr className="gold-rule mt-6 w-24" />
         <ol className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {["Écoute et étude du besoin", "Visite et vérifications", "Proposition et devis", "Réalisation et remise"].map((step, i) => (
-            <li key={step} className="flex items-center gap-3 rounded-lg border border-border bg-card p-5">
-              <span className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-gold font-semibold text-ink">{i + 1}</span>
+            <li key={step} className="group flex items-center gap-4 rounded-xl border border-border/80 bg-card p-5 shadow-soft transition duration-300 hover:-translate-y-1 hover:border-gold/40 hover:shadow-elevated">
+              <span className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-gold/50 bg-accent font-display text-lg text-gold-deep transition group-hover:bg-gold group-hover:text-ink">{i + 1}</span>
               <span className="font-medium">{step}</span>
             </li>
           ))}
