@@ -171,10 +171,11 @@ function Hero() {
 
       <div className="relative mx-auto max-w-[1480px] px-5 sm:px-8 lg:px-12 xl:px-16">
         <div className="mx-auto grid min-h-[68vh] max-w-7xl items-center gap-10 py-24 sm:py-28 lg:min-h-[78vh] lg:grid-cols-[1.05fr_0.95fr] lg:gap-14 lg:py-20">
-          <div className="w-full max-w-3xl">
+          <div className="w-full min-w-0 max-w-3xl">
               <p className="eyebrow text-gold">LT GROUP · Côte d’Ivoire</p>
-              <h1 className="mt-4 max-w-[12ch] text-balance text-4xl leading-[1.02] text-white sm:text-5xl lg:text-6xl xl:text-[4.5rem]">
-                Bâtir la terre, <span className="text-gold-gradient">éclairer l’avenir</span>
+              <h1 className="mt-4 w-full max-w-none text-left text-4xl leading-[1.08] text-white sm:text-5xl lg:text-6xl xl:text-[4.5rem]">
+                <span className="block whitespace-nowrap">Bâtir la terre,</span>
+                <span className="text-gold-gradient block whitespace-nowrap">éclairer l’avenir</span>
               </h1>
               <p className="mt-7 max-w-2xl text-pretty text-base leading-7 text-white/75 sm:text-lg sm:leading-8">
                 {company?.description ?? "LT GROUP accompagne particuliers, entreprises et institutions en Côte d’Ivoire : études, aménagement foncier, promotion immobilière, hydraulique, électrification, BTP, VRD, réseau télécom, gestion immobilière et divers."}
