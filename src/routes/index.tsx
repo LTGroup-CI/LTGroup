@@ -489,11 +489,9 @@ function CallToAction() {
         </div>
         <div className="flex flex-wrap gap-3">
           <Button asChild variant="gold" size="lg"><Link to="/services">Demander un devis</Link></Button>
-          {company?.phone_primary ? (
-            <Button asChild size="lg" variant="outline" className="border-gold/50 bg-transparent text-ink-foreground hover:bg-gold hover:text-ink">
-              <a href={`tel:${company.phone_primary.replace(/\s/g, "")}`}>{company.phone_primary}</a>
-            </Button>
-          ) : null}
+          <Button asChild size="lg" variant="outline" className="border-gold/50 bg-transparent text-ink-foreground hover:bg-gold hover:text-ink">
+            <a href="tel:+2250707741484">07 07 74 14 84</a>
+          </Button>
         </div>
       </div>
     </section>
