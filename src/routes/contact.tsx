@@ -84,7 +84,7 @@ function Page() {
           <h2 className="text-2xl">Nos locaux à Abidjan</h2>
           <hr className="gold-rule mt-4 w-16" />
           <ul className="mt-6 space-y-5 text-sm text-muted-foreground">
-            <li className="flex gap-3">
+            <li className="flex flex-wrap items-start gap-x-2 gap-y-2">
               <Phone className="mt-0.5 h-5 w-5 shrink-0 text-gold-deep" />
               <a href="tel:+2250749224722" className="hover:text-foreground">
                 (+225) 07 49 22 47 22
@@ -126,7 +126,7 @@ function Page() {
           </div>
         </div>
 
-        <div className="rounded-lg border border-border bg-card p-6 shadow-sm lg:p-8">
+        <div className="rounded-2xl border border-border/80 bg-card p-6 shadow-soft lg:p-8">
           <h2 className="text-2xl">Écrivez-nous</h2>
           <hr className="gold-rule mt-4 w-16" />
           <form onSubmit={onSubmit} className="mt-6 space-y-4">
