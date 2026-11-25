@@ -166,7 +166,7 @@ function Hero() {
           src={current.image_url}
           alt=""
           aria-hidden
-          className="h-full w-full object-cover opacity-100 transition-transform duration-[9000ms] ease-out scale-[1.04]"
+          className="h-full w-full object-cover opacity-100 animate-slow-zoom"
         />
         <div className="absolute inset-0 bg-black/25" />
         <div className="absolute inset-0 bg-gradient-to-r from-black/75 via-black/40 to-black/15" />
