@@ -246,21 +246,34 @@ export function PageHero({
   description?: string;
 }) {
   return (
-    <section className="relative overflow-hidden border-b border-border bg-sand-gradient pb-10 pt-28 lg:pb-12 lg:pt-36">
-      <svg aria-hidden className="pointer-events-none absolute -right-20 top-10 h-[420px] w-[420px] text-gold/15" viewBox="0 0 100 100" fill="none" stroke="currentColor" strokeWidth="0.6">
-        <path d="M50 6 L94 88 H6 Z" />
-        <path d="M50 26 L78 78 H22 Z" />
-        <ellipse cx="50" cy="60" rx="12" ry="7" />
-        <circle cx="50" cy="60" r="3" />
+    <section className="page-hero relative isolate overflow-hidden border-b border-gold/20 bg-ink-gradient pb-14 pt-28 text-ink-foreground sm:pb-16 lg:pb-20 lg:pt-40">
+      <div aria-hidden className="page-hero-glow pointer-events-none absolute inset-0" />
+      <div aria-hidden className="pointer-events-none absolute -right-24 -top-28 h-[360px] w-[360px] rounded-full border border-gold/20 sm:h-[520px] sm:w-[520px] lg:-right-10 lg:h-[680px] lg:w-[680px]">
+        <div className="absolute inset-8 rounded-full border border-gold/10" />
+        <div className="absolute inset-20 rounded-full border border-gold/10" />
+      </div>
+      <svg aria-hidden className="pointer-events-none absolute -right-4 bottom-0 h-48 w-48 text-gold/20 sm:right-16 sm:h-64 sm:w-64 lg:right-[12%] lg:h-80 lg:w-80" viewBox="0 0 100 100" fill="none" stroke="currentColor" strokeWidth="0.45">
+        <path d="M50 4 L96 92 H4 Z" />
+        <path d="M50 25 L78 78 H22 Z" />
+        <path d="M50 4 V96 M4 92 H96" />
+        <circle cx="50" cy="60" r="12" />
+        <circle cx="50" cy="60" r="3" fill="currentColor" />
       </svg>
       <div className="relative mx-auto max-w-7xl px-5 lg:px-8">
-        <p className="eyebrow">{eyebrow}</p>
-        <h1 className="mt-3 w-full text-4xl leading-tight lg:text-6xl">{title}</h1>
-        <hr className="gold-rule mt-6 w-24" />
-        {description ? (
-          <p className="mt-6 w-full text-lg leading-relaxed text-muted-foreground">{description}</p>
-        ) : null}
+        <div className="max-w-5xl animate-fade-up">
+          <p className="eyebrow text-gold">{eyebrow}</p>
+          <h1 className="mt-4 w-full text-balance text-4xl leading-[1.08] text-white sm:text-5xl lg:text-7xl">{title}</h1>
+          <div className="mt-7 flex items-center gap-4">
+            <span className="h-px w-16 bg-gold" />
+            <span className="h-1.5 w-1.5 rotate-45 bg-gold" />
+            <span className="text-[0.62rem] font-semibold uppercase tracking-[0.28em] text-white/45">LIGHT TERRA GROUP SARL</span>
+          </div>
+          {description ? (
+            <p className="mt-6 max-w-4xl text-pretty text-base leading-8 text-white/70 sm:text-lg sm:leading-9">{description}</p>
+          ) : null}
+        </div>
       </div>
+      <div aria-hidden className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-gold/70 to-transparent" />
     </section>
   );
 }
