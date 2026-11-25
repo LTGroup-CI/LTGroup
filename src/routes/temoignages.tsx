@@ -86,13 +86,14 @@ function Page() {
         ) : (
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             {list.map((item) => (
-              <article key={item.id} className="rounded-lg border border-border bg-card p-6">
+              <article key={item.id} className="group relative rounded-2xl border border-border/80 bg-card p-7 shadow-soft transition duration-500 hover:-translate-y-1 hover:border-gold/40 hover:shadow-elevated">
                 <div className="flex gap-1">
                   {Array.from({ length: item.rating ?? 0 }).map((_, i) => (
                     <Star key={i} className="h-4 w-4 fill-gold text-gold" />
                   ))}
                 </div>
-                <p className="mt-4 text-sm leading-relaxed text-muted-foreground">« {item.message} »</p>
+                <div className="mt-5 h-px w-12 bg-gold/70" />
+                <p className="mt-4 text-base leading-8 text-foreground/80">« {item.message} »</p>
                 <p className="mt-5 font-display text-base">{item.author_name}</p>
                 <p className="text-xs text-muted-foreground">
                   {[item.author_role, item.company].filter(Boolean).join(" — ")}
@@ -111,7 +112,7 @@ function Page() {
           <p className="eyebrow">Votre avis</p>
           <h2 className="mt-3 text-3xl">Laisser un témoignage</h2>
           <hr className="gold-rule mt-6 w-24" />
-          <form onSubmit={onSubmit} className="mt-8 grid gap-5 rounded-lg border border-border bg-card p-6">
+          <form onSubmit={onSubmit} className="mt-8 grid gap-5 rounded-2xl border border-border/80 bg-card p-6 shadow-soft sm:p-8">
             <div className="grid gap-5 sm:grid-cols-2">
               <div className="grid gap-2">
                 <Label htmlFor="author_name">Nom complet *</Label>
