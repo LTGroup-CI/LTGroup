@@ -11,7 +11,7 @@ const replySchema = z.object({
 /** Répond à une demande : enregistre la réponse puis envoie l'e-mail au demandeur. */
 export const replyToMessage = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data: unknown) => replySchema.parse(data))
+  .validator((data: unknown) => replySchema.parse(data))
   .handler(async ({ data, context }) => {
     const { supabase, userId } = context;
 
