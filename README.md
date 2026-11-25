@@ -49,5 +49,5 @@ Répartition des contenus :
 - [ ] Numéro RCCM dans les mentions légales — en attente du client.
 
 ### Publication vérifiée — 25 novembre 2026
-- Le commit `890c2aa` est déployé en production Vercel (statut READY). Cette publication réactive les sections visuelles déjà codées sur l'accueil, rend le visuel du hero visible et applique un zoom lent. Elle **ne signifie pas** que toute la refonte immersive du site est terminée.
+- Le commit `6225675` est déployé en production Vercel (statut READY). Il inclut la première tranche de la refonte immersive : hero de l'accueil, PageHero photographique partagé, cartes et galeries retravaillées, transitions et migration des validateurs TanStack. Elle **ne signifie pas** que toute la refonte immersive du site est terminée.
 - Mettre à jour `LOVABLE_HANDOFF.md`, `roadmap.md` et cette liste après chaque tâche réellement vérifiée.
