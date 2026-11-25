@@ -30,14 +30,14 @@ export function ServicesGrid({ detailed = false, compact = false }: { detailed?:
   return (
     <div className="grid gap-px overflow-hidden rounded-2xl border border-border bg-border sm:grid-cols-2 xl:grid-cols-5">
       {SERVICES.map((s) => (
-        <article key={s.n} className="group relative flex min-w-0 flex-col bg-card p-6 transition duration-300 hover:bg-accent/40 sm:p-8">
+        <article key={s.n} className="group relative flex min-w-0 flex-col bg-card p-6 transition duration-500 hover:-translate-y-1 hover:bg-accent/40 sm:p-8">
           <div className="flex items-start justify-between gap-4">
             <span className="font-display text-4xl leading-none text-gold/70 transition group-hover:text-gold sm:text-5xl">{s.n}</span>
             <span className="inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-accent text-gold-deep transition group-hover:bg-gold group-hover:text-ink">
               <s.icon className="h-6 w-6" />
             </span>
           </div>
-          <h3 className="mt-5 text-lg sm:text-xl">{s.title}</h3>
+          <h3 className="mt-5 text-lg transition-colors group-hover:text-gold-deep sm:text-xl">{s.title}</h3>
           {!compact && <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{s.text}</p>}
           {detailed && (
             <ul className="mt-4 space-y-1.5 text-sm">
