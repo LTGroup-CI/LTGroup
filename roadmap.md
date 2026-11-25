@@ -27,8 +27,8 @@ Dernière mise à jour : 25 novembre 2026. Dépôt officiel : LTGroup-CI/LTGroup
 - [ ] Vérifier logo en production : en-tête, pied de page, admin, favicon, Open Graph/Twitter et e-mails.
 - [ ] Vérifier Raï : collecte nom/prénoms, e-mail et téléphone avant de poursuivre, sans répétition ; sauvegarde du contact et réponses utiles.
 - [ ] Vérifier Resend/newsletter en production : bienvenue, publication d'actualité, désabonnement et délivrabilité.
-- [ ] Rendre visibles dans l'admin les réponses reçues par e-mail (fonctionnalité à développer/valider).
-- [ ] Simplifier les formulaires média admin : couverture, médias principaux et aperçu cohérents, sans champs redondants.
+- [x] Panneau admin « Demandes » : lecture des messages, historique des réponses et envoi de réponse présents dans src/routes/admin.tsx et src/lib/admin.functions.ts (reste à tester en production).
+- [x] Formulaires projets/actualités/activités : deux champs média présents (médias principaux jusqu'à 5 fichiers + couverture). Vérifier les aperçus et l'ergonomie en production.
 - [ ] Moderniser l'admin et corriger les débordements sur mobile.
 - [ ] Harmoniser les textes : largeur utile, alignement/justification lisible, titres non confinés dans une petite colonne.
 - [ ] Contrôler SEO : métadonnées par page, canonical, sitemap, robots, données structurées, partage social et indexation.
