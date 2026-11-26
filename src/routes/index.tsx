@@ -18,7 +18,6 @@ import { Button } from "@/components/ui/button";
 import { SITE_URL, OG_IMAGE_URL } from "@/lib/media";
 import {
   companyQuery,
-  heroSlidesQuery,
   introVideosQuery,
 } from "@/lib/site-data";
 
@@ -138,8 +137,8 @@ const FALLBACK_HERO_SLIDES = [
 
 function Hero() {
   const { data: company } = useQuery(companyQuery);
-  const { data: configuredSlides } = useQuery(heroSlidesQuery);
-  const slides = configuredSlides?.length ? configuredSlides : FALLBACK_HERO_SLIDES;
+  // Visuels du hero définis dans le code (pas en base) pour une animation fiable.
+  const slides = FALLBACK_HERO_SLIDES;
   const [index, setIndex] = useState(0);
 
   useEffect(() => {
@@ -157,12 +156,19 @@ function Hero() {
   return (
     <section className="relative isolate overflow-hidden border-b border-gold/20 bg-ink">
       <div className="absolute inset-0">
-        <img
-          src={current.image_url}
-          alt=""
-          aria-hidden
-          className="h-full w-full object-cover opacity-100 animate-slow-zoom"
-        />
+        {slides.map((slide, i) => {
+          const active = i === index % slides.length;
+          return (
+            <img
+              key={slide.id}
+              src={slide.image_url}
+              alt=""
+              aria-hidden
+              loading={i === 0 ? "eager" : "lazy"}
+              className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-[1600ms] ease-out ${active ? "opacity-100" : "opacity-0"} ${active ? `ken-burns ken-burns-${i % 4}` : ""}`}
+            />
+          );
+        })}
         <div className="absolute inset-0 bg-black/25" />
         <div className="absolute inset-0 bg-gradient-to-r from-black/75 via-black/40 to-black/15" />
         <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-transparent to-black/20" />

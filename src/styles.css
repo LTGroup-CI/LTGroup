@@ -418,3 +418,15 @@ main > section.reveal { animation: none; }
 @media (prefers-reduced-motion: reduce) {
   .reveal { opacity: 1 !important; transform: none !important; }
 }
+
+/* Ken Burns — zoom + léger déplacement continu des images de fond. */
+@keyframes kb-0 { from { transform: scale(1.05) translate3d(0,0,0); } to { transform: scale(1.22) translate3d(-3%,-2%,0); } }
+@keyframes kb-1 { from { transform: scale(1.2) translate3d(3%,1%,0); } to { transform: scale(1.06) translate3d(-1%,0,0); } }
+@keyframes kb-2 { from { transform: scale(1.06) translate3d(-2%,2%,0); } to { transform: scale(1.2) translate3d(2%,-2%,0); } }
+@keyframes kb-3 { from { transform: scale(1.18) translate3d(0,-2%,0); } to { transform: scale(1.04) translate3d(2%,2%,0); } }
+.ken-burns { will-change: transform; transform-origin: center; }
+.ken-burns-0 { animation: kb-0 9s ease-out both; }
+.ken-burns-1 { animation: kb-1 18s ease-in-out infinite alternate both; }
+.ken-burns-2 { animation: kb-2 9s ease-out both; }
+.ken-burns-3 { animation: kb-3 9s ease-out both; }
+.page-hero .ken-burns-1 { animation-duration: 22s; }
