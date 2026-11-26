@@ -1,7 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { ChevronRight } from "lucide-react";
 
-export function Breadcrumb({ section, to, current }: { section: string; to: "/actualites" | "/projets"; current: string }) {
+export function Breadcrumb({ section, to, current }: { section: string; to: "/actualites" | "/projets" | "/services"; current: string }) {
   return (
     <nav aria-label="Fil d'Ariane" className="border-b border-border bg-muted/40">
       <ol className="mx-auto flex max-w-7xl min-w-0 items-center gap-1.5 px-5 py-3 text-xs text-muted-foreground lg:px-8">

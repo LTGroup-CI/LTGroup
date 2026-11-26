@@ -35,6 +35,8 @@ export function SiteHeader() {
   useEffect(() => setOpen(false), [pathname]);
 
   return (
+    <>
+    <ScrollProgress />
     <header className="fixed inset-x-0 top-0 z-50 border-b border-border/70 bg-background/90 shadow-sm backdrop-blur-md">
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-5 py-3 lg:px-8">
         <Link to="/" className="flex min-w-0 items-center gap-3" aria-label="LT GROUP — accueil">
@@ -98,6 +100,7 @@ export function SiteHeader() {
         </div>
       ) : null}
     </header>
+    </>
   );
 }
 
@@ -193,7 +196,7 @@ export function SiteFooter() {
             <li className="flex items-start gap-2">
               <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-gold" />
               <span>
-                Siège social : {[company?.city, company?.address].filter(Boolean).join(" ") || "Abidjan Cocody Akouédo extension sud-est, Lot 640, îlot 60"}{company?.postal_box ? ` ; ${company.postal_box}` : ""}
+                Siège social : Abidjan Cocody Akouédo extension sud-est, Lot 640, îlot 60 ; 01 BP 2259 Abidjan 01
               </span>
             </li>
           </ul>
@@ -215,6 +218,58 @@ export function SiteFooter() {
         </div>
       </div>
     </footer>
+  );
+}
+
+/** Barre dorée de progression de lecture + apparition douce des sections au défilement. */
+function ScrollProgress() {
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const [progress, setProgress] = useState(0);
+
+  useEffect(() => {
+    const onScroll = () => {
+      const max = document.documentElement.scrollHeight - window.innerHeight;
+      setProgress(max > 0 ? Math.min(1, window.scrollY / max) : 0);
+    };
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  useEffect(() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    let observer: IntersectionObserver | undefined;
+    const timer = window.setTimeout(() => {
+    const targets = Array.from(document.querySelectorAll<HTMLElement>("main > section, main > article, main section > div > .grid > *"));
+    const vh = window.innerHeight;
+    observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("is-revealed");
+            observer?.unobserve(entry.target);
+          }
+        }
+      },
+      { rootMargin: "0px 0px -8% 0px", threshold: 0.08 },
+    );
+    targets.forEach((el, i) => {
+      if (el.getBoundingClientRect().top < vh * 0.9) return; // déjà visible : on ne cache rien
+      el.classList.add("reveal");
+      el.style.setProperty("--reveal-delay", `${(i % 4) * 70}ms`);
+      observer?.observe(el);
+    });
+    }, 250);
+    return () => {
+      window.clearTimeout(timer);
+      observer?.disconnect();
+    };
+  }, [pathname]);
+
+  return (
+    <div aria-hidden className="fixed inset-x-0 top-0 z-[60] h-[3px]">
+      <div className="h-full origin-left bg-gold-gradient" style={{ transform: `scaleX(${progress})` }} />
+    </div>
   );
 }
 
@@ -245,13 +300,13 @@ export function PageHero({
 }: {
   eyebrow: string;
   title: string;
-  description?: string;
-  image?: string;
-  imageAlt?: string;
+  description?: string | undefined;
+  image?: string | undefined;
+  imageAlt?: string | undefined;
 }) {
   return (
     <section className="page-hero relative isolate overflow-hidden border-b border-gold/20 bg-ink-gradient pb-14 pt-28 text-ink-foreground sm:pb-16 lg:pb-20 lg:pt-40">
-      {image ? <img src={image} alt={imageAlt ?? ""} aria-hidden={!imageAlt} className="absolute inset-0 h-full w-full object-cover opacity-65" /> : null}
+      {image ? <img src={image} alt={imageAlt ?? ""} aria-hidden={!imageAlt} className="absolute inset-0 h-full w-full object-cover opacity-65 animate-slow-zoom" /> : null}
       <div aria-hidden className="page-hero-glow pointer-events-none absolute inset-0" />
       <div aria-hidden className="pointer-events-none absolute -right-24 -top-28 h-[360px] w-[360px] rounded-full border border-gold/20 sm:h-[520px] sm:w-[520px] lg:-right-10 lg:h-[680px] lg:w-[680px]">
         <div className="absolute inset-8 rounded-full border border-gold/10" />

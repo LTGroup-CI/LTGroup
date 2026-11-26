@@ -178,7 +178,7 @@ function Hero() {
                 <span className="text-gold-gradient block whitespace-nowrap">éclairer l’avenir</span>
               </h1>
               <p className="mt-7 max-w-2xl text-pretty text-base leading-7 text-white/75 sm:text-lg sm:leading-8">
-                {company?.description ?? "LT GROUP accompagne particuliers, entreprises et institutions en Côte d’Ivoire : études, aménagement foncier, promotion immobilière, hydraulique, électrification, BTP, VRD, réseau télécom, gestion immobilière et divers."}
+                LT GROUP valorise la terre et transforme les opportunités foncières en projets d’avenir, avec des expertises en études, aménagement foncier, promotion immobilière, hydraulique, électrification, BTP, VRD, réseau télécom, gestion immobilière et divers.
               </p>
               {current.subtitle ? (
                 <p className="mt-5 max-w-xl text-sm leading-7 text-white/65 sm:text-base">
